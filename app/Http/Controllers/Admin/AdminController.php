@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAdminRequest;
-use App\Http\Requests\UpdateAdminRequest;
+use App\Http\Requests\Admin\Auth\StoreAdminRequest;
+use App\Http\Requests\Admin\Auth\UpdateAdminRequest;
 use App\Models\Admin;
 
 class AdminController extends Controller
