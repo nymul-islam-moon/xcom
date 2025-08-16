@@ -153,14 +153,14 @@
                     <!--begin::User Menu Dropdown-->
                     <li class="nav-item dropdown user-menu">
                         <a href="#" class="nav-link dropdown-toggle" data-bs-toggle="dropdown">
-                            <img src="./assets/img/user2-160x160.jpg" class="user-image rounded-circle shadow"
+                            <img src="{{ asset('admin/assets/img/user2-160x160.jpg') }}" class="user-image rounded-circle shadow"
                                 alt="User Image" />
                             <span class="d-none d-md-inline">Alexander Pierce</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-end">
                             <!--begin::User Image-->
                             <li class="user-header text-bg-primary">
-                                <img src="./assets/img/user2-160x160.jpg" class="rounded-circle shadow"
+                                <img src="{{ asset('admin/assets/img/user2-160x160.jpg') }}" class="rounded-circle shadow"
                                     alt="User Image" />
                                 <p>
                                     Alexander Pierce - Web Developer
@@ -654,31 +654,7 @@
         </aside>
 
         <main class="app-main">
-
-            <div class="app-content-header">
-
-                <div class="container-fluid">
-
-                    <div class="row">
-                        <div class="col-sm-6">
-                            <h3 class="mb-0">Dashboard</h3>
-                        </div>
-                        <div class="col-sm-6">
-                            <ol class="breadcrumb float-sm-end">
-                                <li class="breadcrumb-item"><a href="#">Home</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Dashboard</li>
-                            </ol>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="app-content">
-                <div class="container-fluid">
-
-                    @yield('admin_content')
-
-                </div>
-            </div>
+            @yield('admin_content')
         </main>
         <footer class="app-footer">
             <div class="float-end d-none d-sm-inline">Anything you want</div>
@@ -689,9 +665,11 @@
             All rights reserved.
         </footer>
     </div>
+
     <x-admin.scripts />
+
     @stack('admin_scripts')
-   
+
 </body>
 
 </html>

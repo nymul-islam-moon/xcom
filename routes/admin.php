@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\Admin\ProductCategoryController;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -14,4 +15,10 @@ Route::middleware('guest:admin')->group(function () {
 Route::middleware('auth:admin')->group(function () {
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('index');
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    // Product Routes
+    Route::prefix('products')->as('products.')->group(function () {
+        Route::resource('categories', ProductCategoryController::class);
+    });
+
 });
