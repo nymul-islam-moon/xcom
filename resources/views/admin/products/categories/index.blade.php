@@ -85,6 +85,10 @@
                                                     class="btn btn-sm btn-primary" title="Edit Category">
                                                     <i class="bi bi-pencil"></i>
                                                 </a>
+                                                 <a href="{{ route('admin.products.categories.show', $category->id) }}"
+                                                    class="btn btn-sm btn-primary" title="Show Category">
+                                                    <i class="bi bi-eye"></i>
+                                                </a>
                                                 <form
                                                     action="{{ route('admin.products.categories.destroy', $category->id) }}"
                                                     method="POST" class="d-inline">
