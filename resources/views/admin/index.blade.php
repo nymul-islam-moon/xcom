@@ -300,3 +300,8 @@
         </div>
     </div>
 @endsection
+@push('admin_scripts')
+<script>
+    
+</script>
+@endpush
