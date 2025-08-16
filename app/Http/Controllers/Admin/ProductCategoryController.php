@@ -77,7 +77,7 @@ class ProductCategoryController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductCategoryRequest $request, ProductCategory $productCategory)
+    public function update(UpdateProductCategoryRequest $request, ProductCategory $category)
     {
         DB::beginTransaction();
 
@@ -85,7 +85,7 @@ class ProductCategoryController extends Controller
             $formData = $request->validated();
             $formData['slug'] = Str::slug($formData['name']);
             
-            $productCategory->update($formData);
+            $category->update($formData);
 
             DB::commit();
 
@@ -106,12 +106,12 @@ class ProductCategoryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(ProductCategory $productCategory)
+    public function destroy(ProductCategory $category)
     {
         DB::beginTransaction();
 
         try {
-            $productCategory->delete();
+            $category->delete();
 
             DB::commit();
 
