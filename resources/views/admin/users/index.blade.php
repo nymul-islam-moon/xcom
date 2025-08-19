@@ -1,19 +1,19 @@
-{{-- resources/views/admin/dashboard.blade.php --}}
+{{-- resources/views/admin/admins/index.blade.php --}}
 @extends('layouts.admin.app')
 
-@section('title', 'Product Category')
+@section('title', 'Admin Users')
 
 @section('admin_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Product Category</h3>
+                    <h3 class="mb-0">Admin Users</h3>
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a></li>
+                        <li class="breadcrumb-item active" aria-current="page">Admins</li>
                     </ol>
                 </div>
             </div>
@@ -27,22 +27,24 @@
 
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title flex-grow-1 mb-0">All Categories</h3>
+                            <h3 class="card-title flex-grow-1 mb-0">All Admins</h3>
 
-                            {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('admin.products.categories.index') }}" method="GET" class="d-none d-sm-flex me-2">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                                           placeholder="Search name/slug/desc">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </form>
+                            <div class="ms-auto d-flex align-items-center gap-2">
+                                {{-- (Optional) simple search by name/email --}}
+                                <form action="{{ route('admin.users.index') }}" method="GET" class="d-none d-sm-flex">
+                                    <div class="input-group input-group-sm">
+                                        <input type="text" name="q" value="{{ request('q') }}" class="form-control"
+                                               placeholder="Search name/email">
+                                        <button class="btn btn-outline-secondary" type="submit">
+                                            <i class="bi bi-search"></i>
+                                        </button>
+                                    </div>
+                                </form>
 
-                            <a href="{{ route('admin.products.categories.create') }}" class="btn btn-sm btn-success">
-                                <i class="bi bi-plus-lg"></i> Create Category
-                            </a>
+                                <a href="{{ route('admin.users.create') }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-lg"></i> Create Admin
+                                </a>
+                            </div>
                         </div>
 
                         @if (session('success'))
@@ -64,49 +66,53 @@
                                 <table class="table table-bordered table-hover align-middle">
                                     <thead>
                                         <tr>
-                                            <th style="width: 60px">#</th>
-                                            <th style="min-width: 220px;">Name</th>
-                                            <th style="min-width: 200px;">Slug</th>
-                                            <th style="min-width: 260px;">Description</th>
-                                            <th style="width: 130px;">Subcategories</th>
-                                            <th style="width: 150px;">Child Categories</th>
-                                            <th style="width: 110px;">Products</th>
+                                            <th style="width: 60px;">#</th>
+                                            <th style="min-width: 180px;">Name</th>
+                                            <th style="min-width: 220px;">Email</th>
+                                            <th style="min-width: 140px;">Phone</th>
+                                            <th style="width: 120px;">Verified</th>
+                                            <th style="width: 110px;">Status</th>
+                                            <th style="min-width: 160px;">Created</th>
                                             <th style="width: 170px;">Actions</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        @forelse ($productCategories as $idx => $category)
+                                        @forelse ($admins as $idx => $admin)
                                             <tr>
-                                                <td>{{ $productCategories->firstItem() + $idx }}</td>
-                                                <td class="fw-semibold text-break">{{ $category->name }}</td>
-                                                <td class="text-break">{{ $category->slug }}</td>
+                                                <td>{{ $admins->firstItem() + $idx }}</td>
+                                                <td class="fw-semibold">{{ $admin->name }}</td>
                                                 <td>
-                                                    <div class="text-truncate" style="max-width: 420px">
-                                                        {{ $category->description ?? '—' }}
-                                                    </div>
+                                                    {{ $admin->email }}
+                                                </td>
+                                                <td>{{ $admin->phone ?? '—' }}</td>
+                                                <td>
+                                                    @if ($admin->email_verified_at)
+                                                        <span class="badge bg-success">Verified</span>
+                                                    @else
+                                                        <span class="badge bg-secondary">Unverified</span>
+                                                    @endif
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $category->subcategories_count ?? 0 }}</span>
+                                                    @if ($admin->status === 'active')
+                                                        <span class="badge bg-primary">Active</span>
+                                                    @else
+                                                        <span class="badge bg-danger">Inactive</span>
+                                                    @endif
                                                 </td>
+                                                <td>{{ optional($admin->created_at)->format('M d, Y h:i A') }}</td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $category->child_categories_count ?? 0 }}</span>
-                                                </td>
-                                                <td>
-                                                    <span class="badge bg-info">{{ $category->products_count ?? 0 }}</span>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-1 flex-wrap">
-                                                        <a href="{{ route('admin.products.categories.show', $category) }}"
+                                                    <div class="d-flex align-items-center gap-1">
+                                                        <a href="{{ route('admin.users.show', $admin) }}"
                                                            class="btn btn-sm btn-outline-secondary" title="View">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.products.categories.edit', $category) }}"
+                                                        <a href="{{ route('admin.users.edit', $admin) }}"
                                                            class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.products.categories.destroy', $category) }}"
+                                                        <form action="{{ route('admin.users.destroy', $admin) }}"
                                                               method="POST" class="d-inline"
-                                                              onsubmit="return confirm('Delete this category? This action cannot be undone.');">
+                                                              onsubmit="return confirm('Delete this admin? This action cannot be undone.');">
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" class="btn btn-sm btn-danger" title="Delete">
@@ -119,7 +125,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="8" class="text-center text-muted py-4">
-                                                    No categories found.
+                                                    No admins found.
                                                 </td>
                                             </tr>
                                         @endforelse
@@ -130,7 +136,7 @@
 
                         <div class="card-footer clearfix">
                             <div class="float-end">
-                                {!! $productCategories->appends(['q' => request('q')])->links('pagination::bootstrap-5') !!}
+                                {!! $admins->appends(['q' => request('q')])->links('pagination::bootstrap-5') !!}
                             </div>
                         </div>
                     </div>
@@ -138,5 +144,5 @@
                 </div> <!-- /.col -->
             </div> <!-- /.row -->
         </div> <!-- /.container-fluid -->
-    </div> <!-- /.app-content -->
+    </div> 
 @endsection

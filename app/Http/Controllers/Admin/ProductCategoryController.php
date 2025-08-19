@@ -7,6 +7,7 @@ use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Requests\UpdateProductCategoryRequest;
 use App\Models\ProductCategory;
 use Illuminate\Support\Str;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
@@ -15,9 +16,23 @@ class ProductCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $productCategories = ProductCategory::withCount([])->paginate(5);
+        $term = trim((string) $request->query('q', ''));
+
+        $productCategories = ProductCategory::query()
+            ->withCount([]) // make sure these relations exist
+            ->when($term, function ($q) use ($term) {
+                $q->where(function ($w) use ($term) {
+                    $w->where('name', 'like', "%{$term}%")
+                        ->orWhere('slug', 'like', "%{$term}%")
+                        ->orWhere('description', 'like', "%{$term}%");
+                });
+            })
+            ->orderBy('name')              // or ->latest('id') if you prefer newest first
+            ->paginate(15)
+            ->appends(['q' => $term]);     // keep search term in pagination links
+
         return view('admin.products.categories.index', compact('productCategories'));
     }
 
@@ -84,7 +99,7 @@ class ProductCategoryController extends Controller
         try {
             $formData = $request->validated();
             $formData['slug'] = Str::slug($formData['name']);
-            
+
             $category->update($formData);
 
             DB::commit();
@@ -128,7 +143,7 @@ class ProductCategoryController extends Controller
         }
     }
 
-     /**
+    /**
      * Get categories for select input.
      */
     public function selectCategories()

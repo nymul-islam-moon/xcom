@@ -16,8 +16,10 @@ class AdminSeeder extends Seeder
         Admin::updateOrCreate(
             ['email' => 'admin@example.com'], // Match by email to avoid duplicates
             [
-                'name' => 'Super Admin',
-                'email' => 'admin@example.com',
+                'name' => 'Nymul Islam',
+                'email' => 'nymulislam.dev@gmail.com',
+                'phone' => '01339315497',
+                'status' => 'active',
                 'password' => Hash::make('password'), // Change this!
                 'email_verified_at' => now(),
                 'remember_token' => \Str::random(10),

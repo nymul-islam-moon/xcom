@@ -3,8 +3,10 @@
 namespace App\Http\Controllers\Admin\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\Events\Verified;
 
 class AdminAuthenticatedSessionController extends Controller
 {
@@ -42,5 +44,29 @@ class AdminAuthenticatedSessionController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('admin.login');
+    }
+
+    public function verify(Request $request, $id, $hash)
+    {
+        $admin = Admin::findOrFail($id);
+
+        // 1) signature/time validity
+        if (! $request->hasValidSignature()) {
+            abort(403, 'The verification link is invalid or has expired.');
+        }
+
+        // 2) email hash check (same as Laravel’s default)
+        if (! hash_equals((string)$hash, sha1($admin->email))) {
+            abort(403, 'Invalid verification hash.');
+        }
+
+        if ($admin->email_verified_at) {
+            return redirect()->route('admin.login')->with('status', 'Email already verified.');
+        }
+
+        $admin->forceFill(['email_verified_at' => now()])->save();
+        event(new Verified($admin));
+
+        return redirect()->route('admin.login')->with('status', 'Email verified. You can log in now.');
     }
 }
