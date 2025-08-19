@@ -85,8 +85,68 @@ class AdminController extends Controller
      */
     public function update(UpdateAdminRequest $request, Admin $user)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $data = $request->validated();
+
+            // Normalize optionals
+            $data['phone'] = $data['phone'] ?? null;
+
+            // Only touch email_verified_at if present (empty => null)
+            if (array_key_exists('email_verified_at', $data)) {
+                $data['email_verified_at'] = $data['email_verified_at'] ?: null;
+            }
+
+            // ----- Status mapping to enum -----
+            if (array_key_exists('status', $data)) {
+                $allowed = ['active', 'inactive', 'suspended', 'pending'];
+
+                // Support old checkbox 0/1 coming from Blade
+                if ($data['status'] === 1 || $data['status'] === '1' || $data['status'] === true || $data['status'] === 'on') {
+                    $data['status'] = 'active';
+                } elseif ($data['status'] === 0 || $data['status'] === '0' || $data['status'] === false || $data['status'] === 'off') {
+                    $data['status'] = 'inactive';
+                } elseif (! in_array($data['status'], $allowed, true)) {
+                    // If it's neither 0/1 nor a valid enum, don't change status
+                    unset($data['status']);
+                }
+            }
+            // -----------------------------------
+
+            // Update password only if provided (model casts will hash)
+            if (empty($data['password'])) {
+                unset($data['password']);
+            }
+
+            // If email changes, reset verification unless explicitly provided
+            $emailChanged = array_key_exists('email', $data) && $data['email'] !== $user->email;
+            if ($emailChanged && ! array_key_exists('email_verified_at', $data)) {
+                $data['email_verified_at'] = null;
+            }
+
+            $user->update($data);
+            DB::commit();
+
+            // Optional: if email changed and is unverified, resend your welcome/verify mail
+            if ($emailChanged && is_null($user->email_verified_at)) {
+                \App\Jobs\SendAdminWelcomeMail::dispatch($user->id)->afterCommit();
+            }
+
+            return redirect()
+                ->route('admin.users.index')
+                ->with('success', 'Admin updated successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Log::error('Admin update failed: ' . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Something went wrong while updating the admin.');
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
