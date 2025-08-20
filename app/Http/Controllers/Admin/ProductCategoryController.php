@@ -18,24 +18,17 @@ class ProductCategoryController extends Controller
      */
     public function index(Request $request)
     {
-        $term = trim((string) $request->query('q', ''));
+        $term = $request->query('q', '');
 
         $productCategories = ProductCategory::query()
-            ->withCount([]) // make sure these relations exist
-            ->when($term, function ($q) use ($term) {
-                $q->where(function ($w) use ($term) {
-                    $w->where('name', 'like', "%{$term}%")
-                        ->orWhere('slug', 'like', "%{$term}%")
-                        ->orWhere('description', 'like', "%{$term}%");
-                });
-            })
-            ->orderBy('name')              // or ->latest('id') if you prefer newest first
+            ->withCount(['productSubCategories'])
+            ->search($term)
+            ->orderBy('name')
             ->paginate(15)
-            ->appends(['q' => $term]);     // keep search term in pagination links
+            ->appends(['q' => $term]);
 
         return view('admin.products.categories.index', compact('productCategories'));
     }
-
     /**
      * Show the form for creating a new resource.
      */
@@ -146,9 +139,15 @@ class ProductCategoryController extends Controller
     /**
      * Get categories for select input.
      */
-    public function selectCategories()
+    public function selectCategories(Request $request)
     {
-        $categories = ProductCategory::select('id', 'name')->get();
+        $q = (string) $request->get('q', '');
+
+        $categories = \App\Models\ProductCategory::select('id', 'name')
+            ->when($q !== '', fn($query) => $query->where('name', 'like', "%{$q}%"))
+            ->orderBy('name')
+            ->get();
+
         return response()->json($categories);
     }
 }

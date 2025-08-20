@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductSubCategoryController;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -18,17 +19,17 @@ Route::middleware('auth:admin')->group(function () {
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
     // one-click verify (no login required), signed + throttled
     Route::get('/email/verify/{id}/{hash}', [AdminAuthenticatedSessionController::class, 'verify'])
-        ->middleware(['signed','throttle:6,1'])
+        ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
 
     // Product Routes
     Route::prefix('products')->as('products.')->group(function () {
         Route::resource('categories', ProductCategoryController::class);
+        Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
+            ->name('select-categories');
 
-
-
+        Route::resource('sub-categories', ProductSubCategoryController::class);
     });
     // User Management Routes
     Route::resource('users', AdminController::class);
-
 });
