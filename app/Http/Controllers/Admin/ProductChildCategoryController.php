@@ -99,7 +99,7 @@ class ProductChildCategoryController extends Controller
      */
     public function show(ProductChildCategory $child_category)
     {
-        // return view('admin.products.childcategories.show', compact('childcategory'))
+        return view('admin.products.childcategories.show', compact('child_category'));
     }
 
     /**
