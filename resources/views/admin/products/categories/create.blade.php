@@ -12,11 +12,12 @@
                     <h3 class="mb-0">Create Category</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
-                    </ol>
+                   <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Category', 'route' => 'admin.products.categories.index'],
+                        ['label' => 'Create', 'active' => true],
+                    ]" />
                 </div>
             </div>
             <!--end::Row-->

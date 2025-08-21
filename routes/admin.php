@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\ProductCategoryController;
+use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
 
 // Guest (admin) routes
@@ -29,6 +30,11 @@ Route::middleware('auth:admin')->group(function () {
             ->name('select-categories');
 
         Route::resource('sub-categories', ProductSubCategoryController::class);
+        Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
+            ->name('select-sub-categories');
+
+
+        Route::resource('child-categories', ProductChildCategoryController::class);
     });
     // User Management Routes
     Route::resource('users', AdminController::class);

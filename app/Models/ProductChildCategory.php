@@ -4,22 +4,22 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-
-class ProductSubCategory extends Model
+class ProductChildCategory extends Model
 {
-    /** @use HasFactory<\Database\Factories\ProductSubCategoryFactory> */
+    /** @use HasFactory<\Database\Factories\ProductChildCategoryFactory> */
     use HasFactory;
 
-    protected $table = 'product_sub_categories';
+    protected $table = 'product_child_categories';
+
 
     protected $fillable = [
         'name',
         'slug',
         'description',
-        'product_category_id',
+        'product_sub_category_id'
     ];
+
 
     /** Scope: search by name/slug/description */
     public function scopeSearch($query, ?string $term)
@@ -39,17 +39,10 @@ class ProductSubCategory extends Model
         });
     }
 
-    public function productCategory(): BelongsTo
+    public function productSubCategory()
     {
-        // If your FK column is product_category_id (as your logs showed)
-        return $this->belongsTo(ProductCategory::class, 'product_category_id');
-
-        // If your FK is actually category_id, use:
-        // return $this->belongsTo(ProductCategory::class, 'category_id');
+        return $this->belongsTo(ProductSubCategory::class, 'product_sub_category_id');
     }
 
-    public function productChildCategories()
-    {
-        return $this->hasMany(ProductChildCategory::class, 'product_sub_category_id');
-    }
+    
 }

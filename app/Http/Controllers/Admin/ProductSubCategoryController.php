@@ -22,6 +22,7 @@ class ProductSubCategoryController extends Controller
         $term = $request->query('q', '');
 
         $productSubCategories = ProductSubCategory::query()
+            ->withCount(['productChildCategories'])
             ->with('productCategory:id,name')
             ->search($term)
             ->orderBy('name')
@@ -175,5 +176,21 @@ class ProductSubCategoryController extends Controller
                 ->back()
                 ->with('error', 'Something went wrong while deleting the subcategory.');
         }
+    }
+
+    /**
+     * Search for subcategories by name or slug.
+     */
+    public function selectSubCategories(Request $request)
+    {
+        $q = (string) $request->get('q', '');
+
+        $subCategories = ProductSubCategory::select('id', 'name')
+            ->when($q !== '', fn($query) => $query->whrere('name', 'like', "%{$q}%"))
+            ->orWhere('slug', 'like', "%{$q}%")
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($subCategories);
     }
 }

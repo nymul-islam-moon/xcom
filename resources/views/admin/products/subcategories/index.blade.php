@@ -11,11 +11,12 @@
                     <h3 class="mb-0">Product Subcategories</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="#">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Subcategories</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Subcategory', 'active' => true],
+                    ]" />
+
                 </div>
             </div>
         </div>
@@ -31,10 +32,11 @@
                             <h3 class="card-title flex-grow-1 mb-0">All Subcategories</h3>
 
                             {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('admin.products.sub-categories.index') }}" method="GET" class="d-none d-sm-flex me-2">
+                            <form action="{{ route('admin.products.sub-categories.index') }}" method="GET"
+                                class="d-none d-sm-flex me-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                                           placeholder="Search name/slug/desc">
+                                        placeholder="Search name/slug/desc">
                                     <button class="btn btn-outline-secondary" type="submit">
                                         <i class="bi bi-search"></i>
                                     </button>
@@ -49,14 +51,16 @@
                         @if (session('success'))
                             <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
                                 {{ session('success') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                         @endif
 
                         @if (session('error'))
                             <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
                                 {{ session('error') }}
-                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="alert"
+                                    aria-label="Close"></button>
                             </div>
                         @endif
 
@@ -81,34 +85,39 @@
                                                 <td>{{ $productSubCategories->firstItem() + $idx }}</td>
                                                 <td class="fw-semibold text-break">{{ $subcategory->name }}</td>
                                                 <td class="text-break">{{ $subcategory->slug }}</td>
-                                                <td class="text-break">{{ $subcategory->productCategory?->name ?? '—' }}</td>
+                                                <td class="text-break">{{ $subcategory->productCategory?->name ?? '—' }}
+                                                </td>
                                                 <td>
                                                     <div class="text-truncate" style="max-width: 420px">
                                                         {{ $subcategory->description ?? '—' }}
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $subcategory->child_categories_count ?? 0 }}</span>
+                                                    <span
+                                                        class="badge bg-info">{{ $subcategory->child_categories_count ?? 0 }}</span>
                                                 </td>
                                                 <td>
-                                                    <span class="badge bg-info">{{ $subcategory->products_count ?? 0 }}</span>
+                                                    <span
+                                                        class="badge bg-info">{{ $subcategory->products_count ?? 0 }}</span>
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
                                                         <a href="{{ route('admin.products.sub-categories.show', $subcategory) }}"
-                                                           class="btn btn-sm btn-outline-secondary" title="View">
+                                                            class="btn btn-sm btn-outline-secondary" title="View">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
                                                         <a href="{{ route('admin.products.sub-categories.edit', $subcategory) }}"
-                                                           class="btn btn-sm btn-primary" title="Edit">
+                                                            class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.products.sub-categories.destroy', $subcategory) }}"
-                                                              method="POST" class="d-inline"
-                                                              onsubmit="return confirm('Delete this subcategory? This action cannot be undone.');">
+                                                        <form
+                                                            action="{{ route('admin.products.sub-categories.destroy', $subcategory) }}"
+                                                            method="POST" class="d-inline"
+                                                            onsubmit="return confirm('Delete this subcategory? This action cannot be undone.');">
                                                             @csrf
                                                             @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger" title="Delete">
+                                                            <button type="submit" class="btn btn-sm btn-danger"
+                                                                title="Delete">
                                                                 <i class="bi bi-trash"></i>
                                                             </button>
                                                         </form>
