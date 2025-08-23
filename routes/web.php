@@ -7,6 +7,10 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
+Route::get('/test/login', function () {
+    return view('frontend.auth.login');
+});
+
 
 Route::get('/welcome', function () {
     return view('welcome');

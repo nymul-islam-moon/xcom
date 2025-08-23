@@ -3,25 +3,7 @@
 <html lang="zxx">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="description" content="Ogani Template">
-    <meta name="keywords" content="Ogani, unica, creative, html">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>Ogani | Template</title>
-
-    <!-- Google Font -->
-    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@200;300;400;600;900&display=swap" rel="stylesheet">
-
-    <!-- Css Styles -->
-    <link rel="stylesheet" href="{{ asset('frontend/css/bootstrap.min.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/font-awesome.min.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/elegant-icons.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/nice-select.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/jquery-ui.min.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/owl.carousel.min.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/slicknav.min.css')  }}" type="text/css">
-    <link rel="stylesheet" href="{{ asset('frontend/css/style.css')  }}" type="text/css">
+    <x-frontend.head />
 </head>
 
 <body>
@@ -180,8 +162,10 @@
                             <span>All departments</span>
                         </div>
                         <ul>
-                            <li><a href="#">Fresh Meat</a></li>
-                            <li><a href="#">Vegetables</a></li>
+                            @foreach ($productCategories as $productCategory)
+                                <li><a href="#">{{ $productCategory->name }}</a></li>
+                            @endforeach
+                            {{-- <li><a href="#">Vegetables</a></li>
                             <li><a href="#">Fruit & Nut Gifts</a></li>
                             <li><a href="#">Fresh Berries</a></li>
                             <li><a href="#">Ocean Foods</a></li>
@@ -190,7 +174,7 @@
                             <li><a href="#">Fresh Onion</a></li>
                             <li><a href="#">Papayaya & Crisps</a></li>
                             <li><a href="#">Oatmeal</a></li>
-                            <li><a href="#">Fresh Bananas</a></li>
+                            <li><a href="#">Fresh Bananas</a></li> --}}
                         </ul>
                     </div>
                 </div>
@@ -198,10 +182,6 @@
                     <div class="hero__search">
                         <div class="hero__search__form">
                             <form action="#">
-                                <div class="hero__search__categories">
-                                    All Categories
-                                    <span class="arrow_carrot-down"></span>
-                                </div>
                                 <input type="text" placeholder="What do yo u need?">
                                 <button type="submit" class="site-btn">SEARCH</button>
                             </form>
@@ -216,7 +196,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="hero__item set-bg" data-setbg="img/hero/banner.jpg">
+                    <div class="hero__item set-bg" data-setbg="{{ asset('frontend/img/hero/banner.jpg') }}">
                         <div class="hero__text">
                             <span>FRUIT FRESH</span>
                             <h2>Vegetable <br />100% Organic</h2>
@@ -764,14 +744,7 @@
     <!-- Footer Section End -->
 
     <!-- Js Plugins -->
-    <script src="{{ asset('frontend/js/jquery-3.3.1.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/bootstrap.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/jquery.nice-select.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/jquery-ui.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/jquery.slicknav.js') }}"></script>
-    <script src="{{ asset('frontend/js/mixitup.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/owl.carousel.min.js') }}"></script>
-    <script src="{{ asset('frontend/js/main.js') }}"></script>
+    <x-frontend.script />
 
 
 
