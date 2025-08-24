@@ -89,16 +89,16 @@
                                                
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
-                                                        <a href="{{ route('admin.products.brands.show', $category) }}"
+                                                        <a href="{{ route('admin.products.brands.show', $brand) }}"
                                                             class="btn btn-sm btn-outline-secondary" title="View">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.products.brands.edit', $category) }}"
+                                                        <a href="{{ route('admin.products.brands.edit', $brand) }}"
                                                             class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
                                                         <form
-                                                            action="{{ route('admin.products.brands.destroy', $category) }}"
+                                                            action="{{ route('admin.products.brands.destroy', $brand) }}"
                                                             method="POST" class="d-inline"
                                                             onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                                             @csrf
