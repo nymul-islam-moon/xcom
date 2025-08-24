@@ -9,6 +9,7 @@ use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
+use App\Http\Controllers\AttributeValueController;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -40,6 +41,8 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('brands', BrandController::class);
         Route::resource('attributes', AttributeController::class);
+        Route::resource('attribute-values', AttributeValueController::class);
+
     });
     // User Management Routes
     Route::resource('users', AdminController::class);

@@ -35,11 +35,11 @@ class Attribute extends Model
     }
 
 
-    // /**
-    //  * Get the attribute values for the attribute.
-    //  */
-    // public function values()
-    // {
-    //     return $this->hasMany(AttributeValue::class);
-    // }
+    /**
+     * Get the attribute values for the attribute.
+     */
+    public function values()
+    {
+        return $this->hasMany(AttributeValue::class);
+    }
 }
