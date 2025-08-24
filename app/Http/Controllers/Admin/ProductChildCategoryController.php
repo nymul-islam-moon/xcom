@@ -20,14 +20,21 @@ class ProductChildCategoryController extends Controller
     {
         $term = $request->query('q', '');
 
-        $productChildCategories = ProductChildCategory::query()
-            ->with('productSubCategory:id,name')
+        $productChildCategories = \App\Models\ProductChildCategory::query()
+            ->with([
+                // include the FK so Eloquent can hop to productCategory
+                'productSubCategory:id,name,product_category_id',
+                // actually load the category too
+                'productSubCategory.productCategory:id,name',
+            ])
             ->search($term)
-            ->orderby('name')
-            ->paginate(15);
+            ->orderBy('name')
+            ->paginate(15)
+            ->appends(['q' => $term]); // keeps search term in pagination links
 
         return view('admin.products.childcategories.index', compact('productChildCategories'));
     }
+
 
     /**
      * Show the form for creating a new resource.

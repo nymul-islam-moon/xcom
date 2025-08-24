@@ -71,6 +71,7 @@
                                             <th style="width: 60px">#</th>
                                             <th style="min-width: 220px;">Name</th>
                                             <th style="min-width: 200px;">Slug</th>
+                                            <th style="min-width: 200px;">Image</th>
                                             <th style="min-width: 260px;">Description</th>
                                             <th style="width: 170px;">Actions</th>
                                         </tr>
@@ -82,11 +83,20 @@
                                                 <td class="fw-semibold text-break">{{ $brand->name }}</td>
                                                 <td class="text-break">{{ $brand->slug }}</td>
                                                 <td>
+                                                    @if ($brand->image)
+                                                        <img src="{{ asset('storage/' . $brand->image) }}"
+                                                            alt="{{ $brand->name }}" class="img-thumbnail"
+                                                            style="width: 50px; height: 50px;">
+                                                    @else
+                                                        <span class="text-muted">No Image</span>
+                                                    @endif
+                                                </td>
+                                                <td>
                                                     <div class="text-truncate" style="max-width: 420px">
                                                         {{ $brand->description ?? '—' }}
                                                     </div>
                                                 </td>
-                                               
+
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
                                                         <a href="{{ route('admin.products.brands.show', $brand) }}"
@@ -97,8 +107,7 @@
                                                             class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
-                                                        <form
-                                                            action="{{ route('admin.products.brands.destroy', $brand) }}"
+                                                        <form action="{{ route('admin.products.brands.destroy', $brand) }}"
                                                             method="POST" class="d-inline"
                                                             onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                                             @csrf

@@ -3,6 +3,7 @@
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
+use App\Http\Controllers\Admin\AttributeController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
@@ -38,6 +39,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::resource('child-categories', ProductChildCategoryController::class);
 
         Route::resource('brands', BrandController::class);
+        Route::resource('attributes', AttributeController::class);
     });
     // User Management Routes
     Route::resource('users', AdminController::class);

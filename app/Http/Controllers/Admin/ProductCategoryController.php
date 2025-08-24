@@ -21,7 +21,10 @@ class ProductCategoryController extends Controller
         $term = $request->query('q', '');
 
         $productCategories = ProductCategory::query()
-            ->withCount(['productSubCategories'])
+            ->withCount([
+                'productSubCategories',
+                'productChildCategories as child_categories_count',
+            ])
             ->search($term)
             ->orderBy('name')
             ->paginate(15)

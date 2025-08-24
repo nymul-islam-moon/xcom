@@ -27,17 +27,29 @@ class ProductCategory extends Model
         }
 
         // escape wildcards to avoid weird matches
-        $like = '%' . str_replace(['%', '_'], ['\%','\_'], $term) . '%';
+        $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $term) . '%';
 
         return $query->where(function ($w) use ($like) {
             $w->where('name', 'like', $like)
-              ->orWhere('slug', 'like', $like)
-              ->orWhere('description', 'like', $like);
+                ->orWhere('slug', 'like', $like)
+                ->orWhere('description', 'like', $like);
         });
     }
 
     public function productSubCategories()
     {
         return $this->hasMany(ProductSubCategory::class, 'product_category_id');
+    }
+
+    public function productChildCategories()
+    {
+        return $this->hasManyThrough(
+            \App\Models\ProductChildCategory::class, // target
+            \App\Models\ProductSubCategory::class,   // through
+            'product_category_id',                   // FK on subcategories -> categories
+            'product_sub_category_id',               // FK on childcats -> subcategories
+            'id',                                    // local key on categories
+            'id'                                     // local key on subcategories
+        );
     }
 }
