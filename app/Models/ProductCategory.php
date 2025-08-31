@@ -15,7 +15,12 @@ class ProductCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'status',
         'description',
+    ];
+
+     protected $casts = [
+        'status' => 'boolean',
     ];
 
     /** Scope: search by name/slug/description */

@@ -82,6 +82,19 @@
                                     </dd>
                                 @endisset
 
+                                {{-- Status --}}
+                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
+                                    Status
+                                </dt>
+                                <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
+                                    @if ($category->status)
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Active</span>
+                                    @else
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactive</span>
+                                    @endif
+                                </dd>
+
+
                                 {{-- Created --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Created

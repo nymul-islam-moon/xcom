@@ -71,6 +71,7 @@
                                             <th style="width: 60px">#</th>
                                             <th style="min-width: 220px;">Name</th>
                                             <th style="min-width: 200px;">Slug</th>
+                                            <th style="min-width: 200px;">Status</th>
                                             <th style="min-width: 260px;">Description</th>
                                             <th style="width: 130px;">Subcategories</th>
                                             <th style="width: 150px;">Child Categories</th>
@@ -84,6 +85,13 @@
                                                 <td>{{ $productCategories->firstItem() + $idx }}</td>
                                                 <td class="fw-semibold text-break">{{ $category->name }}</td>
                                                 <td class="text-break">{{ $category->slug }}</td>
+                                                <td class="text-break">
+                                                    <span
+                                                        class="badge {{ $category->status ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $category->status ? 'Active' : 'Inactive' }}
+                                                    </span>
+                                                </td>
+
                                                 <td>
                                                     <div class="text-truncate" style="max-width: 420px">
                                                         {{ $category->description ?? '—' }}

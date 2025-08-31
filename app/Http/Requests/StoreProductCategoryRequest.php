@@ -26,8 +26,8 @@ class StoreProductCategoryRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'        => 'category name',
-            'description' => 'description',
+            'name'          => 'category name',
+            'description'   => 'description',
         ];
     }
 
@@ -40,6 +40,7 @@ class StoreProductCategoryRequest extends FormRequest
     {
         return [
             'name' => 'required|string|max:255|unique:product_categories,name',
+            'status'        => 'required|boolean|in:1,0',
             'description' => 'nullable|string',
         ];
     }

@@ -3,6 +3,11 @@
 
 @section('title', 'Edit Category')
 
+@push('admin_style')
+    <!-- Select2 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+@endpush
+
 @section('admin_content')
     <div class="app-content-header">
         <!--begin::Container-->
@@ -13,7 +18,7 @@
                     <h3 class="mb-0">Edit Category</h3>
                 </div>
                 <div class="col-sm-6">
-                     <x-admin.breadcrumbs :items="[
+                    <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
                         ['label' => 'Product', 'route' => 'admin.products.index'],
                         ['label' => 'Category', 'route' => 'admin.products.categories.index'],
@@ -53,6 +58,24 @@
                                     @enderror
                                 </div>
 
+                                <!-- Category Status -->
+                                <div class="mb-3">
+                                    <label for="status" class="form-label">Select Status <span
+                                            class="text-danger">*</span></label>
+                                    <select name="status" id="category_status"
+                                        class="form-select select2 @error('status') is-invalid @enderror" required>
+                                        <option value="1"
+                                            {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Active</option>
+                                        <option value="0"
+                                            {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Inactive
+                                        </option>
+                                    </select>
+                                    @error('status')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+
                                 <!-- Category Description -->
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
@@ -81,3 +104,18 @@
         </div>
     </div>
 @endsection
+
+@push('admin_script')
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#category_status').select2({
+                placeholder: "Select Status",
+                allowClear: true,
+                width: '100%',
+                minimumResultsForSearch: 0 // 👈 always show search box
+            });
+        });
+    </script>
+@endpush
