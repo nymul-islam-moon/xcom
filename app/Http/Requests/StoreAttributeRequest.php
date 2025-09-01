@@ -21,6 +21,7 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'name'        => 'attribute name',
+            'description' => 'attribute description'
         ];
     }
 
@@ -33,6 +34,7 @@ class StoreAttributeRequest extends FormRequest
     {
         return [
             'name' => 'required|string|min:3|unique:attributes,name',
+            'description' => 'nullable|string'
         ];
     }
 }

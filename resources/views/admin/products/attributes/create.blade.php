@@ -51,7 +51,7 @@
                                 </div>
 
                                 {{-- Description (optional) --}}
-                                {{-- <div class="mb-3">
+                                <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
                                     <textarea name="description" id="description"
                                               class="form-control @error('description') is-invalid @enderror"
@@ -59,7 +59,7 @@
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
-                                </div> --}}
+                                </div>
 
                                 {{-- Actions --}}
                                 <div class="d-flex justify-content-between">

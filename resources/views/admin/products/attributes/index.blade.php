@@ -71,6 +71,7 @@
                                             <th style="width: 60px">#</th>
                                             <th style="min-width: 220px;">Name</th>
                                             <th style="min-width: 200px;">Slug</th>
+                                            <th style="min-width: 200px;">Description</th>
                                             <th style="width: 170px;">Actions</th>
                                         </tr>
                                     </thead>
@@ -80,6 +81,7 @@
                                                 <td>{{ $attributes->firstItem() + $idx }}</td>
                                                 <td class="fw-semibold text-break">{{ $attribute->name }}</td>
                                                 <td class="text-break">{{ $attribute->slug }}</td>
+                                                <td class="text-break">{{ $attribute->description }}</td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
                                                         <a href="{{ route('admin.products.attributes.show', $attribute) }}"
@@ -107,7 +109,7 @@
                                         @empty
                                             <tr>
                                                 <td colspan="8" class="text-center text-muted py-4">
-                                                    No categories found.
+                                                    No attribute found.
                                                 </td>
                                             </tr>
                                         @endforelse

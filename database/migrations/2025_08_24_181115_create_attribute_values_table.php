@@ -13,14 +13,21 @@ return new class extends Migration
     {
         Schema::create('attribute_values', function (Blueprint $table) {
             $table->id();
+
             $table->foreignId('attribute_id')
                 ->constrained('attributes')
                 ->onDelete('cascade');
-            $table->string('value'); // e.g., red, blue, small, large
-            $table->unique(['attribute_id', 'value'], 'attribute_value_unique'); // Ensure unique values for each attribute
+
+            $table->string('value'); // e.g., Red, Blue, Small
+            $table->string('slug');  // e.g., red, blue, small
+
+            // Ensure (attribute_id + slug) is unique
+            $table->unique(['attribute_id', 'slug'], 'attribute_slug_unique');
+
             $table->timestamps();
         });
     }
+
 
     /**
      * Reverse the migrations.

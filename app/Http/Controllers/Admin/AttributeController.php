@@ -25,6 +25,7 @@ class AttributeController extends Controller
             ->paginate(15)
             ->appends(['q' => $term]);
 
+
         return view('admin.products.attributes.index', compact('attributes'));
     }
     /**
@@ -67,20 +68,21 @@ class AttributeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Attribute $attribute)
+    public function show(Attribute $attribute, Request $request)
     {
-        $term = request('q', '');
+        $term = (string) $request->query('q', '');
 
-        $attributeValues = $attribute->values() // relation: Attribute hasMany AttributeValue
+        $attributeValues = $attribute->values()
             ->when($term !== '', function ($q) use ($term) {
+                // Escape SQL wildcards and search by value/name or slug
                 $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $term) . '%';
                 $q->where(function ($w) use ($like) {
-                    $w->where('name', 'like', $like)
-                        ->orWhere('slug', 'like', $like);
+                    $w->where('value', 'like', $like);
                 });
             })
-            ->orderBy('name')
-            ->paginate(15);
+            ->orderBy('value')
+            ->paginate(15)
+            ->withQueryString();
 
         return view('admin.products.attributes.show', compact('attribute', 'attributeValues'));
     }
@@ -99,8 +101,30 @@ class AttributeController extends Controller
      */
     public function update(UpdateAttributeRequest $request, Attribute $attribute)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $formData = $request->validated();
+
+            // dd($formData);
+
+            $attribute->update($formData);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.products.attributes.index', $attribute)
+                ->with('success', 'Attribute updated successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Log::error('Attribute update failed: ' . $e->getMessage());
+
+            return back()
+                ->withInput()
+                ->with('error', 'Something went wrong while updating the attribute.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.

@@ -15,6 +15,7 @@ class Attribute extends Model
     protected $fillable = [
         'name',
         'slug',
+        'description'
     ];
 
     /** Scope: search by name/slug/description */
@@ -40,6 +41,6 @@ class Attribute extends Model
      */
     public function values()
     {
-        return $this->hasMany(AttributeValue::class);
+        return $this->hasMany(AttributeValue::class, 'attribute_id');
     }
 }
