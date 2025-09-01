@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Auth\StoreAdminRequest;
 use App\Http\Requests\Admin\Auth\UpdateAdminRequest;
+use App\Jobs\SendAdminWelcomeMail;
 use App\Models\Admin;
 use Illuminate\Support\Facades\DB;
 
@@ -48,8 +49,9 @@ class AdminController extends Controller
             // Password will be hashed automatically by the Admin model cast
             $admin = Admin::create($data);
             DB::commit();
+            
             // Send welcome email
-            \App\Jobs\SendAdminWelcomeMail::dispatch($admin->id)
+            SendAdminWelcomeMail::dispatch($admin->id)
                 ->afterCommit();
 
             return redirect()

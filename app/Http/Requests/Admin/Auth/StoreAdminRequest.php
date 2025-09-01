@@ -23,12 +23,12 @@ class StoreAdminRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'               => 'name',
-            'email'              => 'email address',
-            'phone'              => 'phone number',
-            'status'             => 'status',
-            'email_verified_at'  => 'email verified at',
-            'password'           => 'password',
+            'name'                  => 'name',
+            'email'                 => 'email address',
+            'phone'                 => 'phone number',
+            'status'                => 'status',
+            'email_verified_at'     => 'email verified at',
+            'password'              => 'password',
             'password_confirmation' => 'password confirmation',
         ];
     }

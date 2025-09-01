@@ -19,7 +19,7 @@ class ProductCategory extends Model
         'description',
     ];
 
-     protected $casts = [
+    protected $casts = [
         'status' => 'boolean',
     ];
 
@@ -49,12 +49,12 @@ class ProductCategory extends Model
     public function productChildCategories()
     {
         return $this->hasManyThrough(
-            \App\Models\ProductChildCategory::class, // target
-            \App\Models\ProductSubCategory::class,   // through
-            'product_category_id',                   // FK on subcategories -> categories
-            'product_sub_category_id',               // FK on childcats -> subcategories
-            'id',                                    // local key on categories
-            'id'                                     // local key on subcategories
+            ProductChildCategory::class,
+            ProductSubCategory::class,
+            'product_category_id',
+            'product_sub_category_id',
+            'id',
+            'id'
         );
     }
 }

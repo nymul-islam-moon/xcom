@@ -23,7 +23,7 @@ class ProductCategoryController extends Controller
         $productCategories = ProductCategory::query()
             ->withCount([
                 'productSubCategories',
-                'productChildCategories as child_categories_count',
+                'productChildCategories',
             ])
             ->search($term)
             ->orderBy('name')
@@ -146,8 +146,12 @@ class ProductCategoryController extends Controller
     {
         $q = (string) $request->get('q', '');
 
-        $categories = \App\Models\ProductCategory::select('id', 'name')
-            ->when($q !== '', fn($query) => $query->where('name', 'like', "%{$q}%"))
+        $categories = ProductCategory::select('id', 'name')
+            ->where('status', 1)
+            ->when(
+                $q !== '',
+                fn($query) => $query->where('name', 'like', "%{$q}%")
+            )
             ->orderBy('name')
             ->get();
 

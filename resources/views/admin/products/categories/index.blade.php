@@ -103,7 +103,7 @@
                                                 </td>
                                                 <td>
                                                     <span
-                                                        class="badge bg-info">{{ $category->child_categories_count ?? 0 }}</span>
+                                                        class="badge bg-info">{{ $category->product_child_categories_count ?? 0 }}</span>
                                                 </td>
                                                 <td>
                                                     <span class="badge bg-info">{{ $category->products_count ?? 0 }}</span>
