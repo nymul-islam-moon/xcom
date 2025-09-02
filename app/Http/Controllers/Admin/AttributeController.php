@@ -131,6 +131,20 @@ class AttributeController extends Controller
      */
     public function destroy(Attribute $attribute)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $attribute->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.products.attributes.index')->with('error', 'Attribute delete successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Attribute deleting failed: ' . $e->getMessage());
+
+            return redirect()->back()->with('error', 'Something went wrong while deleting attribute');
+        }
     }
 }
