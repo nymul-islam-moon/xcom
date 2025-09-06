@@ -54,6 +54,8 @@ class ProductCategoryController extends Controller
             ProductCategory::create($formData);
 
             DB::commit();
+            
+            job
 
             return redirect()->route('admin.products.categories.index')
                 ->with('success', 'Category created successfully.');

@@ -8,10 +8,55 @@ use Illuminate\Support\Facades\Storage;
 
 class MediaService
 {
-    /** Store a file and return its path. */
-    public function storeFile(UploadedFile $file, string $directory = 'uploads', string $disk = 'public'): string
+
+    /**
+     * Ensure a directory exists on a disk and has sane permissions.
+     */
+    public function ensureDirectory(string $directory, string $disk = 'public', int $mode = 0775): void
     {
-        return $file->store($directory, $disk);
+        $fs = Storage::disk($disk);
+
+        // Create recursively if missing
+        if (! $fs->exists($directory)) {
+            $fs->makeDirectory($directory, $mode, true); // recursive
+        }
+
+        // Best-effort chmod (works for local/public disks on same host)
+        $abs = method_exists($fs, 'path') ? $fs->path($directory) : null;
+        if ($abs && is_dir($abs)) {
+            @chmod($abs, $mode);
+        }
+    }
+
+    /**
+     * Store a file and return its relative storage path.
+     * Optionally pass $visibility ('public' or 'private') for disks that support it.
+     */
+    public function storeFile(
+        UploadedFile $file,
+        string $directory = 'uploads',
+        string $disk = 'public',
+        ?string $visibility = null
+    ): string {
+        if (! $file->isValid()) {
+            throw new \RuntimeException('Invalid upload: ' . $file->getErrorMessage());
+        }
+
+        $this->ensureDirectory($directory, $disk);
+
+        $options = [];
+        if ($visibility) {
+            $options['visibility'] = $visibility; // works with putFile
+        }
+
+        // Use putFile so we can pass $options (visibility)
+        $path = Storage::disk($disk)->putFile($directory, $file, $options);
+
+        if (! $path) {
+            throw new \RuntimeException('Failed to store uploaded file.');
+        }
+
+        return $path; // e.g. "shops/imports/abcd1234.xlsx"
     }
 
     /** Delete a file if it exists. */

@@ -42,7 +42,7 @@
                                 </div>
                             </form>
 
-                            <a href="{{ route('admin.products.brands.create') }}" class="btn btn-sm btn-success">
+                            <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Brand
                             </a>
                         </div>

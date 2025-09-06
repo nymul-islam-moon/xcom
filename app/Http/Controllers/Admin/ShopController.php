@@ -5,8 +5,13 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
+use App\Jobs\ScanShopsCsvAndQueueChunks;
+use App\Jobs\ShopsCsvProcess;
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Services\MediaService;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ShopController extends Controller
 {
@@ -39,7 +44,15 @@ class ShopController extends Controller
      */
     public function store(StoreShopRequest $request)
     {
-        //
+        try {
+            $formData = $request->validated();
+
+            // if ()
+
+        } catch (\Exception $e)
+        {
+
+        }
     }
 
     /**
@@ -72,5 +85,76 @@ class ShopController extends Controller
     public function destroy(Shop $shop)
     {
         //
+    }
+
+
+    /**
+     * show bulk upload page
+     */
+    public function show_bulk_upload()
+    {
+        return view('admin.shops.bulk');
+    }
+
+    /**
+     * Bulk Upload With csv, excel files
+     */
+    public function bulkUpload(Request $request, MediaService $mediaService)
+    {
+        $request->validateWithBag('bulkUpload', [
+            'bulk_file' => [
+                'required',
+                'file',
+                'max:20480', // 20 MB (value is in KB)
+                'mimes:csv,txt',
+                'mimetypes:text/plain,text/csv,application/csv,application/vnd.ms-excel',
+            ],
+        ], [
+            'bulk_file.required'   => 'Please choose a CSV file to upload.',
+            'bulk_file.file'       => 'The upload must be a file.',
+            'bulk_file.max'        => 'The file may not be greater than 20MB.',
+            'bulk_file.mimes'      => 'Only .csv files are allowed.',
+            'bulk_file.mimetypes'  => 'The provided file type is not recognized as CSV.',
+        ]);
+
+        $storedPath = null;
+
+        try {
+            $storedPath = $mediaService->storeFromRequest(
+                $request,
+                'bulk_file',
+                directory: 'shops/imports',
+                disk: 'local' // use 'public' if you want it accessible via /storage
+            );
+
+            if (! $storedPath) {
+                return back()->withInput()->withErrors(
+                    ['bulk_file' => 'The bulk file failed to upload.'],
+                    'bulkUpload'
+                );
+            }
+
+            // TODO: hand off to a job after commit if needed
+            ScanShopsCsvAndQueueChunks::dispatch(
+                path: $storedPath,
+                options: [
+                    'chunk_size'  => 5000,   // tune: 2000–10000
+                    'header_row'  => true,
+                    'insert_mode' => 'insert', // or 'upsert'
+                ]
+            )->onQueue('shops-low')->afterCommit();
+
+
+            return redirect()->route('admin.shops.index');
+        } catch (\Throwable $e) {
+            // optionally delete the stored file if something after storing fails
+            if ($storedPath) {
+                $mediaService->deleteFile($storedPath, disk: 'public');
+            }
+            return back()->withInput()->withErrors(
+                ['bulk_file' => 'Upload failed: ' . $e->getMessage()],
+                'bulkUpload'
+            );
+        }
     }
 }

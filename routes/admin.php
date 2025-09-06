@@ -20,6 +20,7 @@ Route::middleware('guest:admin')->group(function () {
 
 // Authenticated (admin) routes
 Route::middleware('auth:admin')->group(function () {
+    Route::get('/phpinfo', fn() => phpinfo());
     Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('index');
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
     // one-click verify (no login required), signed + throttled
@@ -41,7 +42,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::resource('child-categories', ProductChildCategoryController::class);
 
         Route::resource('brands', BrandController::class);
-        
+
         Route::resource('attributes', AttributeController::class);
 
         Route::prefix('attributes/{attribute}')->group(function () {
@@ -58,4 +59,11 @@ Route::middleware('auth:admin')->group(function () {
     Route::resource('shops', ShopController::class);
     // User Management Routes
     Route::resource('users', AdminController::class);
+
+
+    // Bulk Upload
+    Route::prefix('bulk-upload')->as('bulkUpload.')->group( function() {
+        Route::get('shops', [ShopController::class, 'show_bulk_upload'])->name('shop');
+        Route::post('shops/store', [ShopController::class, 'bulkUpload'])->name('shop.store');
+    });
 });

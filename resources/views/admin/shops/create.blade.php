@@ -23,49 +23,6 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-10">
-
-                    {{-- =========================
-                         BULK UPLOAD (CSV/XLSX)
-                         ========================= --}}
-                    @php($bulkErrors = $errors->getBag('bulkUpload'))
-                    <div class="card mb-4">
-                        <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title mb-0">Bulk Upload Shops (CSV / Excel)</h3>
-                        </div>
-
-                        <form action="" method="POST" enctype="multipart/form-data" novalidate>
-                            @csrf
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <label for="bulk_file" class="form-label">Upload file <span class="text-danger">*</span></label>
-                                    <input
-                                        type="file"
-                                        id="bulk_file"
-                                        name="bulk_file"
-                                        class="form-control @if($bulkErrors->has('bulk_file')) is-invalid @endif"
-                                        accept=".csv, .xls, .xlsx">
-
-                                    @if($bulkErrors->has('bulk_file'))
-                                        <div class="invalid-feedback">{{ $bulkErrors->first('bulk_file') }}</div>
-                                    @endif
-
-                                    <div class="form-text">
-                                        Accepted: .csv, .xls, .xlsx. Columns should match the shop fields (name, email, phone, shop_keeper_name, shop_keeper_phone, shop_keeper_nid, shop_keeper_tin, dbid, bank_name, bank_account_number, bank_branch, website_url, description, business_address, email_verified_at, password, etc).
-                                    </div>
-                                </div>
-
-                                <div class="d-flex align-items-center gap-2">
-                                    <a href="" class="btn btn-outline-secondary">
-                                        <i class="bi bi-download"></i> Download Sample
-                                    </a>
-                                    <button type="submit" class="btn btn-primary ms-auto">
-                                        <i class="bi bi-upload"></i> Import
-                                    </button>
-                                </div>
-                            </div>
-                        </form>
-                    </div>
-
                     {{-- =========================
                          SINGLE CREATE FORM
                          ========================= --}}
@@ -103,13 +60,13 @@
                                         @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
 
-                                    <div class="col-md-6">
+                                    {{-- <div class="col-md-6">
                                         <label for="website_url" class="form-label">Website URL</label>
                                         <input type="url" id="website_url" name="website_url"
                                                class="form-control @error('website_url') is-invalid @enderror"
                                                value="{{ old('website_url') }}" placeholder="https://example.com">
                                         @error('website_url') <div class="invalid-feedback">{{ $message }}</div> @enderror
-                                    </div>
+                                    </div> --}}
                                 </div>
 
                                 <hr>
