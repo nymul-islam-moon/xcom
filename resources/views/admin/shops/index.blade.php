@@ -13,8 +13,7 @@
                 <div class="col-sm-6">
                     <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
-                        ['label' => 'Product', 'route' => 'admin.products.index'],
-                        ['label' => 'Brand', 'active' => true],
+                        ['label' => 'Shop', 'active' => true],
                     ]" />
                 </div>
             </div>
@@ -28,7 +27,7 @@
 
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
-                            <h3 class="card-title flex-grow-1 mb-0">All Brands</h3>
+                            <h3 class="card-title flex-grow-1 mb-0">All Shops</h3>
 
                             {{-- Optional: simple search by name/slug/description --}}
                             <form action="{{ route('admin.products.brands.index') }}" method="GET"
@@ -41,10 +40,14 @@
                                     </button>
                                 </div>
                             </form>
-
-                            <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
-                                <i class="bi bi-plus-lg"></i> Create Brand
-                            </a>
+                            <div class="d-flex gap-1">
+                                <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-lg"></i> Create shop
+                                </a>
+                                 <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-lg"></i> Upload Shop (CSV/Excel)
+                                </a>
+                            </div>
                         </div>
 
                         @if (session('success'))
