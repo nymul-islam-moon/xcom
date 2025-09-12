@@ -12,6 +12,8 @@ use App\Models\Shop;
 use App\Services\MediaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 
 class ShopController extends Controller
 {
@@ -42,16 +44,46 @@ class ShopController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreShopRequest $request)
+    public function store(StoreShopRequest $request, MediaService $mediaService)
     {
+        DB::beginTransaction();
+
         try {
             $formData = $request->validated();
 
-            // if ()
+            // Handle password hashing
+            if (isset($formData['password'])) {
+                $formData['password'] = Hash::make($formData['password']);
+            }
 
-        } catch (\Exception $e)
-        {
+            // Handle shop logo upload using MediaService
+            if ($path = $mediaService->storeFromRequest($request, 'shop_logo', 'shops/logos')) {
+                $formData['shop_logo'] = $path;
+            }
 
+            // Handle shopkeeper photo upload using MediaService
+            if ($path = $mediaService->storeFromRequest($request, 'shop_keeper_photo', 'shops/shopkeepers')) {
+                $formData['shop_keeper_photo'] = $path;
+            }
+
+            // Optional: create a slug from the shop name
+            $formData['slug'] = Str::slug($formData['name']);
+
+            // Create the shop
+            Shop::create($formData);
+
+            DB::commit();
+
+            return redirect()->route('admin.shops.index')
+                ->with('success', 'Shop created successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Shop creation failed: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->withInput()
+                ->with('error', 'Something went wrong while creating the shop.');
         }
     }
 
@@ -60,7 +92,7 @@ class ShopController extends Controller
      */
     public function show(Shop $shop)
     {
-        //
+        return view('admin.shops.show', compact('shop'));
     }
 
     /**
@@ -82,11 +114,31 @@ class ShopController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Shop $shop)
+    public function destroy(Shop $shop, MediaService $mediaService)
     {
-        //
-    }
+        DB::beginTransaction();
 
+        try {
+            // Delete shop files if exist
+            $mediaService->deleteFile($shop->shop_logo);
+            $mediaService->deleteFile($shop->shop_keeper_photo);
+
+            // Delete the shop record
+            $shop->delete();
+
+            DB::commit();
+
+            return redirect()->route('admin.shops.index')
+                ->with('success', 'Shop deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Shop deletion failed: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Something went wrong while deleting the shop.');
+        }
+    }
 
     /**
      * show bulk upload page

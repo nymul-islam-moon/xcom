@@ -44,7 +44,7 @@
                                 <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
                                     <i class="bi bi-plus-lg"></i> Create shop
                                 </a>
-                                 <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
+                                <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
                                     <i class="bi bi-plus-lg"></i> Upload Shop (CSV/Excel)
                                 </a>
                             </div>
@@ -72,10 +72,13 @@
                                     <thead>
                                         <tr>
                                             <th style="width: 60px">#</th>
-                                            <th style="min-width: 220px;">Name</th>
-                                            <th style="min-width: 200px;">Email</th>
-                                            <th style="min-width: 200px;">Image</th>
-                                            <th style="min-width: 260px;">Phone</th>
+                                            <th style="min-width: 180px;">Logo</th>
+                                            <th style="min-width: 220px;">Shop Name</th>
+                                            <th style="min-width: 180px;">Email</th>
+                                            <th style="min-width: 150px;">Phone</th>
+                                            <th style="min-width: 180px;">Shopkeeper</th>
+                                            <th style="min-width: 150px;">Bank</th>
+                                            <th style="min-width: 220px;">Address</th>
                                             <th style="width: 170px;">Actions</th>
                                         </tr>
                                     </thead>
@@ -83,19 +86,43 @@
                                         @forelse ($shops as $idx => $shop)
                                             <tr>
                                                 <td>{{ $shops->firstItem() + $idx }}</td>
-                                                <td class="fw-semibold text-break">{{ $shop->name }}</td>
-                                                <td class="text-break">{{ $shop->email }}</td>
+
+                                                {{-- Logo --}}
                                                 <td>
-                                                    @if ($shop->image)
-                                                        <img src="{{ asset('storage/' . $shop->image) }}"
+                                                    @if ($shop->shop_logo)
+                                                        <img src="{{ asset('storage/' . $shop->shop_logo) }}"
                                                             alt="{{ $shop->name }}" class="img-thumbnail"
                                                             style="width: 50px; height: 50px;">
                                                     @else
-                                                        <span class="text-muted">No Image</span>
+                                                        <span class="text-muted">No Logo</span>
                                                     @endif
                                                 </td>
+
+                                                {{-- Shop Name --}}
+                                                <td class="fw-semibold text-break">{{ $shop->name }}</td>
+
+                                                {{-- Email --}}
+                                                <td class="text-break">{{ $shop->email }}</td>
+
+                                                {{-- Phone --}}
                                                 <td class="text-break">{{ $shop->phone }}</td>
 
+                                                {{-- Shopkeeper --}}
+                                                <td class="text-break">
+                                                    {{ $shop->shop_keeper_name ?? '-' }}<br>
+                                                    <small>{{ $shop->shop_keeper_phone ?? '-' }}</small>
+                                                </td>
+
+                                                {{-- Bank Info --}}
+                                                <td class="text-break">
+                                                    {{ $shop->bank_name ?? '-' }}<br>
+                                                    <small>{{ $shop->bank_account_number ?? '-' }}</small>
+                                                </td>
+
+                                                {{-- Address --}}
+                                                <td class="text-break">{{ $shop->business_address ?? '-' }}</td>
+
+                                                {{-- Actions --}}
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
                                                         <a href="{{ route('admin.shops.show', $shop) }}"
@@ -121,12 +148,13 @@
                                             </tr>
                                         @empty
                                             <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    No categories found.
+                                                <td colspan="9" class="text-center text-muted py-4">
+                                                    No shops found.
                                                 </td>
                                             </tr>
                                         @endforelse
                                     </tbody>
+
                                 </table>
                             </div>
                         </div>
