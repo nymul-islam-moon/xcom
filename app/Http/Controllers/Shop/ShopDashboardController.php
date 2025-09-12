@@ -1,11 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 
-class AdminDashboardController extends Controller
+class ShopDashboardController extends Controller
 {
     public function index()
     {

@@ -20,6 +20,11 @@ return Application::configure(basePath: dirname(__DIR__))
                 ->as('admin.')
                 ->middleware(['web'])
                 ->group(base_path('routes/admin.php'));
+            // Shop routes
+            Route::prefix('shop')
+                ->as('shop.')
+                ->middleware(['web'])
+                ->group(base_path('routes/shop.php'));
         }
     )
     ->withMiddleware(function (Middleware $middleware) {

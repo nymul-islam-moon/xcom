@@ -212,7 +212,7 @@
                  </li>
                  <li class="nav-header">PRODUCTS</li>
                  <li class="nav-item">
-                     <a href="{{ route('admin.products.categories.index') }}" class="nav-link">
+                     <a href="{{ route('shop.products.categories.index') }}" class="nav-link">
                          <p>Categories</p>
                      </a>
                  </li>

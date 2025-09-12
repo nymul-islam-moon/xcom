@@ -43,6 +43,10 @@ return [
         'admin' => [
             'driver' => 'session',
             'provider' => 'admins',
+        ],
+        'shop' => [
+            'driver' => 'session',
+            'provider' => 'shops',
         ]
     ],
 
@@ -71,7 +75,11 @@ return [
         'admins' => [
             'driver' => 'eloquent',
             'model' => env('ADMIN_AUTH_MODEL', App\Models\Admin::class),
-        ]
+        ], 
+        'shops' => [
+            'driver' => 'eloquent',
+            'model' => env('SHOP_AUTH_MODEL', App\Models\Shop::class),
+        ],
         // 'users' => [
         //     'driver' => 'database',
         //     'table' => 'users',

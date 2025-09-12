@@ -13,17 +13,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Create Subcategory</h3>
+                    <h3 class="mb-0">Create Childcategory</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('shop.products.categories.index') }}">Categories</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Child-Category', 'route' => 'admin.products.child-categories.index'],
+                        ['label' => 'Create', 'active' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -35,7 +33,7 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">Add New Subcategory</h3>
+                            <h3 class="card-title mb-0">Add New Childcategory</h3>
                         </div>
 
                         @if (session('error'))
@@ -43,12 +41,12 @@
                         @endif
 
                         <div class="card-body">
-                            <form action="{{ route('admin.products.sub-categories.store') }}" method="POST">
+                            <form action="{{ route('admin.products.child-categories.store') }}" method="POST">
                                 @csrf
 
                                 {{-- Subcategory Name --}}
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Subcategory Name <span
+                                    <label for="name" class="form-label">Childcategory Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name"
                                         class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
@@ -60,11 +58,12 @@
 
                                 {{-- Parent Category (AJAX via select2) --}}
                                 <div class="mb-3">
-                                    <label for="product_category_id" class="form-label">Category <span
+                                    <label for="product_sub_category_id" class="form-label">Category <span
                                             class="text-danger">*</span></label>
-                                    <select name="product_category_id" id="product_category_id"
-                                        class="form-select @error('product_category_id') is-invalid @enderror" required></select>
-                                    @error('product_category_id')
+                                    <select name="product_sub_category_id" id="product_sub_category_id"
+                                        class="form-select @error('product_sub_category_id') is-invalid @enderror"
+                                        required></select>
+                                    @error('product_sub_category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -81,11 +80,12 @@
 
                                 {{-- Actions --}}
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.products.sub-categories.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.products.child-categories.index') }}"
+                                        class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Back
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-check-circle"></i> Create Subcategory
+                                        <i class="bi bi-check-circle"></i> Create Childcategory
                                     </button>
                                 </div>
                             </form>
@@ -102,8 +102,8 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
-            const $select = $('#product_category_id');
-            const oldId = @json(old('product_category_id'));
+            const $select = $('#product_sub_category_id');
+            const oldId = @json(old('product_sub_category_id'));
 
             $select.select2({
                 placeholder: 'Select a category',
@@ -111,7 +111,7 @@
                 width: '100%',
                 minimumInputLength: 0, // show all on open; still filter as you type
                 ajax: {
-                    url: "{{ route('admin.products.select-categories') }}",
+                    url: "{{ route('admin.products.select-sub-categories') }}",
                     dataType: 'json',
                     delay: 200,
                     // send the term (ok if your endpoint ignores it)
@@ -138,7 +138,7 @@
 
             // (Optional) Preselect old value after validation error
             if (oldId) {
-                $.getJSON("{{ route('admin.products.select-categories') }}", function(data) {
+                $.getJSON("{{ route('admin.products.select-sub-categories') }}", function(data) {
                     const found = data.find(c => String(c.id) === String(oldId));
                     if (found) {
                         const option = new Option(found.name, found.id, true, true);

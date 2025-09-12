@@ -28,7 +28,7 @@ class AdminAuthenticatedSessionController extends Controller
             $request->session()->regenerate();
 
             // go to intended admin page or dashboard
-            return redirect()->intended(route('admin.index'));
+            return redirect()->intended(route('admin.dashboard'));
         }
 
         return back()->withErrors([

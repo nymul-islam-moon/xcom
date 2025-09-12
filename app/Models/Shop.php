@@ -4,13 +4,26 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 
-class Shop extends Model
+class Shop extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\ShopFactory> */
-    use HasFactory;
+    use HasFactory, Notifiable;
 
+    /**
+     * The table associated with the model.
+     * This is used to specify the database table that this model corresponds to.
+     * If not specified, Laravel will assume the table name is the plural form of the model name.
+     */
     protected $table = 'shops';
+
+    /**
+     * The authentication guard for the admin model.
+     * This is used to specify which guard should be used for authentication.
+     */
+    protected $guard = 'shop';
 
     protected $fillable = [
         'name',

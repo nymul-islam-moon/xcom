@@ -17,6 +17,7 @@ class ProductCategory extends Model
         'slug',
         'status',
         'description',
+        'shop_id'
     ];
 
     protected $casts = [
@@ -56,5 +57,10 @@ class ProductCategory extends Model
             'id',
             'id'
         );
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class);
     }
 }

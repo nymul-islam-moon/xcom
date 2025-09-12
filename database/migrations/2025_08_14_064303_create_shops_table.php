@@ -27,7 +27,6 @@ return new class extends Migration
             $table->string('bank_account_number')->nullable();
             $table->string('bank_branch')->nullable();
             $table->string('shop_logo')->nullable();
-            // $table->string('website_url')->nullable();
             $table->text('description')->nullable();
             $table->text('business_address')->nullable();
             $table->timestamp('email_verified_at')->nullable();

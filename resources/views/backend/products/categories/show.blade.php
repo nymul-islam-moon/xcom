@@ -121,11 +121,11 @@
                             </a>
 
                             <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap text-nowrap">
-                                <a href="{{ route('shop.products.categories.edit', $category) }}" class="btn btn-primary">
+                                <a href="{{ route('admin.products.categories.edit', $category) }}" class="btn btn-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
 
-                                <form action="{{ route('shop.products.categories.destroy', $category) }}" method="POST"
+                                <form action="{{ route('admin.products.categories.destroy', $category) }}" method="POST"
                                     class="d-inline-block m-0 p-0"
                                     onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                     @csrf

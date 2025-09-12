@@ -14,6 +14,13 @@ use Illuminate\Support\Str;
 
 class ProductSubCategoryController extends Controller
 {
+
+    public function __construct()
+    {
+        // This ensures only "shop" guard can access
+        $this->middleware('auth:shop');
+    }
+
     /**
      * Display a listing of the resource.
      */

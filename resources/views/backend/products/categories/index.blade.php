@@ -42,7 +42,7 @@
                                 </div>
                             </form>
 
-                            <a href="{{ route('admin.products.categories.create') }}" class="btn btn-sm btn-success">
+                            <a href="{{ route('shop.products.categories.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Category
                             </a>
                         </div>
@@ -110,16 +110,16 @@
                                                 </td>
                                                 <td>
                                                     <div class="d-flex align-items-center gap-1 flex-wrap">
-                                                        <a href="{{ route('admin.products.categories.show', $category) }}"
+                                                        <a href="{{ route('shop.products.categories.show', $category) }}"
                                                             class="btn btn-sm btn-outline-secondary" title="View">
                                                             <i class="bi bi-eye"></i>
                                                         </a>
-                                                        <a href="{{ route('admin.products.categories.edit', $category) }}"
+                                                        <a href="{{ route('shop.products.categories.edit', $category) }}"
                                                             class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
                                                         <form
-                                                            action="{{ route('admin.products.categories.destroy', $category) }}"
+                                                            action="{{ route('shop.products.categories.destroy', $category) }}"
                                                             method="POST" class="d-inline"
                                                             onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                                             @csrf

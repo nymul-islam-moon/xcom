@@ -21,7 +21,7 @@ Route::middleware('guest:admin')->group(function () {
 // Authenticated (admin) routes
 Route::middleware('auth:admin')->group(function () {
     Route::get('/phpinfo', fn() => phpinfo());
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('index');
+    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
     // one-click verify (no login required), signed + throttled
     Route::get('/email/verify/{id}/{hash}', [AdminAuthenticatedSessionController::class, 'verify'])
@@ -30,9 +30,6 @@ Route::middleware('auth:admin')->group(function () {
 
     // Product Routes
     Route::prefix('products')->as('products.')->group(function () {
-        Route::resource('categories', ProductCategoryController::class);
-        Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
-            ->name('select-categories');
 
         Route::resource('sub-categories', ProductSubCategoryController::class);
         Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
