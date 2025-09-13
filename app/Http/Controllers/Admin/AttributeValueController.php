@@ -39,33 +39,29 @@ class AttributeValueController extends Controller
         DB::beginTransaction();
 
         try {
-            $formData = $request->validated();
-            // 1) Base slug from the provided value
-            $base = Str::slug((string)($formData['value'] ?? ''));
+            // validated data guaranteed to contain 'value' per your validation rules
+            $data = $request->validated();
 
-            // Fallback to something non-empty just in case
-            if ($base === '') {
-                $base = Str::random(6);
-            }
+            // normalize value: trim and uppercase (one-liner)
+            $data['value'] = strtoupper(trim((string) $data['value']));
 
-            // 2) Ensure uniqueness for (attribute_id, slug)
+            // base slug (fall back to random string if slug is empty)
+            $base = Str::slug($data['value']) ?: Str::random(6);
+
+            // ensure uniqueness for (attribute_id, slug)
             $slug = $base;
             $n = 2;
-            while (
-                AttributeValue::where('attribute_id', $formData['attribute_id'])
+            while (AttributeValue::where('attribute_id', $data['attribute_id'])
                 ->where('slug', $slug)
                 ->exists()
             ) {
                 $slug = "{$base}-{$n}";
                 $n++;
             }
+            $data['slug'] = $slug;
 
-            $formData['slug'] = $slug;
-
-            // dd($formData);
-
-            // 3) Create
-            $attributeValue = AttributeValue::create($formData);
+            // create and commit
+            $attributeValue = AttributeValue::create($data);
 
             DB::commit();
 
@@ -74,7 +70,7 @@ class AttributeValueController extends Controller
                 ->with('success', 'Attribute value created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Attribute Value creation failed: ' . $e->getMessage());
+            Log::error('Attribute Value creation failed: ' . $e->getMessage(), ['exception' => $e]);
             return back()->withErrors(['error' => 'Failed to create attribute value: ' . $e->getMessage()]);
         }
     }
@@ -98,78 +94,35 @@ class AttributeValueController extends Controller
     /**
      * Update the specified resource in storage.
      */
+
     public function update(UpdateAttributeValueRequest $request, AttributeValue $attributeValue)
     {
         DB::beginTransaction();
 
         try {
-            $formData = $request->validated();
+            $data = $request->validated();
 
-            // Normalize: always uppercase the first character of the value
-            if (isset($formData['value']) && is_string($formData['value'])) {
-                $formData['value'] = ucfirst(strtolower(trim($formData['value'])));
+            // normalize value: uppercase first character
+            if (isset($data['value']) && is_string($data['value'])) {
+                $data['value'] = strtoupper(strtolower(trim($data['value'])));
             }
 
-            // final attribute_id (shouldn't change, but fallback just in case)
-            $finalAttributeId = $formData['attribute_id'] ?? $attributeValue->attribute_id;
-
-            // CASE A: value changed → regenerate slug
-            if (array_key_exists('value', $formData) && $formData['value'] !== $attributeValue->value) {
-                $base = Str::slug((string) $formData['value']);
-
-                if ($base === '') {
-                    $base = Str::random(6);
-                }
-
-                $slug = $base;
-                $n = 2;
-                while (
-                    AttributeValue::where('attribute_id', $finalAttributeId)
-                    ->where('slug', $slug)
-                    ->where('id', '!=', $attributeValue->id)
-                    ->exists()
-                ) {
-                    $slug = "{$base}-{$n}";
-                    $n++;
-                }
-
-                $formData['slug'] = $slug;
+            // regenerate slug if value changed
+            if (array_key_exists('value', $data) && $data['value'] !== $attributeValue->value) {
+                $data['slug'] = Str::slug($data['value']) ?: Str::random(6);
             }
-            // CASE B: value unchanged but attribute_id changed → ensure slug uniqueness
-            elseif (isset($formData['attribute_id']) && $formData['attribute_id'] != $attributeValue->attribute_id) {
-                $existingSlug = $attributeValue->slug
-                    ?: Str::slug((string) ($attributeValue->value ?? ''))
-                    ?: Str::random(6);
 
-                $slug = $existingSlug;
-                $n = 2;
-                while (
-                    AttributeValue::where('attribute_id', $finalAttributeId)
-                    ->where('slug', $slug)
-                    ->where('id', '!=', $attributeValue->id)
-                    ->exists()
-                ) {
-                    $slug = "{$existingSlug}-{$n}";
-                    $n++;
-                }
-                $formData['slug'] = $slug;
-            }
-            // else → no changes to value or attribute_id → keep slug as-is
-
-            // Update model
-            $attributeValue->update($formData);
+            // perform update
+            $attributeValue->update($data);
 
             DB::commit();
 
-            $redirectAttributeId = $formData['attribute_id'] ?? $attributeValue->attribute_id;
-
             return redirect()
-                ->route('admin.products.attributes.show', $redirectAttributeId)
+                ->route('admin.products.attributes.show', $data['attribute_id'] ?? $attributeValue->attribute_id)
                 ->with('success', 'Attribute value updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            Log::error('Attribute Value Update Failed: ' . $e->getMessage());
+            Log::error('Attribute Value Update Failed: ' . $e->getMessage(), ['exception' => $e]);
 
             return back()->withErrors(['error' => 'Failed to update attribute value: ' . $e->getMessage()]);
         }

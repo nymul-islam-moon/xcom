@@ -66,7 +66,7 @@ class BrandController extends Controller
      */
     public function show(Brand $brand)
     {
-        return view('admin.products.brands.show', compact('brand'));
+        return view('backend.admin.products.brands.show', compact('brand'));
     }
 
     /**
