@@ -100,8 +100,82 @@ class AttributeValueController extends Controller
      */
     public function update(UpdateAttributeValueRequest $request, AttributeValue $attributeValue)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $formData = $request->validated();
+
+            // Normalize: always uppercase the first character of the value
+            if (isset($formData['value']) && is_string($formData['value'])) {
+                $formData['value'] = ucfirst(strtolower(trim($formData['value'])));
+            }
+
+            // final attribute_id (shouldn't change, but fallback just in case)
+            $finalAttributeId = $formData['attribute_id'] ?? $attributeValue->attribute_id;
+
+            // CASE A: value changed → regenerate slug
+            if (array_key_exists('value', $formData) && $formData['value'] !== $attributeValue->value) {
+                $base = Str::slug((string) $formData['value']);
+
+                if ($base === '') {
+                    $base = Str::random(6);
+                }
+
+                $slug = $base;
+                $n = 2;
+                while (
+                    AttributeValue::where('attribute_id', $finalAttributeId)
+                    ->where('slug', $slug)
+                    ->where('id', '!=', $attributeValue->id)
+                    ->exists()
+                ) {
+                    $slug = "{$base}-{$n}";
+                    $n++;
+                }
+
+                $formData['slug'] = $slug;
+            }
+            // CASE B: value unchanged but attribute_id changed → ensure slug uniqueness
+            elseif (isset($formData['attribute_id']) && $formData['attribute_id'] != $attributeValue->attribute_id) {
+                $existingSlug = $attributeValue->slug
+                    ?: Str::slug((string) ($attributeValue->value ?? ''))
+                    ?: Str::random(6);
+
+                $slug = $existingSlug;
+                $n = 2;
+                while (
+                    AttributeValue::where('attribute_id', $finalAttributeId)
+                    ->where('slug', $slug)
+                    ->where('id', '!=', $attributeValue->id)
+                    ->exists()
+                ) {
+                    $slug = "{$existingSlug}-{$n}";
+                    $n++;
+                }
+                $formData['slug'] = $slug;
+            }
+            // else → no changes to value or attribute_id → keep slug as-is
+
+            // Update model
+            $attributeValue->update($formData);
+
+            DB::commit();
+
+            $redirectAttributeId = $formData['attribute_id'] ?? $attributeValue->attribute_id;
+
+            return redirect()
+                ->route('admin.products.attributes.show', $redirectAttributeId)
+                ->with('success', 'Attribute value updated successfully');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Attribute Value Update Failed: ' . $e->getMessage());
+
+            return back()->withErrors(['error' => 'Failed to update attribute value: ' . $e->getMessage()]);
+        }
     }
+
+
 
     /**
      * Remove the specified resource from storage.
