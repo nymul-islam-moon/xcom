@@ -27,7 +27,7 @@ class BrandController extends Controller
             ->paginate(15)
             ->appends(['q' => $term]);
 
-        return view('admin.products.brands.index', compact('brands'));
+        return view('backend.admin.products.brands.index', compact('brands'));
     }
 
     /**
@@ -35,7 +35,7 @@ class BrandController extends Controller
      */
     public function create()
     {
-        return view('admin.products.brands.create');
+        return view('backend.admin.products.brands.create');
     }
 
     /**
@@ -74,7 +74,7 @@ class BrandController extends Controller
      */
     public function edit(Brand $brand)
     {
-        return view('admin.products.brands.edit', compact('brand'));
+        return view('backend.admin.products.brands.edit', compact('brand'));
     }
 
     /**
