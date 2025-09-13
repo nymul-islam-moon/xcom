@@ -31,6 +31,11 @@ Route::middleware('auth:admin')->group(function () {
     // Product Routes
     Route::prefix('products')->as('products.')->group(function () {
 
+        Route::resource('categories', ProductCategoryController::class);
+
+        Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
+            ->name('select-categories');
+
         Route::resource('sub-categories', ProductSubCategoryController::class);
         Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
             ->name('select-sub-categories');
@@ -59,7 +64,7 @@ Route::middleware('auth:admin')->group(function () {
 
 
     // Bulk Upload
-    Route::prefix('bulk-upload')->as('bulkUpload.')->group( function() {
+    Route::prefix('bulk-upload')->as('bulkUpload.')->group(function () {
         Route::get('shops', [ShopController::class, 'show_bulk_upload'])->name('shop');
         Route::post('shops/store', [ShopController::class, 'bulkUpload'])->name('shop.store');
     });

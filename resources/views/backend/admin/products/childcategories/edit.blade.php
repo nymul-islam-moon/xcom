@@ -1,7 +1,7 @@
-{{-- resources/views/admin/subcategories/create.blade.php --}}
+{{-- resources/views/admin/subcategories/edit.blade.php --}}
 @extends('layouts.admin.app')
 
-@section('title', 'Create Subcategory')
+@section('title', 'Edit Childcategory')
 
 @push('admin_styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -13,17 +13,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Create Subcategory</h3>
+                    <h3 class="mb-0">Edit Childcategory</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('shop.products.categories.index') }}">Categories</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Child-Category', 'route' => 'admin.products.child-categories.index'],
+                        ['label' => 'Edit', 'active' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -35,7 +33,7 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">Add New Subcategory</h3>
+                            <h3 class="card-title mb-0">Update Childcategory</h3>
                         </div>
 
                         @if (session('error'))
@@ -43,16 +41,17 @@
                         @endif
 
                         <div class="card-body">
-                            <form action="{{ route('admin.products.sub-categories.store') }}" method="POST">
+                            <form action="{{ route('admin.products.child-categories.update', $child_category->id) }}" method="POST">
                                 @csrf
+                                @method('PUT')
 
-                                {{-- Subcategory Name --}}
+                                {{-- Childcategory Name --}}
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Subcategory Name <span
-                                            class="text-danger">*</span></label>
+                                    <label for="name" class="form-label">Childcategory Name <span class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name"
-                                        class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                        placeholder="Enter subcategory name" required>
+                                        class="form-control @error('name') is-invalid @enderror"
+                                        value="{{ old('name', $child_category->name) }}"
+                                        placeholder="Enter childcategory name" required>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -60,20 +59,21 @@
 
                                 {{-- Parent Category (AJAX via select2) --}}
                                 <div class="mb-3">
-                                    <label for="product_category_id" class="form-label">Category <span
-                                            class="text-danger">*</span></label>
-                                    <select name="product_category_id" id="product_category_id"
-                                        class="form-select @error('product_category_id') is-invalid @enderror" required></select>
-                                    @error('product_category_id')
+                                    <label for="product_sub_category_id" class="form-label">Category <span class="text-danger">*</span></label>
+                                    <select name="product_sub_category_id" id="product_sub_category_id"
+                                        class="form-select @error('product_sub_category_id') is-invalid @enderror"
+                                        required></select>
+                                    @error('product_sub_category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
 
-                                {{-- Description (optional) --}}
+                                {{-- Description --}}
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
-                                    <textarea name="description" id="description" class="form-control @error('description') is-invalid @enderror"
-                                        placeholder="Optional subcategory description">{{ old('description') }}</textarea>
+                                    <textarea name="description" id="description"
+                                        class="form-control @error('description') is-invalid @enderror"
+                                        placeholder="Optional childcategory description">{{ old('description', $child_category->description) }}</textarea>
                                     @error('description')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -81,11 +81,11 @@
 
                                 {{-- Actions --}}
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.products.sub-categories.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.products.child-categories.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Back
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-check-circle"></i> Create Subcategory
+                                        <i class="bi bi-check-circle"></i> Update Childcategory
                                     </button>
                                 </div>
                             </form>
@@ -102,23 +102,21 @@
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script>
         $(function() {
-            const $select = $('#product_category_id');
-            const oldId = @json(old('product_category_id'));
+            const $select = $('#product_sub_category_id');
+            const selectedId = @json(old('product_sub_category_id', $child_category->product_sub_category_id));
 
             $select.select2({
                 placeholder: 'Select a category',
                 allowClear: true,
                 width: '100%',
-                minimumInputLength: 0, // show all on open; still filter as you type
+                minimumInputLength: 0,
                 ajax: {
-                    url: "{{ route('admin.products.select-categories') }}",
+                    url: "{{ route('admin.products.select-sub-categories') }}",
                     dataType: 'json',
                     delay: 200,
-                    // send the term (ok if your endpoint ignores it)
                     data: params => ({
                         q: params.term || ''
                     }),
-                    // client-side filter so typing actually narrows the list
                     processResults: function(data, params) {
                         const term = (params && params.term ? params.term.toLowerCase() : '');
                         const filtered = term ?
@@ -136,10 +134,10 @@
                 }
             });
 
-            // (Optional) Preselect old value after validation error
-            if (oldId) {
-                $.getJSON("{{ route('admin.products.select-categories') }}", function(data) {
-                    const found = data.find(c => String(c.id) === String(oldId));
+            // Preselect current category
+            if (selectedId) {
+                $.getJSON("{{ route('admin.products.select-sub-categories') }}", function(data) {
+                    const found = data.find(c => String(c.id) === String(selectedId));
                     if (found) {
                         const option = new Option(found.name, found.id, true, true);
                         $select.append(option).trigger('change');

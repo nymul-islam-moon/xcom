@@ -32,7 +32,7 @@ class ProductChildCategoryController extends Controller
             ->paginate(15)
             ->appends(['q' => $term]); // keeps search term in pagination links
 
-        return view('admin.products.childcategories.index', compact('productChildCategories'));
+        return view('backend.admin.products.childcategories.index', compact('productChildCategories'));
     }
 
 
@@ -41,7 +41,7 @@ class ProductChildCategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.products.childcategories.create');
+        return view('backend.admin.products.childcategories.create');
     }
 
     /**
@@ -106,7 +106,7 @@ class ProductChildCategoryController extends Controller
      */
     public function show(ProductChildCategory $child_category)
     {
-        return view('admin.products.childcategories.show', compact('child_category'));
+        return view('backend.admin.products.childcategories.show', compact('child_category'));
     }
 
     /**
@@ -114,7 +114,7 @@ class ProductChildCategoryController extends Controller
      */
     public function edit(ProductChildCategory $child_category)
     {
-        //
+        return view('backend.admin.products.childcategories.edit', compact('child_category'));
     }
 
     /**
@@ -122,14 +122,94 @@ class ProductChildCategoryController extends Controller
      */
     public function update(UpdateProductChildCategoryRequest $request, ProductChildCategory $child_category)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $formData = $request->validated();
+
+            // Check if we need to regenerate slug
+            $regenerateSlug =
+                $formData['name'] !== $child_category->name ||
+                $formData['product_sub_category_id'] != $child_category->product_sub_category_id;
+
+            $slug = $child_category->slug;
+
+            if ($regenerateSlug) {
+                // Get parent subcategory
+                $sub = ProductSubCategory::select('id', 'name', 'slug')
+                    ->find($formData['product_sub_category_id']);
+
+                $base = Str::slug(
+                    trim(sprintf('%s %s', $sub?->slug ?? $sub?->name ?? '', $formData['name']))
+                );
+
+                if ($base === '') {
+                    $base = Str::slug($formData['name']);
+                }
+
+                // Ensure uniqueness (ignore current child_category slug)
+                $slug = $base;
+                $i = 2;
+                while (
+                    ProductChildCategory::where('slug', $slug)
+                    ->where('id', '!=', $child_category->id)
+                    ->exists()
+                ) {
+                    $slug = "{$base}-{$i}";
+                    $i++;
+                }
+            }
+
+            // Update record
+            $child_category->update([
+                'name' => $formData['name'],
+                'slug' => $slug,
+                'description' => $formData['description'] ?? null,
+                'product_sub_category_id' => $formData['product_sub_category_id'],
+            ]);
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.products.child-categories.index')
+                ->with('success', 'Child category updated successfully.');
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            \Log::error(
+                'Child category update failed: ' . $e->getMessage(),
+                ['trace' => $e->getTraceAsString()]
+            );
+
+            return back()
+                ->withInput()
+                ->with('error', 'Failed to update child category.');
+        }
     }
+
 
     /**
      * Remove the specified resource from storage.
      */
     public function destroy(ProductChildCategory $child_category)
     {
-        //
+        DB::beginTransaction();
+
+        try {
+            $child_category->delete();
+
+            DB::commit();
+
+            return redirect()
+                ->route('admin.products.child-categories.index')
+                ->with('error', 'Child category deleted successfully.');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            \Log::error('Child category deletion failed: ' . $e->getMessage());
+
+            return redirect()
+                ->route('admin.products.child-categories.index')
+                ->with('error', 'Something went wrong while deleting the child category.');
+        }
     }
 }

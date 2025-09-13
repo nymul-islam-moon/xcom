@@ -14,7 +14,7 @@
                     <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
                         ['label' => 'Product', 'route' => 'admin.products.index'],
-                        ['label' => 'Category', 'route' => 'shop.products.categories.index'],
+                        ['label' => 'Category', 'route' => 'admin.products.categories.index'],
                         ['label' => 'Details', 'active' => true],
                     ]" />
                 </div>
@@ -116,16 +116,16 @@
 
 
                         <div class="card-footer d-flex align-items-center">
-                            <a href="{{ route('shop.products.categories.index') }}" class="btn btn-secondary">
+                            <a href="{{ route('admin.products.categories.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
 
                             <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap text-nowrap">
-                                <a href="{{ route('shop.products.categories.edit', $category) }}" class="btn btn-primary">
+                                <a href="{{ route('admin.products.categories.edit', $category) }}" class="btn btn-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
 
-                                <form action="{{ route('shop.products.categories.destroy', $category) }}" method="POST"
+                                <form action="{{ route('admin.products.categories.destroy', $category) }}" method="POST"
                                     class="d-inline-block m-0 p-0"
                                     onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                     @csrf

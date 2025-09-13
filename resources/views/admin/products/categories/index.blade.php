@@ -31,7 +31,7 @@
                             <h3 class="card-title flex-grow-1 mb-0">All Categories</h3>
 
                             {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('shop.products.categories.index') }}" method="GET"
+                            <form action="{{ route('admin.products.categories.index') }}" method="GET"
                                 class="d-none d-sm-flex me-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" name="q" value="{{ request('q') }}" class="form-control"

@@ -43,7 +43,6 @@ class StoreProductChildCategoryRequest extends FormRequest
             'name'                      => ['required','string','max:255'],
             'product_sub_category_id'   => ['required','integer','exists:product_sub_categories,id'],
             'description'               => ['nullable','string'],
-            // slug is generated in the controller; not accepted from the form
         ];
     }
 

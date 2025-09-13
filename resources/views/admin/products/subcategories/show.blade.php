@@ -14,7 +14,7 @@
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="">Home</a></li>
                         <li class="breadcrumb-item">
-                            <a href="{{ route('shop.products.categories.index') }}">Categories</a>
+                            <a href="{{ route('admin.products.categories.index') }}">Categories</a>
                         </li>
                         <li class="breadcrumb-item">
                             <a href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a>

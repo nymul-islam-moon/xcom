@@ -21,7 +21,7 @@
                     <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
                         ['label' => 'Product', 'route' => 'admin.products.index'],
-                        ['label' => 'Category', 'route' => 'shop.products.categories.index'],
+                        ['label' => 'Category', 'route' => 'admin.products.categories.index'],
                         ['label' => 'Edit', 'active' => true],
                     ]" />
                 </div>
@@ -88,7 +88,7 @@
 
                                 <!-- Submit Button -->
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('shop.products.categories.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.products.categories.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Back
                                     </a>
                                     <button type="submit" class="btn btn-primary">

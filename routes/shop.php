@@ -19,9 +19,6 @@ Route::middleware('auth:shop')->group(function () {
 
 
     Route::prefix('products')->as('products.')->group(function () {
-        Route::resource('categories', ProductCategoryController::class);
-
-        Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
-            ->name('select-categories');
+       
     });
 });

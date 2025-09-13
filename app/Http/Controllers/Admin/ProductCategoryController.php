@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Shop;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
@@ -14,11 +14,9 @@ use Illuminate\Support\Facades\Log;
 class ProductCategoryController extends Controller
 {
 
-    protected $shopId;
-
     public function __construct()
     {
-        $this->shopId = auth()->guard('shop')->id();
+        // dd('This is the product category controller');
     }
 
     /**
@@ -37,9 +35,9 @@ class ProductCategoryController extends Controller
             ->orderBy('name')
             ->paginate(15)
             ->appends(['q' => $term]);
-
-        return view('backend.products.categories.index', compact('productCategories'));
+        return view('backend.admin..products.categories.index', compact('productCategories'));
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -58,13 +56,12 @@ class ProductCategoryController extends Controller
         try {
             $formData = $request->validated();
             $formData['slug'] = Str::slug($formData['name']);
-            $formData['shop_id'] = $this->shopId;
 
             ProductCategory::create($formData);
 
             DB::commit();
 
-            return redirect()->route('shop.products.categories.index')
+            return redirect()->route('admin.products.categories.index')
                 ->with('success', 'Category created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -109,7 +106,7 @@ class ProductCategoryController extends Controller
 
             DB::commit();
 
-            return redirect()->route('shop.products.categories.index')
+            return redirect()->route('admin.products.categories.index')
                 ->with('success', 'Category updated successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -135,7 +132,7 @@ class ProductCategoryController extends Controller
 
             DB::commit();
 
-            return redirect()->route('shop.products.categories.index')
+            return redirect()->route('admin.products.categories.index')
                 ->with('error', 'Category deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();

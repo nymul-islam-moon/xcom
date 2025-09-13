@@ -17,8 +17,6 @@ class ProductSubCategoryController extends Controller
 
     public function __construct()
     {
-        // This ensures only "shop" guard can access
-        $this->middleware('auth:shop');
     }
 
     /**
@@ -35,7 +33,7 @@ class ProductSubCategoryController extends Controller
             ->orderBy('name')
             ->paginate(15);
 
-        return view('admin.products.subcategories.index', compact('productSubCategories'));
+        return view('backend.admin.products.subcategories.index', compact('productSubCategories'));
     }
 
     /**
@@ -44,7 +42,7 @@ class ProductSubCategoryController extends Controller
     public function create()
     {
 
-        return view('admin.products.subcategories.create');
+        return view('backend.admin.products.subcategories.create');
     }
 
     /**
@@ -94,7 +92,7 @@ class ProductSubCategoryController extends Controller
      */
     public function show(ProductSubCategory $sub_category)
     {
-        return view('admin.products.subcategories.show', compact('sub_category'));
+        return view('backend.admin.products.subcategories.show', compact('sub_category'));
     }
 
     /**
@@ -102,7 +100,7 @@ class ProductSubCategoryController extends Controller
      */
     public function edit(ProductSubCategory $sub_category)
     {
-        return view('admin.products.subcategories.edit', compact('sub_category'));
+        return view('backend.admin.products.subcategories.edit', compact('sub_category'));
     }
 
     /**

@@ -17,7 +17,6 @@ return new class extends Migration
             $table->string('slug')->unique();
             $table->boolean('status')->default(true);
             $table->text('description')->nullable();
-            $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
             $table->timestamps();
         });
     }
