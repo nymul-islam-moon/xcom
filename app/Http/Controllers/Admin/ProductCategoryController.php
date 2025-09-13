@@ -43,7 +43,7 @@ class ProductCategoryController extends Controller
      */
     public function create()
     {
-        return view('admin.products.categories.create');
+        return view('backend.admin.products.categories.create');
     }
 
     /**
@@ -80,7 +80,7 @@ class ProductCategoryController extends Controller
      */
     public function show(ProductCategory $category)
     {
-        return view('admin.products.categories.show', compact('category'));
+        return view('backend.admin.products.categories.show', compact('category'));
     }
 
     /**
@@ -88,7 +88,7 @@ class ProductCategoryController extends Controller
      */
     public function edit(ProductCategory $category)
     {
-        return view('admin.products.categories.edit', compact('category'));
+        return view('backend.admin.products.categories.edit', compact('category'));
     }
 
     /**

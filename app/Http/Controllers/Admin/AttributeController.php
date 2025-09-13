@@ -26,14 +26,14 @@ class AttributeController extends Controller
             ->appends(['q' => $term]);
 
 
-        return view('admin.products.attributes.index', compact('attributes'));
+        return view('backend.admin.products.attributes.index', compact('attributes'));
     }
     /**
      * Show the form for creating a new resource.
      */
     public function create()
     {
-        return view('admin.products.attributes.create');
+        return view('backend.admin.products.attributes.create');
     }
 
     /**
@@ -84,7 +84,7 @@ class AttributeController extends Controller
             ->paginate(15)
             ->withQueryString();
 
-        return view('admin.products.attributes.show', compact('attribute', 'attributeValues'));
+        return view('backend.admin.products.attributes.show', compact('attribute', 'attributeValues'));
     }
 
 
@@ -93,7 +93,7 @@ class AttributeController extends Controller
      */
     public function edit(Attribute $attribute)
     {
-        return view('admin.products.attributes.edit', compact('attribute'));
+        return view('backend.admin.products.attributes.edit', compact('attribute'));
     }
 
     /**

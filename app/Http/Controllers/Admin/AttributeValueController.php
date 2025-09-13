@@ -28,7 +28,7 @@ class AttributeValueController extends Controller
     {
         $attribute = Attribute::findOrFail($attributeId);
         // dd($attribute);
-        return view('admin.products.attributes.values.create', compact('attribute'));
+        return view('backend.admin.products.attributes.values.create', compact('attribute'));
     }
 
     /**
@@ -84,7 +84,7 @@ class AttributeValueController extends Controller
      */
     public function show(AttributeValue $attributeValue)
     {
-        //
+        return view('backend.admin.products.attributes.values.show', compact('attributeValue'));
     }
 
     /**
@@ -92,7 +92,7 @@ class AttributeValueController extends Controller
      */
     public function edit(AttributeValue $attributeValue)
     {
-        //
+        return view('backend.admin.products.attributes.values.edit', compact('attributeValue'));
     }
 
     /**

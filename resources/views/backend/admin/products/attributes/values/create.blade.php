@@ -9,13 +9,6 @@
                 <div class="col-sm-6">
                     <h3 class="mb-0">Add Value to: {{ $attribute->name }}</h3>
                 </div>
-                {{-- <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="">Attributes</a></li>
-                        <li class="breadcrumb-item active">Add Value</li>
-                    </ol>
-                </div> --}}
                 <div class="col-sm-6">
                     <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
@@ -42,7 +35,7 @@
 
                         <div class="mb-3">
                             <label for="value" class="form-label">Value</label>
-                            <input type="text" name="value" id="value" class="form-control" placeholder="Enter value (e.g. Red)" required>
+                            <input type="text" name="value" id="value" class="form-control" value="{{ old('value') }}" placeholder="Enter value (e.g. Red)" required>
                             @error('value')
                                 <div class="invalid-feedback">{{ $message }}</div>
                             @enderror

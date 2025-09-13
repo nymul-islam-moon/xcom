@@ -18,7 +18,6 @@ class AttributeValue extends Model
 
     public function attribute()
     {
-        // FIX: method is belongsTo, not BelongsTo
         return $this->belongsTo(Attribute::class, 'attribute_id');
     }
 
