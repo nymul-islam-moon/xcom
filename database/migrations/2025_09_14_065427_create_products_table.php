@@ -11,33 +11,33 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('products', function (Blueprint $table) {
+         Schema::create('products', function (Blueprint $table) {
             $table->id();
 
-            // Basic Product Details
+            // Basic Product Info
             $table->string('sku', 100)->unique();
             $table->string('slug', 100)->unique();
             $table->string('name');
             $table->text('description')->nullable();
             $table->text('short_description')->nullable();
 
+            // Product type
+            $table->enum('product_type', ['physical', 'digital', 'subscription', 'service', 'gift_card'])->default('physical');
+            $table->enum('variant_type', ['simple', 'variable'])->default('simple'); // simple = one variant, variable = multiple
+
             // Pricing
-            // $table->decimal('price', 10, 2);
-            // $table->decimal('sale_price', 10, 2)->nullable();
+            $table->decimal('base_price', 10, 2); // required for simple products
+            $table->decimal('sale_price', 10, 2)->nullable();
             $table->boolean('tax_included')->default(true);
             $table->decimal('tax_percentage', 5, 2)->nullable();
 
-            // Stock and Inventory
+            // Stock & inventory for simple product (optional, can rely on variants)
             $table->integer('stock_quantity')->default(0);
             $table->integer('low_stock_threshold')->nullable();
             $table->timestamp('restock_date')->nullable();
 
-            // Product Type
-            $table->enum('product_type', ['physical', 'digital', 'subscription', 'service', 'girt_card'])->default('physical');
-
-            // Physical & Digital Product Details
+            // Dimensions
             $table->decimal('weight', 10, 2)->nullable();
-            $table->string('dimensions')->nullable();
             $table->decimal('width', 8, 2)->nullable();
             $table->decimal('height', 8, 2)->nullable();
             $table->decimal('depth', 8, 2)->nullable();
@@ -67,7 +67,7 @@ return new class extends Migration
             $table->text('meta_description')->nullable();
             $table->text('meta_keywords')->nullable();
 
-            // Product Lifecycle & Publish Scheduling
+            // Lifecycle & publish
             $table->enum('status', ['active', 'inactive', 'discontinued', 'out_of_stock'])->default('active');
             $table->timestamp('publish_date')->nullable();
             $table->boolean('is_published')->default(false);

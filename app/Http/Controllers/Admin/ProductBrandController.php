@@ -12,7 +12,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
-class BrandController extends Controller
+class ProductBrandController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -128,5 +128,24 @@ class BrandController extends Controller
             Log::error('Brand deletion failed: ' . $e->getMessage(), ['brand_id' => $brand->id]);
             return back()->withErrors(['error' => 'Something went wrong while deleting the brand.']);
         }
+    }
+
+     /**
+     * Get brands for select input.
+     */
+    public function selectBrands(Request $request)
+    {
+        $q = (string) $request->get('q', '');
+
+        $brands = Brand::select('id', 'name')
+            ->where('status', 1)
+            ->when(
+                $q !== '',
+                fn($query) => $query->where('name', 'like', "%{$q}%")
+            )
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($brands);
     }
 }

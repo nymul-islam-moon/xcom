@@ -212,4 +212,23 @@ class ProductChildCategoryController extends Controller
                 ->with('error', 'Something went wrong while deleting the child category.');
         }
     }
+
+     /**
+     * Get categories for select input.
+     */
+    public function selectChildCategories(Request $request)
+    {
+        $q = (string) $request->get('q', '');
+
+        $productChildCategories = ProductChildCategory::select('id', 'name')
+            ->where('status', 1)
+            ->when(
+                $q !== '',
+                fn($query) => $query->where('name', 'like', "%{$q}%")
+            )
+            ->orderBy('name')
+            ->get();
+
+        return response()->json($productChildCategories);
+    }
 }

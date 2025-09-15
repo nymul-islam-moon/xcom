@@ -6,7 +6,7 @@ use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\ProductAttributeValueController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
-use App\Http\Controllers\Admin\BrandController;
+use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
@@ -40,10 +40,9 @@ Route::middleware('auth:admin')->group(function () {
         Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
             ->name('select-sub-categories');
 
-
         Route::resource('child-categories', ProductChildCategoryController::class);
 
-        Route::resource('brands', BrandController::class);
+        Route::resource('brands', ProductBrandController::class);
 
         Route::resource('attributes', ProductAttributeController::class);
 

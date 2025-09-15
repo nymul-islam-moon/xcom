@@ -3,20 +3,18 @@
 namespace App\Http\Controllers\Shop;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductRequest;
-use App\Http\Requests\UpdateProductRequest;
-use App\Models\Product;
-use App\Models\ProductAttribute;
+use App\Http\Requests\StoreProductVariantRequest;
+use App\Http\Requests\UpdateProductVariantRequest;
+use App\Models\ProductVarient;
 
-class ProductController extends Controller
+class ProductVariantController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
     public function index()
     {
-        $products = Product::all();
-        return view('shops.products.index', compact('products'));
+        //
     }
 
     /**
@@ -24,15 +22,13 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('shops.products.create', [
-            'attributes' => ProductAttribute::with('values')->get(),
-        ]);
+        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductVariantRequest $request)
     {
         //
     }
@@ -40,7 +36,7 @@ class ProductController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Product $product)
+    public function show(ProductVarient $productVarient)
     {
         //
     }
@@ -48,7 +44,7 @@ class ProductController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Product $product)
+    public function edit(ProductVarient $productVarient)
     {
         //
     }
@@ -56,7 +52,7 @@ class ProductController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateProductRequest $request, Product $product)
+    public function update(UpdateProductVariantRequest $request, ProductVarient $productVarient)
     {
         //
     }
@@ -64,7 +60,7 @@ class ProductController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Product $product)
+    public function destroy(ProductVarient $productVarient)
     {
         //
     }
