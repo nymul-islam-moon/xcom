@@ -3,7 +3,7 @@
 
 <head>
     <x-admin.head-links />
-    @stack('admin_styles')
+    @stack('backend_styles')
 </head>
 
 <body class="layout-fixed sidebar-expand-lg sidebar-open bg-body-tertiary">
@@ -121,7 +121,7 @@
     </div>
 
     <x-admin.scripts />
-    @stack('admin_scripts')
+    @stack('backend_scripts')
 </body>
 
 </html>

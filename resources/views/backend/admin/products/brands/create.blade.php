@@ -1,5 +1,5 @@
 {{-- resources/views/admin/brands/create.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Create Brand')
 

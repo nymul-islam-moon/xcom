@@ -1,5 +1,5 @@
 {{-- resources/views/admin/brands/show.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Brand Details')
 

@@ -1,5 +1,5 @@
 {{-- resources/views/admin/dashboard.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Product Attributes')
 

@@ -1,5 +1,5 @@
 {{-- resources/views/admin/attributes/show.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Attribute Details')
 
@@ -24,7 +24,6 @@
 
     <div class="app-content">
         <div class="container-fluid">
-
             {{-- ===== Attribute Details Card ===== --}}
             <div class="row justify-content-center mb-4">
                 <div class="col-lg-8">

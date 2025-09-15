@@ -1,5 +1,5 @@
 {{-- resources/views/admin/categories/edit.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Edit Category')
 

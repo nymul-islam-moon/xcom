@@ -1,5 +1,5 @@
 {{-- resources/views/admin/childcategories/index.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Product Child Categories')
 

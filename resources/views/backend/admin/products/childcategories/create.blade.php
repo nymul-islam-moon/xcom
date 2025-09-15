@@ -1,5 +1,5 @@
 {{-- resources/views/admin/subcategories/create.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Create Subcategory')
 
