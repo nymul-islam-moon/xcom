@@ -31,7 +31,7 @@
                 <div class="card-body">
                     <form action="{{ route('admin.products.attribute-values.store') }}" method="POST">
                         @csrf
-                        <input type="hidden" name="attribute_id" value="{{ $attribute->id }}">
+                        <input type="hidden" name="product_attribute_id" value="{{ $attribute->id }}">
 
                         <div class="mb-3">
                             <label for="value" class="form-label">Value</label>

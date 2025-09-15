@@ -11,18 +11,18 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('attribute_values', function (Blueprint $table) {
+        Schema::create('product_attribute_values', function (Blueprint $table) {
             $table->id();
 
-            $table->foreignId('attribute_id')
-                ->constrained('attributes')
+            $table->foreignId('product_attribute_id')
+                ->constrained('product_attributes')
                 ->onDelete('cascade');
 
             $table->string('value'); // e.g., Red, Blue, Small
             $table->string('slug');  // e.g., red, blue, small
 
             // Ensure (attribute_id + slug) is unique
-            $table->unique(['attribute_id', 'slug'], 'attribute_slug_unique');
+            $table->unique(['product_attribute_id', 'slug'], 'product_attr_values_slug_unique');
 
             $table->timestamps();
         });

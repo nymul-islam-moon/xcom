@@ -6,19 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
 
-class AttributeValue extends Model
+class ProductAttributeValue extends Model
 {
     /** @use HasFactory<\Database\Factories\AttributeValueFactory> */
     use HasFactory;
 
     // FIX: property name should be $table
-    protected $table = 'attribute_values';
+    protected $table = 'product_attribute_values';
 
-    protected $fillable = ['attribute_id', 'value', 'slug'];
+    protected $fillable = ['product_attribute_id', 'value', 'slug'];
 
     public function attribute()
     {
-        return $this->belongsTo(Attribute::class, 'attribute_id');
+        return $this->belongsTo(ProductAttribute::class, 'product_attribute_id');
     }
 
     /**

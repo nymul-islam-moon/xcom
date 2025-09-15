@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 
-class UpdateAttributeValueRequest extends FormRequest
+class UpdateProductAttributeValueRequest extends FormRequest
 {
     public function authorize(): bool
     {

@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
-class UpdateAttributeRequest extends FormRequest
+class UpdateProductAttributeRequest extends FormRequest
 {
     public function authorize(): bool
     {

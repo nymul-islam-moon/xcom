@@ -3,15 +3,15 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAttributeValueRequest;
-use App\Http\Requests\UpdateAttributeValueRequest;
-use App\Models\Attribute;
-use App\Models\AttributeValue;
+use App\Http\Requests\StoreProductAttributeValueRequest;
+use App\Http\Requests\UpdateProductAttributeValueRequest;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
-class AttributeValueController extends Controller
+class ProductAttributeValueController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -26,7 +26,7 @@ class AttributeValueController extends Controller
      */
     public function create($attributeId)
     {
-        $attribute = Attribute::findOrFail($attributeId);
+        $attribute = ProductAttribute::findOrFail($attributeId);
         // dd($attribute);
         return view('backend.admin.products.attributes.values.create', compact('attribute'));
     }
@@ -34,39 +34,20 @@ class AttributeValueController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAttributeValueRequest $request)
+    public function store(StoreProductAttributeValueRequest $request)
     {
         DB::beginTransaction();
 
         try {
             // validated data guaranteed to contain 'value' per your validation rules
             $data = $request->validated();
-
-            // normalize value: trim and uppercase (one-liner)
-            $data['value'] = strtoupper(trim((string) $data['value']));
-
-            // base slug (fall back to random string if slug is empty)
-            $base = Str::slug($data['value']) ?: Str::random(6);
-
-            // ensure uniqueness for (attribute_id, slug)
-            $slug = $base;
-            $n = 2;
-            while (AttributeValue::where('attribute_id', $data['attribute_id'])
-                ->where('slug', $slug)
-                ->exists()
-            ) {
-                $slug = "{$base}-{$n}";
-                $n++;
-            }
-            $data['slug'] = $slug;
-
-            // create and commit
-            $attributeValue = AttributeValue::create($data);
+          
+            $attributeValue = ProductAttributeValue::create($data);
 
             DB::commit();
 
             return redirect()
-                ->route('admin.products.attributes.show', $attributeValue->attribute_id)
+                ->route('admin.products.attributes.show', $attributeValue->product_attribute_id)
                 ->with('success', 'Attribute value created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -78,7 +59,7 @@ class AttributeValueController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(AttributeValue $attributeValue)
+    public function show(ProductAttributeValue $attributeValue)
     {
         return view('backend.admin.products.attributes.values.show', compact('attributeValue'));
     }
@@ -86,7 +67,7 @@ class AttributeValueController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(AttributeValue $attributeValue)
+    public function edit(ProductAttributeValue $attributeValue)
     {
         return view('backend.admin.products.attributes.values.edit', compact('attributeValue'));
     }
@@ -95,7 +76,7 @@ class AttributeValueController extends Controller
      * Update the specified resource in storage.
      */
 
-    public function update(UpdateAttributeValueRequest $request, AttributeValue $attributeValue)
+    public function update(UpdateProductAttributeValueRequest $request, ProductAttributeValue $attributeValue)
     {
         DB::beginTransaction();
 
@@ -133,7 +114,7 @@ class AttributeValueController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(AttributeValue $attributeValue)
+    public function destroy(ProductAttributeValue $attributeValue)
     {
         DB::beginTransaction();
 

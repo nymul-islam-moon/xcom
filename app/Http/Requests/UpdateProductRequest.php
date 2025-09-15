@@ -4,25 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class StoreAttributeRequest extends FormRequest
+class UpdateProductRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
-    }
-
-    /**
-     * Custom attribute names (for prettier errors).
-     */
-    public function attributes(): array
-    {
-        return [
-            'name'        => 'attribute name',
-            'description' => 'attribute description'
-        ];
+        return false;
     }
 
     /**
@@ -33,8 +22,7 @@ class StoreAttributeRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|min:3|unique:attributes,name',
-            'description' => 'nullable|string'
+            //
         ];
     }
 }

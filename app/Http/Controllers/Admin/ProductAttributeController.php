@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreAttributeRequest;
-use App\Http\Requests\UpdateAttributeRequest;
-use App\Models\Attribute;
+use App\Http\Requests\StoreProductAttributeRequest;
+use App\Http\Requests\UpdateProductAttributeRequest;
+use App\Models\ProductAttribute;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
-class AttributeController extends Controller
+class ProductAttributeController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -19,7 +19,7 @@ class AttributeController extends Controller
     {
         $term = $request->query('q', '');
 
-        $attributes = Attribute::query()
+        $attributes = ProductAttribute::query()
             ->search($term)
             ->orderBy('name')
             ->paginate(15)
@@ -39,15 +39,16 @@ class AttributeController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreAttributeRequest $request)
+    public function store(StoreProductAttributeRequest $request)
     {
         DB::beginTransaction();
 
         try {
             $formData = $request->validated();
+            $formData['name'] = Str::ucfirst(Str::lower(trim((string) $formData['name'])));
             $formData['slug'] = Str::slug($formData['name']);
 
-            Attribute::create($formData);
+            ProductAttribute::create($formData);
 
             DB::commit();
 
@@ -68,7 +69,7 @@ class AttributeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Attribute $attribute, Request $request)
+    public function show(ProductAttribute $attribute, Request $request)
     {
         $term = (string) $request->query('q', '');
 
@@ -91,7 +92,7 @@ class AttributeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Attribute $attribute)
+    public function edit(ProductAttribute $attribute)
     {
         return view('backend.admin.products.attributes.edit', compact('attribute'));
     }
@@ -99,7 +100,7 @@ class AttributeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateAttributeRequest $request, Attribute $attribute)
+    public function update(UpdateProductAttributeRequest $request, ProductAttribute $attribute)
     {
         DB::beginTransaction();
 
@@ -129,7 +130,7 @@ class AttributeController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Attribute $attribute)
+    public function destroy(ProductAttribute $attribute)
     {
         DB::beginTransaction();
 

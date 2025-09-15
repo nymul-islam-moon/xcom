@@ -3,8 +3,8 @@
 use App\Http\Controllers\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\AttributeController;
-use App\Http\Controllers\Admin\AttributeValueController;
+use App\Http\Controllers\Admin\ProductAttributeController;
+use App\Http\Controllers\Admin\ProductAttributeValueController;
 use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\BrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
@@ -45,16 +45,16 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('brands', BrandController::class);
 
-        Route::resource('attributes', AttributeController::class);
+        Route::resource('attributes', ProductAttributeController::class);
 
         Route::prefix('attributes/{attribute}')->group(function () {
-            Route::get('values/create', [AttributeValueController::class, 'create'])->name('attribute-values.create');
+            Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
         });
-        Route::post('attribute-values/store', [AttributeValueController::class, 'store'])->name('attribute-values.store');
-        Route::get('attribute-values/{attributeValue}/show', [AttributeValueController::class, 'show'])->name('attribute-values.show');
-        Route::get('attribute-values/{attributeValue}/edit', [AttributeValueController::class, 'edit'])->name('attribute-values.edit');
-        Route::put('attribute-values/{attributeValue}', [AttributeValueController::class, 'update'])->name('attribute-values.update');
-        Route::delete('attribute-values/{attributeValue}', [AttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
+        Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
+        Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
+        Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');
+        Route::put('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'update'])->name('attribute-values.update');
+        Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
     // Shop Management Routes

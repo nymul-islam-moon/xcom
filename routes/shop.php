@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Shop\ProductCategoryController;
 use App\Http\Controllers\Shop\Auth\ShopAuthenticatedSessionController;
+use App\Http\Controllers\Shop\ProductController;
 use App\Http\Controllers\Shop\ShopDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -18,7 +19,5 @@ Route::middleware('auth:shop')->group(function () {
     Route::get('/dashboard', [ShopDashboardController::class, 'index'])->name('dashboard');
 
 
-    Route::prefix('products')->as('products.')->group(function () {
-       
-    });
+    Route::resource('/products', ProductController::class);
 });
