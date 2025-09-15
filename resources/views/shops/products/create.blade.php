@@ -14,6 +14,7 @@
         .select2-container--default .select2-selection--multiple .select2-search__field { min-height: 1.5em; }
         /* Improve Select2 dropdown z-index if needed */
         .select2-container { z-index: 2100; }
+        .small-muted { font-size: .85rem; color: #6c757d; }
     </style>
 @endpush
 
@@ -63,9 +64,23 @@
                                 <div class="row g-3">
                                     <div class="col-md-4">
                                         <label class="form-label">Product Type</label>
+                                        {{-- Use schema product_type values: physical, digital, subscription, service, gift_card --}}
                                         <select name="product_type" id="product_type" class="form-select">
-                                            <option value="simple" {{ old('product_type') == 'simple' ? 'selected' : '' }}>Simple Product</option>
-                                            <option value="variable" {{ old('product_type') == 'variable' ? 'selected' : '' }}>Variable Product</option>
+                                            <option value="physical" {{ old('product_type') == 'physical' ? 'selected' : '' }}>Physical</option>
+                                            <option value="digital" {{ old('product_type') == 'digital' ? 'selected' : '' }}>Digital</option>
+                                            <option value="subscription" {{ old('product_type') == 'subscription' ? 'selected' : '' }}>Subscription</option>
+                                            <option value="service" {{ old('product_type') == 'service' ? 'selected' : '' }}>Service</option>
+                                            <option value="gift_card" {{ old('product_type') == 'gift_card' ? 'selected' : '' }}>Gift Card</option>
+                                        </select>
+                                        <div class="small-muted mt-1">Variant settings are only available for physical products.</div>
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label class="form-label">Variant Type</label>
+                                        {{-- variant_type: simple or variable. Only relevant for physical products. --}}
+                                        <select name="variant_type" id="variant_type" class="form-select">
+                                            <option value="simple" {{ old('variant_type', 'simple') == 'simple' ? 'selected' : '' }}>Simple</option>
+                                            <option value="variable" {{ old('variant_type') == 'variable' ? 'selected' : '' }}>Variable</option>
                                         </select>
                                     </div>
 
@@ -75,7 +90,7 @@
                                         @error('sku') <div class="invalid-feedback">{{ $message }}</div> @enderror
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 mt-3">
                                         <label for="slug" class="form-label">Slug</label>
                                         <input type="text" name="slug" id="slug" class="form-control @error('slug') is-invalid @enderror" value="{{ old('slug') }}">
                                         @error('slug') <div class="invalid-feedback">{{ $message }}</div> @enderror
@@ -145,6 +160,115 @@
                                             <option value="0" {{ old('is_featured') == '0' ? 'selected' : '' }}>No</option>
                                             <option value="1" {{ old('is_featured') == '1' ? 'selected' : '' }}>Yes</option>
                                         </select>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Additional Schema Fields (Tax, Backorders, Identifiers, Publishing, Digital/Subs) --}}
+                        <div class="card card-light card-outline mb-4">
+                            <div class="card-header"><div class="card-title">Advanced / Schema Fields</div></div>
+                            <div class="card-body">
+                                <div class="row g-3">
+                                    <div class="col-md-3">
+                                        <label class="form-label">Tax Included?</label>
+                                        <select name="tax_included" class="form-select">
+                                            <option value="1" {{ old('tax_included', 1) == 1 ? 'selected' : '' }}>Yes</option>
+                                            <option value="0" {{ old('tax_included') == 0 ? 'selected' : '' }}>No</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="tax_percentage" class="form-label">Tax Percentage (%)</label>
+                                        <input type="number" step="0.01" name="tax_percentage" id="tax_percentage" class="form-control" value="{{ old('tax_percentage') }}">
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="allow_backorders" class="form-label">Backorders</label>
+                                        <select name="allow_backorders" id="allow_backorders" class="form-select">
+                                            <option value="no" {{ old('allow_backorders') == 'no' ? 'selected' : '' }}>No</option>
+                                            <option value="notify" {{ old('allow_backorders') == 'notify' ? 'selected' : '' }}>Notify customer</option>
+                                            <option value="yes" {{ old('allow_backorders') == 'yes' ? 'selected' : '' }}>Allow</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-3">
+                                        <label for="restock_date" class="form-label">Restock Date</label>
+                                        <input type="datetime-local" name="restock_date" id="restock_date" class="form-control" value="{{ old('restock_date') }}">
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="mpn" class="form-label">MPN</label>
+                                        <input type="text" name="mpn" id="mpn" class="form-control" value="{{ old('mpn') }}">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="gtin8" class="form-label">GTIN-8</label>
+                                        <input type="text" name="gtin8" id="gtin8" class="form-control" value="{{ old('gtin8') }}">
+                                    </div>
+
+                                    <div class="col-md-4">
+                                        <label for="gtin13" class="form-label">GTIN-13</label>
+                                        <input type="text" name="gtin13" id="gtin13" class="form-control" value="{{ old('gtin13') }}">
+                                    </div>
+
+                                    <div class="col-md-4 mt-2">
+                                        <label for="gtin14" class="form-label">GTIN-14</label>
+                                        <input type="text" name="gtin14" id="gtin14" class="form-control" value="{{ old('gtin14') }}">
+                                    </div>
+
+                                    <div class="col-md-8 mt-2">
+                                        <label for="return_policy" class="form-label">Return Policy</label>
+                                        <textarea name="return_policy" id="return_policy" class="form-control">{{ old('return_policy') }}</textarea>
+                                    </div>
+
+                                    <div class="col-md-4 mt-2">
+                                        <label for="return_days" class="form-label">Return Days</label>
+                                        <input type="number" name="return_days" id="return_days" class="form-control" value="{{ old('return_days') }}">
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row g-3">
+                                    <div class="col-md-4">
+                                        <label for="publish_date" class="form-label">Publish Date</label>
+                                        <input type="datetime-local" name="publish_date" id="publish_date" class="form-control" value="{{ old('publish_date') }}">
+                                    </div>
+
+                                    <div class="col-md-2">
+                                        <label class="form-label">Is Published?</label>
+                                        <select name="is_published" class="form-select">
+                                            <option value="0" {{ old('is_published') == 0 ? 'selected' : '' }}>No</option>
+                                            <option value="1" {{ old('is_published') == 1 ? 'selected' : '' }}>Yes</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="col-md-6">
+                                        <label for="product_type_note" class="form-label">Notes</label>
+                                        <div class="small-muted">Digital products accept download URL & license keys. Subscription products accept a subscription interval (ex: monthly, yearly).</div>
+                                    </div>
+                                </div>
+
+                                <hr>
+
+                                <div class="row g-3">
+                                    <div class="col-md-6 digital-fields">
+                                        <label for="download_url" class="form-label">Download URL (for digital products)</label>
+                                        <input type="url" name="download_url" id="download_url" class="form-control" value="{{ old('download_url') }}">
+                                    </div>
+                                    <div class="col-md-6 digital-fields">
+                                        <label for="license_key" class="form-label">License Key (if applicable)</label>
+                                        <input type="text" name="license_key" id="license_key" class="form-control" value="{{ old('license_key') }}">
+                                    </div>
+
+                                    <div class="col-md-6 subscription-fields mt-2">
+                                        <label for="subscription_interval" class="form-label">Subscription Interval</label>
+                                        <input type="text" name="subscription_interval" id="subscription_interval" class="form-control" placeholder="e.g. monthly, yearly" value="{{ old('subscription_interval') }}">
                                     </div>
                                 </div>
                             </div>
@@ -416,7 +540,7 @@
                     const combinations = generateCombinations(attributeArrays);
                     let html = `<div class="table-responsive"><table class="table table-bordered align-middle"><thead class="table-light"><tr>`;
                     attributeNames.forEach(name => html += `<th>${name}</th>`);
-                    html += `<th>Price</th><th>Stock</th><th>SKU</th><th>Images</th></tr></thead><tbody>`;
+                    html += `<th>Price</th><th>Sale Price</th><th>Stock</th><th>SKU</th><th>Images</th></tr></thead><tbody>`;
 
                     combinations.forEach((combo, index) => {
                         html += `<tr>`;
@@ -426,13 +550,16 @@
                         });
 
                         let price = oldCombinations[index]?.price ?? '';
+                        let sale = oldCombinations[index]?.sale_price ?? '';
                         let stock = oldCombinations[index]?.stock_quantity ?? '';
                         let sku = oldCombinations[index]?.sku ?? '';
 
                         let priceErr = combinationErrors[`combinations.${index}.price`] ? `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.price`][0]}</div>` : '';
+                        let saleErr = combinationErrors[`combinations.${index}.sale_price`] ? `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.sale_price`][0]}</div>` : '';
                         let stockErr = combinationErrors[`combinations.${index}.stock_quantity`] ? `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.stock_quantity`][0]}</div>` : '';
 
                         html += `<td><input type="number" name="combinations[${index}][price]" value="${price}" class="form-control ${priceErr ? 'is-invalid' : ''}" step="0.01" placeholder="0.00">${priceErr}</td>`;
+                        html += `<td><input type="number" name="combinations[${index}][sale_price]" value="${sale}" class="form-control ${saleErr ? 'is-invalid' : ''}" step="0.01" placeholder="0.00">${saleErr}</td>`;
                         html += `<td><input type="number" name="combinations[${index}][stock_quantity]" value="${stock}" class="form-control ${stockErr ? 'is-invalid' : ''}" placeholder="0">${stockErr}</td>`;
                         html += `<td><input type="text" name="combinations[${index}][sku]" value="${sku}" class="form-control" placeholder=""></td>`;
                         html += `<td>
@@ -460,19 +587,43 @@
                     loadCombinations();
                 @endif
 
-                // Toggle simple/variable sections
+                // Toggle simple/variable sections based on variant_type and product_type
                 function toggleSections() {
-                    const type = $('#product_type').val();
-                    if (type === 'simple') {
+                    const ptype = $('#product_type').val();
+                    const vtype = $('#variant_type').val();
+
+                    // Variant controls only for physical
+                    if (ptype === 'physical') {
+                        $('#variant_type').closest('.col-md-4').show();
+                    } else {
+                        // hide variant control for non-physical
+                        $('#variant_type').closest('.col-md-4').hide();
+                    }
+
+                    if (ptype === 'physical' && vtype === 'variable') {
+                        $('.simple-section').hide();
+                        $('.variable-section').show();
+                    } else {
+                        // simple-mode (either non-physical products or simple variant)
                         $('.simple-section').show();
                         $('.variable-section').hide();
                         $('#combination-pricing').html('<div class="alert alert-info mb-0">Select attribute values to generate combinations...</div>');
+                    }
+
+                    // show/hide digital & subscription specific fields
+                    if (ptype === 'digital') {
+                        $('.digital-fields').show();
                     } else {
-                        $('.simple-section').hide();
-                        $('.variable-section').show();
+                        $('.digital-fields').hide();
+                    }
+
+                    if (ptype === 'subscription') {
+                        $('.subscription-fields').show();
+                    } else {
+                        $('.subscription-fields').hide();
                     }
                 }
-                $('#product_type').on('change', toggleSections);
+                $('#product_type, #variant_type').on('change', toggleSections);
                 toggleSections();
 
                 // Tooltips
@@ -480,7 +631,7 @@
                 tooltipTriggerList.map(function(el) { return new bootstrap.Tooltip(el); });
 
                 // CKEditor
-                try { CKEDITOR.replace('short_description'); CKEDITOR.replace('description'); } catch (e) { console.warn('CKEditor failed to init', e); }
+                try { CKEDITOR.replace('short_description'); CKEDITOR.replace('description'); CKEDITOR.replace('return_policy'); } catch (e) { console.warn('CKEditor failed to init', e); }
 
                 // Slug auto-generate
                 $('#name').on('blur', function () {

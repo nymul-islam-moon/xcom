@@ -1,5 +1,5 @@
 {{-- resources/views/admin/dashboard.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Product Brand')
 
@@ -30,7 +30,7 @@
                             <h3 class="card-title flex-grow-1 mb-0">All Products</h3>
 
                             {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('admin.products.brands.index') }}" method="GET"
+                            <form action="{{ route('shop.products.index') }}" method="GET"
                                 class="d-none d-sm-flex me-2">
                                 <div class="input-group input-group-sm">
                                     <input type="text" name="q" value="{{ request('q') }}" class="form-control"
@@ -41,7 +41,7 @@
                                 </div>
                             </form>
 
-                            <a href="{{ route('admin.products.brands.create') }}" class="btn btn-sm btn-success">
+                            <a href="{{ route('shop.products.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Product
                             </a>
                         </div>

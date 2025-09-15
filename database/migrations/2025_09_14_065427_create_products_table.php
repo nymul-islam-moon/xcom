@@ -11,13 +11,13 @@ return new class extends Migration
      */
     public function up(): void
     {
-         Schema::create('products', function (Blueprint $table) {
+        Schema::create('products', function (Blueprint $table) {
             $table->id();
 
             // Basic Product Info
+            $table->string('name');
             $table->string('sku', 100)->unique();
             $table->string('slug', 100)->unique();
-            $table->string('name');
             $table->text('description')->nullable();
             $table->text('short_description')->nullable();
 
