@@ -331,15 +331,15 @@
                                 </div>
                                 <br>
                                 <div class="col-md-6">
-                                        <label for="product_type_note" class="form-label">Notes</label>
-                                        <div class="small-muted">Digital products accept download URL & license keys.
-                                            Subscription products accept a subscription interval (ex: monthly, yearly).
-                                        </div>
+                                    <label for="product_type_note" class="form-label">Notes</label>
+                                    <div class="small-muted">Digital products accept download URL & license keys.
+                                        Subscription products accept a subscription interval (ex: monthly, yearly).
                                     </div>
+                                </div>
                                 <hr>
 
                                 <div class="row g-3">
-                                    
+
                                     <div class="col-md-6 digital-fields">
                                         <label for="download_url" class="form-label">Download URL (for digital
                                             products)</label>
@@ -674,7 +674,7 @@
                     if (attributeArrays.length === 0) {
                         $('#combination-pricing').html(
                             '<div class="alert alert-info mb-0">Select attribute values to generate combinations...</div>'
-                            );
+                        );
                         return;
                     }
 
@@ -682,8 +682,9 @@
                     let html =
                         `<div class="table-responsive"><table class="table table-bordered align-middle"><thead class="table-light"><tr>`;
                     attributeNames.forEach(name => html += `<th>${name}</th>`);
+                    // Added Default column header
                     html +=
-                        `<th>Price</th><th>Sale Price</th><th>Stock</th><th>SKU</th><th>Images</th></tr></thead><tbody>`;
+                        `<th>Price</th><th>Sale Price</th><th>Stock</th><th>SKU</th><th>Images</th><th>Default</th></tr></thead><tbody>`;
 
                     combinations.forEach((combo, index) => {
                         html += `<tr>`;
@@ -706,6 +707,9 @@
                         let stockErr = combinationErrors[`combinations.${index}.stock_quantity`] ?
                             `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.stock_quantity`][0]}</div>` :
                             '';
+                        let defaultErr = combinationErrors[`combinations.${index}.is_default`] ?
+                            `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.is_default`][0]}</div>` :
+                            '';
 
                         html +=
                             `<td><input type="number" name="combinations[${index}][price]" value="${price}" class="form-control ${priceErr ? 'is-invalid' : ''}" step="0.01" placeholder="0.00">${priceErr}</td>`;
@@ -720,11 +724,22 @@
                                     <div><label class="form-label small">Gallery Images:</label><input type="file" name="combinations[${index}][gallery_images][]" class="form-control" multiple accept="image/*"></div>
                                  </td>`;
 
-                        // hidden inputs for the attribute value ids
+                        // Hidden inputs for the attribute value ids
                         combo.forEach((val) => {
                             html +=
                                 `<input type="hidden" name="combinations[${index}][attributes][]" value="${val}">`;
                         });
+
+                        // Default checkbox — include a hidden field so unchecked becomes 0
+                        const isDefaultChecked = oldCombinations[index]?.is_default ? 'checked' : '';
+                        html += `<td>
+                                    <input type="hidden" name="combinations[${index}][is_default]" value="0">
+                                    <div class="form-check">
+                                        <input class="form-check-input" type="checkbox" name="combinations[${index}][is_default]" id="comb_default_${index}" value="1" ${isDefaultChecked}>
+                                        <label class="form-check-label small" for="comb_default_${index}">Default</label>
+                                    </div>
+                                    ${defaultErr}
+                                 </td>`;
 
                         html += `</tr>`;
                     });
@@ -740,6 +755,15 @@
                 @if (old('attribute_values'))
                     loadCombinations();
                 @endif
+
+                // When the product type changes, reset variant_type to simple
+                $('#product_type').on('change', function() {
+                    // Reset variant_type to simple whenever product type changes
+                    $('#variant_type').val('simple').trigger('change');
+                    // toggleSections will be triggered by the combined binding below,
+                    // but call it explicitly to ensure immediate UI update
+                    toggleSections();
+                });
 
                 // Toggle simple/variable sections based on variant_type and product_type
                 function toggleSections() {
@@ -763,7 +787,7 @@
                         $('.variable-section').hide();
                         $('#combination-pricing').html(
                             '<div class="alert alert-info mb-0">Select attribute values to generate combinations...</div>'
-                            );
+                        );
                     }
 
                     // show/hide digital & subscription specific fields
@@ -779,6 +803,7 @@
                         $('.subscription-fields').hide();
                     }
                 }
+                // Keep existing binding for both controls
                 $('#product_type, #variant_type').on('change', toggleSections);
                 toggleSections();
 
