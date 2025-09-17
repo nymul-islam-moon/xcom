@@ -106,7 +106,7 @@
                                                             class="btn btn-sm btn-primary" title="Edit">
                                                             <i class="bi bi-pencil"></i>
                                                         </a>
-                                                        <form action="{{ route('admin.products.brands.destroy', $product) }}"
+                                                        <form action="{{ route('shop.products.destroy', $product) }}"
                                                             method="POST" class="d-inline"
                                                             onsubmit="return confirm('Delete this category? This action cannot be undone.');">
                                                             @csrf

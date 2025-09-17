@@ -15,9 +15,7 @@ use Illuminate\Support\Str;
 class ProductSubCategoryController extends Controller
 {
 
-    public function __construct()
-    {
-    }
+    public function __construct() {}
 
     /**
      * Display a listing of the resource.
@@ -191,6 +189,7 @@ class ProductSubCategoryController extends Controller
         $q = (string) $request->get('q', '');
 
         $subCategories = ProductSubCategory::select('id', 'name')
+            ->where('status', 1)
             ->when($q !== '', fn($query) => $query->whrere('name', 'like', "%{$q}%"))
             ->orWhere('slug', 'like', "%{$q}%")
             ->orderBy('name')

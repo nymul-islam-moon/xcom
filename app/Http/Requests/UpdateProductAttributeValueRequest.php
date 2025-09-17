@@ -39,7 +39,7 @@ class UpdateProductAttributeValueRequest extends FormRequest
         $attributeId = $this->input('attribute_id');
 
         // Determine current record id from route (model binding or plain id)
-        $routeAttrVal = $this->route('attribute_value') ?? $this->route('attribute_value_id');
+        $routeAttrVal = $this->route('attribute_value') ?? $this->route('product_attribute_value_id');
         $currentId = is_object($routeAttrVal) ? ($routeAttrVal->id ?? null) : $routeAttrVal;
 
         return [

@@ -22,10 +22,10 @@ class DatabaseSeeder extends Seeder
         $this->call([
             AdminSeeder::class,
             ShopSeeder::class,
-            // ProductCategorySeeder::class,
-            // ProductSubCategorySeeder::class,
-            // ProductChildCategorySeeder::class,
-            // BrandSeeder::class,
+            ProductCategorySeeder::class,
+            ProductSubCategorySeeder::class,
+            ProductChildCategorySeeder::class,
+            BrandSeeder::class,
         ]);
     }
 }

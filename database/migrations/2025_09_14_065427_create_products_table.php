@@ -16,8 +16,8 @@ return new class extends Migration
 
             // Basic Product Info
             $table->string('name');
-            $table->string('sku', 100)->unique();
-            $table->string('slug', 100)->unique();
+            // $table->string('sku', 100)->nullable()->unique();
+            // $table->string('slug', 100)->unique();
             $table->text('description')->nullable();
             $table->text('short_description')->nullable();
 
@@ -26,8 +26,6 @@ return new class extends Migration
             $table->enum('variant_type', ['simple', 'variable'])->default('simple'); // simple = one variant, variable = multiple
 
             // Pricing
-            $table->decimal('base_price', 10, 2); // required for simple products
-            $table->decimal('sale_price', 10, 2)->nullable();
             $table->boolean('tax_included')->default(true);
             $table->decimal('tax_percentage', 5, 2)->nullable();
 

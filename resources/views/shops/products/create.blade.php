@@ -117,7 +117,7 @@
                                         </select>
                                     </div>
 
-                                    <div class="col-md-4">
+                                    <div class="col-md-4 sku-section">
                                         <label for="sku" class="form-label">SKU</label>
                                         <input type="text" name="sku" id="sku"
                                             class="form-control @error('sku') is-invalid @enderror"
@@ -170,6 +170,9 @@
                                             data-placeholder="Select Category" data-old='@json(old('category_id'))'>
                                             <option value="">Select Category</option>
                                         </select>
+                                        @error('category_id')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
@@ -178,6 +181,9 @@
                                             data-placeholder="Select Subcategory" data-old='@json(old('subcategory_id'))'>
                                             <option value="">Select Subcategory</option>
                                         </select>
+                                        @error('subcategory_id')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
@@ -187,6 +193,9 @@
                                             data-old='@json(old('child_category_id'))'>
                                             <option value="">Select Child Category</option>
                                         </select>
+                                        @error('child_category_id')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
@@ -211,6 +220,9 @@
                                                 {{ old('status') == 'discontinued' ? 'selected' : '' }}>Discontinued
                                             </option>
                                         </select>
+                                        @error('status')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
@@ -345,6 +357,9 @@
                                             products)</label>
                                         <input type="url" name="download_url" id="download_url" class="form-control"
                                             value="{{ old('download_url') }}">
+                                        @error('download_url')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-6 digital-fields">
                                         <label for="license_key" class="form-label">License Key (if applicable)</label>
@@ -374,6 +389,9 @@
                                         <label for="price" class="form-label">Regular Price</label>
                                         <input type="number" step="0.01" name="price" id="price"
                                             class="form-control" value="{{ old('price') }}">
+                                        @error('price')
+                                            <div class="invalid-feedback d-block">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4">
                                         <label for="sale_price" class="form-label">Sale Price</label>
@@ -607,34 +625,78 @@
                 });
 
                 // Subcategory & child chaining
+                // Category -> Subcategory (no hide/show)
                 $('#category_id').on('change', function() {
                     const id = $(this).val();
                     const $sub = $('#subcategory_id'),
                         $child = $('#child_category_id');
-                    $sub.empty();
-                    $child.empty();
+
+                    // clear selects but keep UI visible
+                    $sub.val(null).trigger('change');
+                    $sub.find('option').not(':disabled').remove();
+                    $child.val(null).trigger('change');
+                    $child.find('option').not(':disabled').remove();
+
                     initSelect2($sub);
                     initSelect2($child);
+
                     if (!id) return;
+
                     $.get('{{ route('shop.select.sub-categories') }}', {
                         category_id: id
                     }, function(data) {
-                        populateSelect($sub, data, @json(old('subcategory_id')));
+                        // normalize to array if necessary
+                        const items = Array.isArray(data) ? data : (data && data.data ? data
+                            .data : []);
+                        if (items && items.length) {
+                            populateSelect($sub, items, @json(old('subcategory_id')));
+                            // DO NOT hide/show wrappers here
+                        } else {
+                            // keep select cleared (no hide)
+                            $sub.val(null).trigger('change');
+                            $sub.find('option').not(':disabled').remove();
+                        }
+                    }).fail(function() {
+                        console.error('Failed to fetch subcategories');
+                        $sub.val(null).trigger('change');
+                        $sub.find('option').not(':disabled').remove();
                     });
                 });
 
+
+                // Subcategory -> Child (no hide/show)
                 $('#subcategory_id').on('change', function() {
                     const id = $(this).val();
                     const $child = $('#child_category_id');
-                    $child.empty();
+
+                    // clear previous child options but don't hide
+                    $child.val(null).trigger('change');
+                    $child.find('option').not(':disabled').remove();
                     initSelect2($child);
+
                     if (!id) return;
+
                     $.get('{{ route('shop.select.child-categories') }}', {
                         subcategory_id: id
                     }, function(data) {
-                        populateSelect($child, data, @json(old('child_category_id')));
+                        const items = Array.isArray(data) ? data : (data && data.data ? data
+                            .data : []);
+                        if (items && items.length) {
+                            populateSelect($child, items, @json(old('child_category_id')));
+                            // DO NOT hide/show wrappers here
+                        } else {
+                            // keep child cleared (no hide)
+                            $child.val(null).trigger('change');
+                            $child.find('option').not(':disabled').remove();
+                        }
+                    }).fail(function() {
+                        console.error('Failed to fetch child categories');
+                        $child.val(null).trigger('change');
+                        $child.find('option').not(':disabled').remove();
                     });
                 });
+
+
 
                 // Initialize attribute selects (these are rendered server-side)
                 $('.attribute-select').each(function() {
@@ -684,7 +746,7 @@
                     attributeNames.forEach(name => html += `<th>${name}</th>`);
                     // Added Default column header
                     html +=
-                        `<th>Price</th><th>Sale Price</th><th>Stock</th><th>SKU</th><th>Images</th><th>Default</th></tr></thead><tbody>`;
+                        `<th>Price</th><th>Sale Price</th><th>Stock</th><th>Slug</th><th>SKU</th><th>Images</th><th>Default</th></tr></thead><tbody>`;
 
                     combinations.forEach((combo, index) => {
                         html += `<tr>`;
@@ -696,6 +758,7 @@
                         let price = oldCombinations[index]?.price ?? '';
                         let sale = oldCombinations[index]?.sale_price ?? '';
                         let stock = oldCombinations[index]?.stock_quantity ?? '';
+                        let slug = oldCombinations[index]?.slug ?? ''; // <-- new
                         let sku = oldCombinations[index]?.sku ?? '';
 
                         let priceErr = combinationErrors[`combinations.${index}.price`] ?
@@ -706,6 +769,9 @@
                             '';
                         let stockErr = combinationErrors[`combinations.${index}.stock_quantity`] ?
                             `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.stock_quantity`][0]}</div>` :
+                            '';
+                        let slugErr = combinationErrors[`combinations.${index}.slug`] ?
+                            `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.slug`][0]}</div>` :
                             '';
                         let defaultErr = combinationErrors[`combinations.${index}.is_default`] ?
                             `<div class="invalid-feedback d-block">${combinationErrors[`combinations.${index}.is_default`][0]}</div>` :
@@ -718,7 +784,9 @@
                         html +=
                             `<td><input type="number" name="combinations[${index}][stock_quantity]" value="${stock}" class="form-control ${stockErr ? 'is-invalid' : ''}" placeholder="0">${stockErr}</td>`;
                         html +=
-                            `<td><input type="text" name="combinations[${index}][sku]" value="${sku}" class="form-control" placeholder=""></td>`;
+                            `<td><input type="text" name="combinations[${index}][slug]" value="${slug}" class="form-control ${slugErr ? 'is-invalid' : ''}" placeholder="slug">${slugErr}</td>`;
+                        html +=
+                            `<td><input type="text" name="combinations[${index}][sku]" value="${sku}" class="form-control" placeholder="sku"></td>`;
                         html += `<td>
                                     <div class="mb-2"><label class="form-label small">Main Image:</label><input type="file" name="combinations[${index}][main_image]" class="form-control" accept="image/*"></div>
                                     <div><label class="form-label small">Gallery Images:</label><input type="file" name="combinations[${index}][gallery_images][]" class="form-control" multiple accept="image/*"></div>
@@ -780,10 +848,12 @@
 
                     if (ptype === 'physical' && vtype === 'variable') {
                         $('.simple-section').hide();
+                        $('.sku-section').hide();
                         $('.variable-section').show();
                     } else {
                         // simple-mode (either non-physical products or simple variant)
                         $('.simple-section').show();
+                        $('.sku-section').show();
                         $('.variable-section').hide();
                         $('#combination-pricing').html(
                             '<div class="alert alert-info mb-0">Select attribute values to generate combinations...</div>'
