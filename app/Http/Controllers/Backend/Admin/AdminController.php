@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\Admin\Auth\StoreAdminRequest;
 use App\Http\Requests\Admin\Auth\UpdateAdminRequest;
+use App\Http\Requests\Admin\Auth\StoreAdminRequest;
+use App\Http\Controllers\Controller;
+use App\Jobs\AdminMailVerification;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\DB;
 use App\Jobs\SendAdminWelcomeMail;
 use App\Models\Admin;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Auth\Events\Registered;
 
 class AdminController extends Controller
 {
@@ -19,7 +22,7 @@ class AdminController extends Controller
         $admins = Admin::query()
             ->where('id', '!=', auth('admin')->id())
             ->paginate(5);  // Fetch all admins
-        return view('backend.admin.users.index', compact('admins')); // Return view with admins data
+        return view('backend.admin.users.index', compact('admins'));
     }
 
     /**
@@ -50,9 +53,8 @@ class AdminController extends Controller
             $admin = Admin::create($data);
             DB::commit();
             
-            // Send welcome email
-            // SendAdminWelcomeMail::dispatch($admin->id)
-            //     ->afterCommit();
+            // $admin->sendEmailVerificationNotification();
+            // AdminMailVerification::dispatch($admin)->afterCommit();
 
             return redirect()
                 ->route('admin.users.index')
@@ -130,10 +132,10 @@ class AdminController extends Controller
             $user->update($data);
             DB::commit();
 
-            // Optional: if email changed and is unverified, resend your welcome/verify mail
-            if ($emailChanged && is_null($user->email_verified_at)) {
-                \App\Jobs\SendAdminWelcomeMail::dispatch($user->id)->afterCommit();
-            }
+            // // Optional: if email changed and is unverified, resend your welcome/verify mail
+            // if ($emailChanged && is_null($user->email_verified_at)) {
+            //     \App\Jobs\SendAdminWelcomeMail::dispatch($user->id)->afterCommit();
+            // }
 
             return redirect()
                 ->route('admin.users.index')
