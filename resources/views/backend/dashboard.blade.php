@@ -1,6 +1,6 @@
 @extends('layouts.backend.app')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
 
         <div class="container-fluid">

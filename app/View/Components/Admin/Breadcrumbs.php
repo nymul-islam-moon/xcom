@@ -60,7 +60,7 @@ class Breadcrumbs extends Component
     }
 
 
-     public function hrefFor(array $item): ?string
+    public function hrefFor(array $item): ?string
     {
         if (!empty($item['url'])) {
             return $item['url'];

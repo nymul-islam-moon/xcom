@@ -1,16 +1,18 @@
 <?php
 
-use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Backend\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Admin\AdminDashboardController;
 use App\Http\Controllers\Admin\ProductAttributeController;
 use App\Http\Controllers\Admin\ProductAttributeValueController;
-use App\Http\Controllers\Admin\Auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
 use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Admin\ShopController;
+use App\Http\Controllers\Backend\Admin\UserController;
+use App\Http\Controllers\Backend\DashboardController;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -20,9 +22,14 @@ Route::middleware('guest:admin')->group(function () {
 
 // Authenticated (admin) routes
 Route::middleware('auth:admin')->group(function () {
+    
     Route::get('/phpinfo', fn() => phpinfo());
-    Route::get('/dashboard', [AdminDashboardController::class, 'index'])->name('dashboard');
+
+    // auth route
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
+
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    
     // one-click verify (no login required), signed + throttled
     Route::get('/email/verify/{id}/{hash}', [AdminAuthenticatedSessionController::class, 'verify'])
         ->middleware(['signed', 'throttle:6,1'])

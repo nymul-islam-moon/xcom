@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Auth;
+namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
@@ -12,7 +12,7 @@ class AdminAuthenticatedSessionController extends Controller
 {
     public function create()
     {
-        return view('admin.auth.login'); // make this view
+        return view('backend.admin.auth.login'); // make this view
     }
 
     public function store(Request $request)

@@ -1,9 +1,9 @@
 {{-- resources/views/admin/users/edit.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Edit Admin')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -175,12 +175,12 @@
                         </form>
                     </div>
 
-                </div> {{-- /.col --}}
-            </div> {{-- /.row --}}
-        </div> {{-- /.container-fluid --}}
-    </div> {{-- /.app-content --}}
+                </div> 
+            </div>
+        </div> 
+    </div>
 
-    @push('admin_scripts')
+    @push('backend_scripts')
     <script>
         (function () {
             const toggle = (inputId, btnId) => {

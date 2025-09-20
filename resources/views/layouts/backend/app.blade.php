@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <x-admin.head-links />
+    <x-backend.head-links />
     @stack('backend_styles')
 </head>
 
@@ -104,10 +104,10 @@
             </div>
         </nav>
 
-        <x-admin.aside />
+        <x-backend.left-side-bar />
 
         <main class="app-main">
-            @yield('admin_content')
+            @yield('backend_content')
         </main>
 
         <footer class="app-footer">
@@ -120,7 +120,7 @@
         </footer>
     </div>
 
-    <x-admin.scripts />
+    <x-backend.scripts />
     @stack('backend_scripts')
 </body>
 

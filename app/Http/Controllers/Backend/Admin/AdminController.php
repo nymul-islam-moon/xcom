@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\Admin\Auth\StoreAdminRequest;
@@ -19,7 +19,7 @@ class AdminController extends Controller
         $admins = Admin::query()
             ->where('id', '!=', auth('admin')->id())
             ->paginate(5);  // Fetch all admins
-        return view('admin.users.index', compact('admins')); // Return view with admins data
+        return view('backend.admin.users.index', compact('admins')); // Return view with admins data
     }
 
     /**
@@ -27,7 +27,7 @@ class AdminController extends Controller
      */
     public function create()
     {
-        return view('admin.users.create');
+        return view('backend.admin.users.create');
     }
 
     /**
@@ -51,8 +51,8 @@ class AdminController extends Controller
             DB::commit();
             
             // Send welcome email
-            SendAdminWelcomeMail::dispatch($admin->id)
-                ->afterCommit();
+            // SendAdminWelcomeMail::dispatch($admin->id)
+            //     ->afterCommit();
 
             return redirect()
                 ->route('admin.users.index')
@@ -71,7 +71,7 @@ class AdminController extends Controller
      */
     public function show(Admin $user)
     {
-        return view('admin.users.show', compact('user'));
+        return view('backend.admin.users.show', compact('user'));
     }
 
     /**
@@ -79,7 +79,7 @@ class AdminController extends Controller
      */
     public function edit(Admin $user)
     {
-        return view('admin.users.edit', compact('user'));
+        return view('backend.admin.users.edit', compact('user'));
     }
 
     /**

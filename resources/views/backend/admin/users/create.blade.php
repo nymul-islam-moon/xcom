@@ -1,9 +1,9 @@
 {{-- resources/views/admin/admins/create.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Create Admin')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -181,7 +181,7 @@
     </div> <!-- /.app-content -->
 
     {{-- Small helpers --}}
-    @push('admin_scripts')
+    @push('backend_scripts')
         <script>
             (function() {
                 const toggle = (inputId, btnId) => {

@@ -23,7 +23,7 @@ class ProductController extends Controller
     {
         $products = Product::latest()->paginate(10); // instead of get()
 
-        return view('shops.products.index', compact('products'));
+        return view('backend.shop.products.index', compact('products'));
     }
 
     /**
@@ -31,7 +31,7 @@ class ProductController extends Controller
      */
     public function create()
     {
-        return view('shops.products.create', [
+        return view('backend.shop.products.create', [
             'attributes' => ProductAttribute::with('values')->get(),
         ]);
     }
