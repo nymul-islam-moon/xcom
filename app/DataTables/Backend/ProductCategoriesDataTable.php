@@ -12,39 +12,54 @@ use Yajra\DataTables\Services\DataTable;
 
 class ProductCategoriesDataTable extends DataTable
 {
-    /**
-     * Build the DataTable class.
-     *
-     * @param QueryBuilder $query Results from query() method.
-     */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $dt = new EloquentDataTable($query);
 
         return $dt
-            ->addIndexColumn() // adds DT_RowIndex
+            ->addIndexColumn()
             ->addColumn('action', function (ProductCategory $row) {
-                $edit = route('admin.productcategories.edit', $row->id);
-                $delete = route('admin.productcategories.destroy', $row->id);
+                $edit = route('admin.products.categories.edit', $row->id);
+                $show = route('admin.products.categories.show', $row->id);
+                $delete = route('admin.products.categories.destroy', $row->id);
 
-                // Use a form for delete to respect CSRF + method
+                // CSRF + method fields
                 $csrf = csrf_field();
                 $method = method_field('DELETE');
 
+                // Bootstrap 5 dropdown (Admin-like compact dropdown)
                 return <<<HTML
-<div class="btn-group" role="group" aria-label="actions">
-  <a href="{$edit}" class="btn btn-sm btn-primary" title="Edit">
-    <i class="bi bi-pencil"></i> Edit
-  </a>
-  <form action="{$delete}" method="POST" style="display:inline-block" onsubmit="return confirm('Are you sure?');">
-    {$csrf}
-    {$method}
-    <button type="submit" class="btn btn-sm btn-danger" title="Delete">
-      <i class="bi bi-trash"></i> Delete
-    </button>
-  </form>
-</div>
-HTML;
+                <div class="text-center">
+                <div class="dropdown">
+                    <button class="btn btn-sm btn-secondary dropdown-toggle" type="button" id="actionsDropdown{$row->id}" data-bs-toggle="dropdown" aria-expanded="false">
+                    Actions
+                    </button>
+                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="actionsDropdown{$row->id}">
+                    <li>
+                        <a class="dropdown-item" href="{$edit}">
+                        <i class="bi bi-pencil-square me-2"></i> Edit
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                     <li>
+                        <a class="dropdown-item" href="{$show}">
+                        <i class="bi bi-eye me-2"></i> Show
+                        </a>
+                    </li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li>
+                        <form action="{$delete}" method="POST" onsubmit="return confirm('Are you sure you want to delete this category?');" style="display:inline;">
+                        {$csrf}
+                        {$method}
+                        <button type="submit" class="dropdown-item text-danger">
+                            <i class="bi bi-trash me-2"></i> Delete
+                        </button>
+                        </form>
+                    </li>
+                    </ul>
+                </div>
+                </div>
+                HTML;
             })
             ->editColumn('created_at', function (ProductCategory $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
@@ -52,55 +67,48 @@ HTML;
             ->editColumn('updated_at', function (ProductCategory $row) {
                 return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
             })
-            ->rawColumns(['action']); // allow HTML for action column
+            ->editColumn('is_active', function (ProductCategory $row) {
+                return $row->is_active ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+            })
+            ->rawColumns(['action', 'is_active']);
     }
 
-    /**
-     * Get the query source of dataTable.
-     */
     public function query(ProductCategory $model): QueryBuilder
     {
-        // If you have relations, eager load them here, e.g. ->with('parent')
         return $model->newQuery()->select('product_categories.*');
     }
 
-    /**
-     * Optional method if you want to use the html builder.
-     */
     public function html(): HtmlBuilder
     {
         return $this->builder()
             ->setTableId('productcategories-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->dom('Bfrtip') // show buttons
+            ->dom('Blfrtip') // <-- include 'l' so the length dropdown appears; 'B' is for Buttons
             ->orderBy(1)
-            // ->selectStyleSingle() // removed to avoid "1 row selected" behavior
+            ->selectStyleSingle()
             ->buttons([
                 Button::make('excel'),
                 Button::make('csv'),
                 Button::make('pdf'),
-                Button::make('print'),
-                Button::make('reset'),
-                Button::make('reload'),
-
-                // Custom Add button (no built-in type name)
-                Button::make() // no name provided
-                    ->text('<i class="bi bi-plus-lg"></i> Add')
-                    ->attr(['class' => 'btn btn-primary'])
-                    ->action("function ( e, dt, node, config ) {
-            window.location = '" . route('admin.productcategories.create') . "';
-        }"),
+            ])
+            ->parameters([
+                'responsive'  => true,
+                'autoWidth'   => false,
+                'processing'  => true,
+                'serverSide'  => true,
+                // lengthMenu: first array = values, second = labels
+                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength'  => 10, // default initial page size
+                // Optional: set language or other options here
+                // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
     }
 
-    /**
-     * Get the dataTable columns definition.
-     */
+
     public function getColumns(): array
     {
         return [
-            // Index column (DT_RowIndex)
             Column::computed('DT_RowIndex')
                 ->title('#')
                 ->orderable(false)
@@ -114,7 +122,7 @@ HTML;
                 ->width(120)
                 ->addClass('text-center'),
 
-            Column::make('id')->visible(false), // you can hide if you prefer
+            Column::make('id')->visible(false),
             Column::make('name'),
             Column::make('slug'),
             Column::make('is_active'),
@@ -124,9 +132,6 @@ HTML;
         ];
     }
 
-    /**
-     * Get the filename for export.
-     */
     protected function filename(): string
     {
         return 'ProductCategories_' . date('YmdHis');
