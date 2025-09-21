@@ -55,8 +55,7 @@ class ProductCategoryController extends Controller
 
         try {
             $formData = $request->validated();
-            $formData['slug'] = Str::slug($formData['name']);
-
+            
             ProductCategory::create($formData);
 
             DB::commit();

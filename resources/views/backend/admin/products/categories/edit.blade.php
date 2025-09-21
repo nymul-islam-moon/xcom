@@ -3,9 +3,10 @@
 
 @section('title', 'Edit Category')
 
-@push('backend_style')
+@push('backend_styles')
     <!-- Select2 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
     <style>
         /* Small UI polish to make the card feel lighter and modern */
         .card {
@@ -96,19 +97,15 @@
                                     @enderror
                                 </div>
 
-                                <!-- Category Status -->
+                                <!-- Category Status (Select2 AJAX) -->
                                 <div class="mb-3">
-                                    <label for="status" class="form-label small">Select Status <span
+                                    <label for="is_active" class="form-label small">Select Status <span
                                             class="text-danger">*</span></label>
-                                    <select name="status" id="category_status"
-                                        class="form-select select2 @error('status') is-invalid @enderror" required>
-                                        <option value="1"
-                                            {{ old('status', $category->status) == '1' ? 'selected' : '' }}>Active</option>
-                                        <option value="0"
-                                            {{ old('status', $category->status) == '0' ? 'selected' : '' }}>Inactive
-                                        </option>
+                                    <select name="is_active" id="category_status"
+                                        class="form-select select2 @error('is_active') is-invalid @enderror" required>
+                                        <!-- options loaded via AJAX -->
                                     </select>
-                                    @error('status')
+                                    @error('is_active')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -154,17 +151,78 @@
     </div>
 @endsection
 
-@push('admin_script')
+@push('backend_scripts')
     <!-- Select2 JS -->
-    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
     <script>
         $(document).ready(function() {
-            $('#category_status').select2({
-                placeholder: "Select Status",
+            const $status = $('#category_status');
+
+            $status.select2({
+                placeholder: 'Select status',
                 allowClear: true,
                 width: '100%',
-                minimumResultsForSearch: 0 // 👈 always show search box
+                ajax: {
+                    url: "{{ route('api.select-status') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        // API may return either an array or { results: [...] }
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const results = items.map(function(item) {
+                            return {
+                                id: String(item.id),
+                                text: item.text ?? item.name ?? item.title ?? String(item.id)
+                            };
+                        });
+                        return {
+                            results: results
+                        };
+                    },
+                    cache: true
+                },
+                dropdownParent: $('body')
             });
+
+            // Preload selected value: prefer old('is_active') (validation), otherwise current model value
+           const selectedValue = String(@json(old('is_active', (int) $category->is_active)));
+
+            const selectedLabel = @json(old('is_active_label', null)) || (selectedValue === '1' ? 'Active' : (
+                selectedValue === '0' ? 'Inactive' : null));
+
+            if (selectedValue !== null && selectedValue !== '') {
+                if (selectedLabel) {
+                    // If we already have a label, append and mark selected
+                    const option = new Option(selectedLabel, selectedValue, true, true);
+                    $status.append(option).trigger('change');
+                } else {
+                    // Otherwise, attempt to fetch options from the API and find the matching label
+                    $.ajax({
+                        url: "{{ route('api.select-status') }}",
+                        dataType: 'json'
+                    }).then(function(data) {
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const selected = items.find(item => String(item.id) === String(selectedValue));
+                        if (selected) {
+                            const label = selected.text ?? selected.name ?? selected.title ?? selectedValue;
+                            const option = new Option(label, selected.id, true, true);
+                            $status.append(option).trigger('change');
+                        } else {
+                            // final fallback when API doesn't contain the value
+                            const fallback = new Option(selectedValue, selectedValue, true, true);
+                            $status.append(fallback).trigger('change');
+                        }
+                    }).catch(function() {
+                        const fallback = new Option(selectedValue, selectedValue, true, true);
+                        $status.append(fallback).trigger('change');
+                    });
+                }
+            }
         });
     </script>
 @endpush

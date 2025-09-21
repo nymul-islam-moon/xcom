@@ -2,7 +2,11 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class UpdateProductCategoryRequest extends FormRequest
 {
@@ -14,7 +18,7 @@ class UpdateProductCategoryRequest extends FormRequest
         return true;
     }
 
-      /**
+    /**
      * Stop validation on first failure for this request.
      * Set to true if you prefer "bail" behavior globally here.
      */
@@ -28,7 +32,20 @@ class UpdateProductCategoryRequest extends FormRequest
         return [
             'name'        => 'category name',
             'description' => 'description',
+            'is_active'   => 'status'
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation()
+    {
+        $this->merge([
+            'name'      => Str::ucfirst(Str::lower(trim($this->input('name')))),
+            'slug'      => Str::slug(trim($this->input('name'))),
+            'is_active' => $this->boolean('is_active'),
+        ]);
     }
 
     /**
@@ -42,9 +59,10 @@ class UpdateProductCategoryRequest extends FormRequest
         $categoryId = is_object($category) ? $category->getKey() : $category;
 
         return [
-            'name'          => 'required|string|max:255|unique:product_categories,name,' . $categoryId,
-            'status'        => 'required|boolean|in:1,0',
-            'description'   => 'nullable|string',
+            'name'              => 'required|string|max:255|unique:product_categories,name,' . $categoryId,
+            'slug'              => 'required|string|max:255|unique:product_categories,slug,' . $categoryId,
+            'is_active'         => 'required|boolean',
+            'description'       => 'nullable|string',
         ];
     }
 
@@ -54,9 +72,30 @@ class UpdateProductCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Please enter a :attribute.',
-            'name.unique'   => 'The :attribute ":input" is already in use.',
-            'name.max'      => 'The :attribute may not be greater than :max characters.',
+            'name.required'         => 'Please enter a :attribute.',
+            'name.unique'           => 'The :attribute ":input" is already in use.',
+            'name.max'              => 'The :attribute may not be greater than :max characters.',
+            'is_active.required'    => 'Please select a :attribute.',
+            'is_active.boolean'     => 'The :attribute must be true or false.',
         ];
+    }
+
+
+    /**
+     * Handle failed validation.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        // Log all errors
+        Log::error('Product Category validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input'  => $this->all(),
+        ]);
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+        );
     }
 }
