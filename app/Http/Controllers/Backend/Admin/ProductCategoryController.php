@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Backend\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
@@ -35,7 +35,7 @@ class ProductCategoryController extends Controller
             ->orderBy('name')
             ->paginate(15)
             ->appends(['q' => $term]);
-        return view('backend.admin..products.categories.index', compact('productCategories'));
+        return view('backend.admin.products.categories.index', compact('productCategories'));
     }
 
     /**

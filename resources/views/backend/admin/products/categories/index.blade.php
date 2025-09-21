@@ -3,7 +3,7 @@
 
 @section('title', 'Product Category')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -87,8 +87,8 @@
                                                 <td class="text-break">{{ $category->slug }}</td>
                                                 <td class="text-break">
                                                     <span
-                                                        class="badge {{ $category->status ? 'bg-success' : 'bg-danger' }}">
-                                                        {{ $category->status ? 'Active' : 'Inactive' }}
+                                                        class="badge {{ $category->is_active ? 'bg-success' : 'bg-danger' }}">
+                                                        {{ $category->is_active ? 'Active' : 'Inactive' }}
                                                     </span>
                                                 </td>
 

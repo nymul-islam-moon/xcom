@@ -2,16 +2,11 @@
 
 use App\Http\Controllers\Backend\Admin\AdminController;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Admin\AdminDashboardController;
-use App\Http\Controllers\Admin\ProductAttributeController;
-use App\Http\Controllers\Admin\ProductAttributeValueController;
+
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
-use App\Http\Controllers\Admin\ProductBrandController;
-use App\Http\Controllers\Admin\ProductCategoryController;
-use App\Http\Controllers\Admin\ProductChildCategoryController;
-use App\Http\Controllers\Admin\ProductSubCategoryController;
-use App\Http\Controllers\Admin\ShopController;
-use App\Http\Controllers\Backend\Admin\UserController;
+
+use App\Http\Controllers\Backend\Admin\ProductCategoryController;
+
 use App\Http\Controllers\Backend\DashboardController;
 
 // Guest (admin) routes
@@ -40,38 +35,38 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('categories', ProductCategoryController::class);
 
-        Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
-            ->name('select-categories');
+        // Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
+        //     ->name('select-categories');
 
-        Route::resource('sub-categories', ProductSubCategoryController::class);
-        Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
-            ->name('select-sub-categories');
+        // Route::resource('sub-categories', ProductSubCategoryController::class);
+        // Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
+        //     ->name('select-sub-categories');
 
-        Route::resource('child-categories', ProductChildCategoryController::class);
+        // Route::resource('child-categories', ProductChildCategoryController::class);
 
-        Route::resource('brands', ProductBrandController::class);
+        // Route::resource('brands', ProductBrandController::class);
 
-        Route::resource('attributes', ProductAttributeController::class);
+        // Route::resource('attributes', ProductAttributeController::class);
 
-        Route::prefix('attributes/{attribute}')->group(function () {
-            Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
-        });
-        Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
-        Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
-        Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');
-        Route::put('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'update'])->name('attribute-values.update');
-        Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
+        // Route::prefix('attributes/{attribute}')->group(function () {
+        //     Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
+        // });
+        // Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
+        // Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
+        // Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');
+        // Route::put('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'update'])->name('attribute-values.update');
+        // Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
     // Shop Management Routes
-    Route::resource('shops', ShopController::class);
+    // Route::resource('shops', ShopController::class);
     // User Management Routes
     Route::resource('users', AdminController::class);
 
 
     // Bulk Upload
     Route::prefix('bulk-upload')->as('bulkUpload.')->group(function () {
-        Route::get('shops', [ShopController::class, 'show_bulk_upload'])->name('shop');
-        Route::post('shops/store', [ShopController::class, 'bulkUpload'])->name('shop.store');
+        // Route::get('shops', [ShopController::class, 'show_bulk_upload'])->name('shop');
+        // Route::post('shops/store', [ShopController::class, 'bulkUpload'])->name('shop.store');
     });
 });

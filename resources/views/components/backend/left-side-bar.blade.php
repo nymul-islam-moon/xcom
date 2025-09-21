@@ -213,14 +213,14 @@
                  <li class="nav-header">PRODUCTS</li>
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="{{ route('admin.products.categories.index') }}" class="nav-link">
+                         <a href="" class="nav-link">
                              <p>Categories</p>
                          </a>
                      </li>
                  @endauth
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="{{ route('admin.products.sub-categories.index') }}" class="nav-link">
+                         <a href="" class="nav-link">
                              <p>Sub-Categories</p>
                          </a>
                      </li>
@@ -228,7 +228,7 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="{{ route('admin.products.child-categories.index') }}" class="nav-link">
+                         <a href="" class="nav-link">
                              <p>{{ ucfirst('child-categories') }}</p>
                          </a>
                      </li>
@@ -236,7 +236,7 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="{{ route('admin.products.brands.index') }}" class="nav-link">
+                         <a href="" class="nav-link">
                              <p>{{ ucfirst('brands') }}</p>
                          </a>
                      </li>
@@ -244,7 +244,7 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="{{ route('admin.products.attributes.index') }}" class="nav-link">
+                         <a href="" class="nav-link">
                              <p>{{ ucfirst('attributes') }}</p>
                          </a>
                      </li>

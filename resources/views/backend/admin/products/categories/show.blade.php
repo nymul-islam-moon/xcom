@@ -3,7 +3,7 @@
 
 @section('title', 'Category Details')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -26,12 +26,9 @@
         <div class="container-fluid">
             <div class="row justify-content-center">
                 <div class="col-lg-8">
-                    <!-- Category Show Card -->
                     <div class="card">
                         <div class="card-header d-flex align-items-center">
                             <h3 class="card-title mb-0">Category — {{ $category->name }}</h3>
-
-
                         </div>
 
                         <div class="card-body">
@@ -43,7 +40,6 @@
                             @endif
 
                             <dl class="row mb-0">
-                                {{-- Name --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Name
                                 </dt>
@@ -51,7 +47,6 @@
                                     {{ $category->name }}
                                 </dd>
 
-                                {{-- Slug --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Slug
                                 </dt>
@@ -59,7 +54,6 @@
                                     {{ $category->slug ?? '—' }}
                                 </dd>
 
-                                {{-- Description --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Description
                                 </dt>
@@ -72,7 +66,6 @@
                                     @endif
                                 </dd>
 
-                                {{-- Products (optional) --}}
                                 @isset($category->products_count)
                                     <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                         Products
@@ -82,7 +75,6 @@
                                     </dd>
                                 @endisset
 
-                                {{-- Status --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Status
                                 </dt>
@@ -94,8 +86,6 @@
                                     @endif
                                 </dd>
 
-
-                                {{-- Created --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Created
                                 </dt>
@@ -103,7 +93,6 @@
                                     {{ optional($category->created_at)->format('M d, Y h:i A') }}
                                 </dd>
 
-                                {{-- Last Updated --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3">
                                     Last Updated
                                 </dt>
@@ -113,18 +102,14 @@
                             </dl>
                         </div>
 
-
-
                         <div class="card-footer d-flex align-items-center">
                             <a href="{{ route('admin.products.categories.index') }}" class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
-
                             <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap text-nowrap">
                                 <a href="{{ route('admin.products.categories.edit', $category) }}" class="btn btn-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
-
                                 <form action="{{ route('admin.products.categories.destroy', $category) }}" method="POST"
                                     class="d-inline-block m-0 p-0"
                                     onsubmit="return confirm('Delete this category? This action cannot be undone.');">
@@ -136,9 +121,7 @@
                                 </form>
                             </div>
                         </div>
-
                     </div>
-                    <!-- End Card -->
                 </div>
             </div>
         </div>
