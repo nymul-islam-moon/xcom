@@ -3,6 +3,14 @@
 
 @section('title', 'Product Subcategories')
 
+@push('backend_styles')
+    <!-- DataTables CSS (Bootstrap5 integration) -->
+    <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Optional plugins CSS -->
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+@endpush
+
 @section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
@@ -65,82 +73,10 @@
                         @endif
 
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 60px">#</th>
-                                            <th style="min-width: 220px;">Name</th>
-                                            <th style="min-width: 200px;">Slug</th>
-                                            <th style="min-width: 200px;">Category</th>
-                                            <th style="min-width: 260px;">Description</th>
-                                            <th style="width: 150px;">Child Categories</th>
-                                            <th style="width: 110px;">Products</th>
-                                            <th style="width: 170px;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($productSubCategories as $idx => $subcategory)
-                                            <tr>
-                                                <td>{{ $productSubCategories->firstItem() + $idx }}</td>
-                                                <td class="fw-semibold text-break">{{ $subcategory->name }}</td>
-                                                <td class="text-break">{{ $subcategory->slug }}</td>
-                                                <td class="text-break">{{ $subcategory->productCategory?->name ?? '—' }}
-                                                </td>
-                                                <td>
-                                                    <div class="text-truncate" style="max-width: 420px">
-                                                        {{ $subcategory->description ?? '—' }}
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="badge bg-info">{{ $subcategory->productChildCategories->count() ?? 0 }}</span>
-                                                </td>
-                                                <td>
-                                                    <span
-                                                        class="badge bg-info">{{ $subcategory->products_count ?? 0 }}</span>
-                                                </td>
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-1 flex-wrap">
-                                                        <a href="{{ route('admin.products.sub-categories.show', $subcategory) }}"
-                                                            class="btn btn-sm btn-outline-secondary" title="View">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                        <a href="{{ route('admin.products.sub-categories.edit', $subcategory) }}"
-                                                            class="btn btn-sm btn-primary" title="Edit">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form
-                                                            action="{{ route('admin.products.sub-categories.destroy', $subcategory) }}"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Delete this subcategory? This action cannot be undone.');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                                title="Delete">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    No subcategories found.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
+                             {{ $dataTable->table() }}
                         </div>
 
-                        <div class="card-footer clearfix">
-                            <div class="float-end">
-                                {!! $productSubCategories->appends(['q' => request('q')])->links('pagination::bootstrap-5') !!}
-                            </div>
-                        </div>
+                      
                     </div>
 
                 </div> <!-- /.col -->
@@ -148,3 +84,16 @@
         </div> <!-- /.container-fluid -->
     </div> <!-- /.app-content -->
 @endsection
+@push('backend_scripts')
+    <!-- DataTables core -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Bootstrap 5 integration -->
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Optional plugins (Buttons, Select) -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+@endpush

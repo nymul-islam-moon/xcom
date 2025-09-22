@@ -61,7 +61,6 @@
 
                         <div class="card-body">
                             {{ $dataTable->table() }}
-
                         </div>
 
 
