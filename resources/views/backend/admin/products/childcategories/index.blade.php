@@ -3,7 +3,7 @@
 
 @section('title', 'Product Child Categories')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -29,19 +29,6 @@
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
                             <h3 class="card-title flex-grow-1 mb-0">All Child Categories</h3>
-
-                            {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('admin.products.child-categories.index') }}" method="GET"
-                                  class="d-none d-sm-flex me-2">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                                           placeholder="Search name/slug/desc">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </form>
-
                             <a href="{{ route('admin.products.child-categories.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Child Category
                             </a>

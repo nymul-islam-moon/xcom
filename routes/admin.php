@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
 
 use App\Http\Controllers\Backend\Admin\ProductCategoryController;
+use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\DashboardController;
 
@@ -35,10 +36,7 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('categories', ProductCategoryController::class);
         Route::resource('sub-categories', ProductSubCategoryController::class);
-        // Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
-        //     ->name('select-sub-categories');
-
-        // Route::resource('child-categories', ProductChildCategoryController::class);
+        Route::resource('child-categories', ProductChildCategoryController::class);
 
         // Route::resource('brands', ProductBrandController::class);
 
