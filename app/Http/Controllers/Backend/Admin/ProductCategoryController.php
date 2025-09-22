@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
+use App\DataTables\Backend\ProductCategoriesDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductCategoryRequest;
 use App\Http\Requests\UpdateProductCategoryRequest;
@@ -22,20 +23,23 @@ class ProductCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ProductCategoriesDataTable $dataTable)
     {
-        $term = $request->query('q', '');
 
-        $productCategories = ProductCategory::query()
-            ->withCount([
-                'productSubCategories',
-                'productChildCategories',
-            ])
-            ->search($term)
-            ->orderBy('name')
-            ->paginate(15)
-            ->appends(['q' => $term]);
-        return view('backend.admin.products.categories.index', compact('productCategories'));
+        return $dataTable->render('backend.admin.products.categories.index');
+
+        // $term = $request->query('q', '');
+
+        // $productCategories = ProductCategory::query()
+        //     ->withCount([
+        //         'productSubCategories',
+        //         'productChildCategories',
+        //     ])
+        //     ->search($term)
+        //     ->orderBy('name')
+        //     ->paginate(15)
+        //     ->appends(['q' => $term]);
+        // return view('backend.admin.products.categories.index', compact('productCategories'));
     }
 
     /**
