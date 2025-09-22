@@ -1,4 +1,4 @@
-<x-admin.head-links />
+<x-backend.head-links />
 
 <body class="login-page bg-body-secondary">
     <div class="login-box">

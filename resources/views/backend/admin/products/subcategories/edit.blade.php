@@ -3,12 +3,12 @@
 
 @section('title', 'Edit Subcategory')
 
-@push('admin_styles')
+@push('backend_styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
 @endpush
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -113,7 +113,7 @@
     </div>
 @endsection
 
-@push('admin_scripts')
+@push('backend_scripts')
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 <script>
 $(function () {
@@ -126,7 +126,7 @@ $(function () {
         width: '100%',
         minimumInputLength: 0,
         ajax: {
-            url: "{{ route('admin.products.select-categories') }}",
+            url: "{{ route('api.select-categories') }}",
             dataType: 'json',
             delay: 200,
             data: params => ({ q: params.term || '' }),
@@ -141,7 +141,7 @@ $(function () {
 
     // If there was no preloaded <option>, fetch and set the selected item (fallback)
     if (selectedId && !$select.find('option[value="'+selectedId+'"]').length) {
-        $.getJSON("{{ route('admin.products.select-categories') }}", function (data) {
+        $.getJSON("{{ route('api.select-categories') }}", function (data) {
             const found = data.find(c => String(c.id) === String(selectedId));
             if (found) {
                 const option = new Option(found.name, found.id, true, true);
