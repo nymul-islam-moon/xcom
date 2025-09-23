@@ -97,32 +97,6 @@ class ProductSubCategoryController extends Controller
         try {
             $data = $request->validated();
 
-            // Determine target parent (may change on update)
-            $targetCategoryId = $data['product_category_id'] ?? $sub_category->product_category_id;
-
-            // Rebuild slug if name changed; otherwise keep current one
-            if (array_key_exists('name', $data) && $data['name'] !== $sub_category->name) {
-                $data['slug'] = Str::slug($data['name']);
-            } else {
-                $data['slug'] = $sub_category->slug ?? Str::slug($sub_category->name);
-            }
-
-            // Ensure slug uniqueness within the (possibly new) parent category
-            $base = $data['slug'];
-            $i = 2;
-            while (
-                ProductSubCategory::where('product_category_id', $targetCategoryId)
-                ->where('slug', $data['slug'])
-                ->where('id', '!=', $sub_category->id)
-                ->exists()
-            ) {
-                $data['slug'] = "{$base}-{$i}";
-                $i++;
-            }
-
-            // Ensure FK aligns with target parent
-            $data['product_category_id'] = $targetCategoryId;
-
             $sub_category->update($data);
 
             DB::commit();

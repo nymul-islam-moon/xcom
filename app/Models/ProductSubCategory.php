@@ -17,8 +17,13 @@ class ProductSubCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'is_active',
         'description',
         'product_category_id',
+    ];
+
+    protected $casts = [
+        'is_active' => 'boolean',
     ];
 
     /** Scope: search by name/slug/description */

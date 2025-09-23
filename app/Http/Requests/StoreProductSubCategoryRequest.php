@@ -24,6 +24,7 @@ class StoreProductSubCategoryRequest extends FormRequest
             'description'           => 'description',
             'product_category_id'   => 'category',
             'slug'                  => 'slug',
+            'is_active'             => 'status'
         ];
     }
 
@@ -51,8 +52,9 @@ class StoreProductSubCategoryRequest extends FormRequest
         $slug = Str::slug($slugBase);
 
         $this->merge([
-            'name' => $name,
-            'slug' => $slug,
+            'name'          => $name,
+            'slug'          => $slug,
+            'is_active'     => $this->boolean('is_active'),
         ]);
     }
 
@@ -69,8 +71,9 @@ class StoreProductSubCategoryRequest extends FormRequest
                 'required', 'string', 'max:255',
                 Rule::unique('product_sub_categories', 'slug'),
             ],
-            'product_category_id' => ['required', 'integer', 'exists:product_categories,id'],
-            'description' => ['nullable', 'string'],
+            'product_category_id'   => ['required', 'integer', 'exists:product_categories,id'],
+            'is_active'             => ['required', 'boolean'],
+            'description'           => ['nullable', 'string'],
         ];
     }
 
@@ -84,6 +87,8 @@ class StoreProductSubCategoryRequest extends FormRequest
             'product_category_id.exists'        => 'The selected :attribute is invalid.',
             'slug.required'                     => 'The :attribute is required.',
             'slug.unique'                       => 'The generated :attribute conflicts with an existing one. Please change the name.',
+            'is_active.required'                => 'Please select a :attribute.',
+            'is_active.boolean'                 => 'The selected :attribute is invalid.',
         ];
     }
 }

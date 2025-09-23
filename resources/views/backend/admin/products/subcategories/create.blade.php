@@ -18,7 +18,7 @@
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a>
+                        <li class="breadcrumb-item"><a href="">Products</a>
                         </li>
                         <li class="breadcrumb-item"><a
                                 href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
@@ -65,6 +65,19 @@
                                     <select name="product_category_id" id="product_category_id"
                                         class="form-select @error('product_category_id') is-invalid @enderror" required></select>
                                     @error('product_category_id')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
+                                {{-- Status (is_active) - Select2 AJAX --}}
+                                <div class="mb-3">
+                                    <label for="is_active" class="form-label">Select Status <span
+                                            class="text-danger">*</span></label>
+                                    <select name="is_active" id="subcategory_status"
+                                        class="form-select select2 @error('is_active') is-invalid @enderror" required>
+                                        <!-- options loaded via AJAX -->
+                                    </select>
+                                    @error('is_active')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
                                 </div>
@@ -146,6 +159,75 @@
                     }
                 });
             }
+
+            // ----------------------------
+            // Status Select2 (is_active)
+            // ----------------------------
+            const $status = $('#subcategory_status');
+
+            $status.select2({
+                placeholder: 'Select status',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.select-status') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        // Normalize API data to Select2 format
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const results = items.map(function(item) {
+                            return {
+                                id: item.id,
+                                text: item.text ?? item.name ?? item.title ?? ''
+                            };
+                        });
+                        return {
+                            results: results
+                        };
+                    },
+                    cache: true
+                },
+                dropdownParent: $('body') // ensures dropdown overlays correctly
+            });
+
+            // Preload old value for is_active (after validation error)
+            const oldStatusValue = @json(old('is_active'));
+            const oldStatusLabel = @json(old('is_active_label') ?? null);
+
+            if (oldStatusValue) {
+                if (oldStatusLabel) {
+                    const option = new Option(oldStatusLabel, oldStatusValue, true, true);
+                    $status.append(option).trigger('change');
+                } else {
+                    $.ajax({
+                        url: "{{ route('api.select-status') }}",
+                        dataType: 'json'
+                    }).then(function(data) {
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const selected = items.find(item => String(item.id) === String(oldStatusValue));
+                        if (selected) {
+                            const option = new Option(
+                                selected.text ?? selected.name ?? selected.title,
+                                selected.id, true, true
+                            );
+                            $status.append(option).trigger('change');
+                        } else {
+                            const fallback = new Option(oldStatusValue, oldStatusValue, true, true);
+                            $status.append(fallback).trigger('change');
+                        }
+                    }).catch(function() {
+                        const fallback = new Option(oldStatusValue, oldStatusValue, true, true);
+                        $status.append(fallback).trigger('change');
+                    });
+                }
+            }
+
         });
     </script>
 @endpush

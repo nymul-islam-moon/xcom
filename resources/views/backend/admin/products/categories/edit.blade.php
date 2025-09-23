@@ -190,7 +190,7 @@
             });
 
             // Preload selected value: prefer old('is_active') (validation), otherwise current model value
-           const selectedValue = String(@json(old('is_active', (int) $category->is_active)));
+            const selectedValue = String(@json(old('is_active', (int) $category->is_active)));
 
             const selectedLabel = @json(old('is_active_label', null)) || (selectedValue === '1' ? 'Active' : (
                 selectedValue === '0' ? 'Inactive' : null));
