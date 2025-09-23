@@ -2,7 +2,7 @@
 
 namespace App\DataTables\Backend;
 
-use App\Models\ProductSubCategory;
+use App\Models\ProductChildCategory;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class ProductSubCategoriesDataTable extends DataTable
+class ProductChildCategoriesDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -24,7 +24,7 @@ class ProductSubCategoriesDataTable extends DataTable
         $dt = (new EloquentDataTable($query));
         return $dt
             ->addIndexColumn()
-            ->addColumn('action', function (ProductSubCategory $row) {
+            ->addColumn('action', function (ProductChildCategory $row) {
                 $actions = [
                     [
                         'type' => 'link',
@@ -54,16 +54,16 @@ class ProductSubCategoriesDataTable extends DataTable
                     'actions' => $actions,
                 ])->render();
             })
-            ->editColumn('product_category_id', function (ProductSubCategory $row) {
-                return $row->product_category_id ? $row->productCategory->name : 'N/A';
+            ->editColumn('product_sub_category_id', function (ProductChildCategory $row) {
+                return $row->product_sub_category_id ? $row->productSubCategory->name : 'N/A';
             })
-            ->editColumn('created_at', function (ProductSubCategory $row) {
+            ->editColumn('created_at', function (ProductChildCategory $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
             })
-            ->editColumn('updated_at', function (ProductSubCategory $row) {
+            ->editColumn('updated_at', function (ProductChildCategory $row) {
                 return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
             })
-            ->editColumn('is_active', function (ProductSubCategory $row) {
+            ->editColumn('is_active', function (ProductChildCategory $row) {
                 return $row->is_active ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
             })
             ->rawColumns(['action', 'is_active']);
@@ -72,9 +72,9 @@ class ProductSubCategoriesDataTable extends DataTable
     /**
      * Get the query source of dataTable.
      */
-    public function query(ProductSubCategory $model): QueryBuilder
+    public function query(ProductChildCategory $model): QueryBuilder
     {
-        return $model->newQuery()->select('product_sub_categories.*');
+        return $model->newQuery()->select('product_child_categories.*');
     }
 
     /**
@@ -83,7 +83,7 @@ class ProductSubCategoriesDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('productsubcategories-table')
+            ->setTableId('productchilecategories-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('Blfrtip') // <-- include 'l' so the length dropdown appears; 'B' is for Buttons
@@ -125,9 +125,10 @@ class ProductSubCategoriesDataTable extends DataTable
                 ->printable(false)
                 ->width(60)
                 ->addClass('text-center'),
+            Column::make('id'),
             Column::make('name'),
             Column::make('slug'),
-            Column::make('product_category_id')->title('Category'),
+            Column::make('product_sub_category_id')->title('SubCategory'),
             Column::make('is_active'),
             Column::make('description'),
             Column::make('created_at'),
@@ -140,6 +141,6 @@ class ProductSubCategoriesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ProductSubCategories_' . date('YmdHis');
+        return 'ProductChildCategories_' . date('YmdHis');
     }
 }

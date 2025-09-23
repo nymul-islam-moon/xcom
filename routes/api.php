@@ -11,3 +11,4 @@ Route::get('/user', function (Request $request) {
 
 Route::get('/select-status', [SelectController::class, 'ActiveInactiveSelect'])->name('api.select-status');
 Route::get('/select-categories', [SelectController::class, 'categorySelect'])->name('api.select-categories');
+Route::get('/select-sub-categories/{categoryId}', [SelectController::class, 'subCategorySelect'])->name('api.select-sub-categories');

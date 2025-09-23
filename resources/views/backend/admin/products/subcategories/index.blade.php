@@ -79,19 +79,14 @@
                       
                     </div>
 
-                </div> <!-- /.col -->
-            </div> <!-- /.row -->
-        </div> <!-- /.container-fluid -->
-    </div> <!-- /.app-content -->
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @push('backend_scripts')
-    <!-- DataTables core -->
     <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
-
-    <!-- DataTables Bootstrap 5 integration -->
     <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
-
-    <!-- Optional plugins (Buttons, Select) -->
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
     <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
 

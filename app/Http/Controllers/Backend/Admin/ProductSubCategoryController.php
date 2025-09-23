@@ -53,22 +53,7 @@ class ProductSubCategoryController extends Controller
 
         try {
             $data = $request->validated();
-
-            // Base slug from name
-            $data['slug'] = Str::slug($data['name']);
-
-            // Ensure slug uniqueness scoped to the parent category
-            $base = $data['slug'];
-            $i = 2;
-            while (
-                ProductSubCategory::where('product_category_id', $data['product_category_id'])
-                ->where('slug', $data['slug'])
-                ->exists()
-            ) {
-                $data['slug'] = "{$base}-{$i}";
-                $i++;
-            }
-
+           
             ProductSubCategory::create($data);
 
             DB::commit();

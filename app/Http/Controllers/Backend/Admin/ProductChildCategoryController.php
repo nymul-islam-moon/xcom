@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
+use App\DataTables\Backend\ProductChildCategoriesDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductChildCategoryRequest;
 use App\Http\Requests\UpdateProductChildCategoryRequest;
@@ -16,23 +17,23 @@ class ProductChildCategoryController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ProductChildCategoriesDataTable $dataTable)
     {
-        $term = $request->query('q', '');
+        // $term = $request->query('q', '');
 
-        $productChildCategories = \App\Models\ProductChildCategory::query()
-            ->with([
-                // include the FK so Eloquent can hop to productCategory
-                'productSubCategory:id,name,product_category_id',
-                // actually load the category too
-                'productSubCategory.productCategory:id,name',
-            ])
-            ->search($term)
-            ->orderBy('name')
-            ->paginate(15)
-            ->appends(['q' => $term]); // keeps search term in pagination links
+        // $productChildCategories = \App\Models\ProductChildCategory::query()
+        //     ->with([
+        //         // include the FK so Eloquent can hop to productCategory
+        //         'productSubCategory:id,name,product_category_id',
+        //         // actually load the category too
+        //         'productSubCategory.productCategory:id,name',
+        //     ])
+        //     ->search($term)
+        //     ->orderBy('name')
+        //     ->paginate(15)
+        //     ->appends(['q' => $term]); // keeps search term in pagination links
 
-        return view('backend.admin.products.childcategories.index', compact('productChildCategories'));
+        return $dataTable->render('backend.admin.products.childcategories.index');
     }
 
 
