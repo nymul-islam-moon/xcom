@@ -114,6 +114,16 @@
                                 </div>
                             </form>
                         </div>
+
+                        <div class="card-footer d-flex align-items-center justify-content-between">
+                            <div class="small text-muted">
+                                Created: {{ optional($sub_category->created_at)->format('M d, Y h:i A') }}
+                            </div>
+
+                            <div class="small text-muted ms-auto">
+                                Last updated: {{ optional($sub_category->updated_at)->diffForHumans() ?? '—' }}
+                            </div>
+                        </div>
                     </div>
                     <!-- End Card -->
                 </div>
