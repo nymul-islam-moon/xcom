@@ -6,7 +6,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
-use App\Models\ProductCategory; // <- added
+use App\Models\ProductCategory;
 
 class StoreProductSubCategoryRequest extends FormRequest
 {
@@ -42,7 +42,7 @@ class StoreProductSubCategoryRequest extends FormRequest
                 $categoryName = ProductCategory::where('id', $categoryId)->value('name') ?? '';
             } catch (\Throwable $e) {
                 // don't break validation if DB is unreachable; log for debugging
-                Log::error('Error fetching category name for subcategory slug: '.$e->getMessage());
+                Log::error('Error fetching category name for subcategory slug: ' . $e->getMessage());
                 $categoryName = '';
             }
         }
@@ -62,13 +62,17 @@ class StoreProductSubCategoryRequest extends FormRequest
     {
         return [
             'name' => [
-                'required', 'string', 'max:255',
+                'required',
+                'string',
+                'max:255',
                 // unique within the same parent category
                 Rule::unique('product_sub_categories', 'name')
-                    ->where(fn ($q) => $q->where('product_category_id', $this->input('product_category_id')))
+                    ->where(fn($q) => $q->where('product_category_id', $this->input('product_category_id')))
             ],
             'slug' => [
-                'required', 'string', 'max:255',
+                'required',
+                'string',
+                'max:255',
                 Rule::unique('product_sub_categories', 'slug'),
             ],
             'product_category_id'   => ['required', 'integer', 'exists:product_categories,id'],

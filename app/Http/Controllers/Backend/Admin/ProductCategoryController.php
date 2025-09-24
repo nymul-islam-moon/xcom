@@ -15,10 +15,7 @@ use Illuminate\Support\Facades\Log;
 class ProductCategoryController extends Controller
 {
 
-    public function __construct()
-    {
-        // dd('This is the product category controller');
-    }
+    public function __construct() {}
 
     /**
      * Display a listing of the resource.
@@ -27,19 +24,6 @@ class ProductCategoryController extends Controller
     {
 
         return $dataTable->render('backend.admin.products.categories.index');
-
-        // $term = $request->query('q', '');
-
-        // $productCategories = ProductCategory::query()
-        //     ->withCount([
-        //         'productSubCategories',
-        //         'productChildCategories',
-        //     ])
-        //     ->search($term)
-        //     ->orderBy('name')
-        //     ->paginate(15)
-        //     ->appends(['q' => $term]);
-        // return view('backend.admin.products.categories.index', compact('productCategories'));
     }
 
     /**
@@ -59,7 +43,7 @@ class ProductCategoryController extends Controller
 
         try {
             $formData = $request->validated();
-            
+
             ProductCategory::create($formData);
 
             DB::commit();

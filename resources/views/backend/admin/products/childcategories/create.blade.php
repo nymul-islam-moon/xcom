@@ -1,7 +1,7 @@
 {{-- resources/views/admin/subcategories/create.blade.php --}}
 @extends('layouts.backend.app')
 
-@section('title', 'Create Subcategory')
+@section('title', 'Create Child Category')
 
 @push('backend_styles')
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
@@ -13,17 +13,15 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Create Subcategory</h3>
+                    <h3 class="mb-0">Create Child Category</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Child Category', 'route' => 'admin.child-category.index'],
+                        ['label' => 'Child Category Create', 'action' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -35,7 +33,7 @@
                 <div class="col-lg-8">
                     <div class="card">
                         <div class="card-header">
-                            <h3 class="card-title mb-0">Add New Subcategory</h3>
+                            <h3 class="card-title mb-0">Add New Child Category</h3>
                         </div>
 
                         @if (session('error'))
@@ -43,16 +41,16 @@
                         @endif
 
                         <div class="card-body">
-                            <form action="{{ route('admin.products.sub-categories.store') }}" method="POST">
+                            <form action="{{ route('admin.products.child-categories.store') }}" method="POST">
                                 @csrf
 
-                                {{-- Subcategory Name --}}
+                                {{-- Child Category Name --}}
                                 <div class="mb-3">
-                                    <label for="name" class="form-label">Subcategory Name <span
+                                    <label for="name" class="form-label">Child Category Name <span
                                             class="text-danger">*</span></label>
                                     <input type="text" name="name" id="name"
                                         class="form-control @error('name') is-invalid @enderror" value="{{ old('name') }}"
-                                        placeholder="Enter subcategory name" required>
+                                        placeholder="Enter Child Category name" required>
                                     @error('name')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror
@@ -80,6 +78,18 @@
                                     @enderror
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="is_active" class="form-label">Select Status <span
+                                            class="text-danger">*</span></label>
+                                    <select name="is_active" id="child_category_status"
+                                        class="form-select select2 @error('is_active') is-invalid @enderror" required>
+                                        <!-- options loaded via AJAX -->
+                                    </select>
+                                    @error('is_active')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 {{-- Description (optional) --}}
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
@@ -92,11 +102,11 @@
 
                                 {{-- Actions --}}
                                 <div class="d-flex justify-content-between">
-                                    <a href="{{ route('admin.products.sub-categories.index') }}" class="btn btn-secondary">
+                                    <a href="{{ route('admin.products.child-categories.index') }}" class="btn btn-secondary">
                                         <i class="bi bi-arrow-left"></i> Back
                                     </a>
                                     <button type="submit" class="btn btn-success">
-                                        <i class="bi bi-check-circle"></i> Create Subcategory
+                                        <i class="bi bi-check-circle"></i> Create Child Category
                                     </button>
                                 </div>
                             </form>
@@ -110,9 +120,6 @@
 @endsection
 
 @push('backend_scripts')
-    {{-- If your layout already loads jQuery you can remove the next line; keeping it here is safe in most cases --}}
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
     <script>
@@ -217,6 +224,75 @@
                     $subCategory.append(subOption).trigger('change');
                 }
             }
+
+            // ----------------------------
+            // Status Select2 (is_active)
+            // ----------------------------
+            const $status = $('#child_category_status');
+
+            $status.select2({
+                placeholder: 'Select status',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.select-status') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        // Normalize API data to Select2 format
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const results = items.map(function(item) {
+                            return {
+                                id: item.id,
+                                text: item.text ?? item.name ?? item.title ?? ''
+                            };
+                        });
+                        return {
+                            results: results
+                        };
+                    },
+                    cache: true
+                },
+                dropdownParent: $('body') // ensures dropdown overlays correctly
+            });
+
+            // Preload old value for is_active (after validation error)
+            const oldStatusValue = @json(old('is_active'));
+            const oldStatusLabel = @json(old('is_active_label') ?? null);
+
+            if (oldStatusValue) {
+                if (oldStatusLabel) {
+                    const option = new Option(oldStatusLabel, oldStatusValue, true, true);
+                    $status.append(option).trigger('change');
+                } else {
+                    $.ajax({
+                        url: "{{ route('api.select-status') }}",
+                        dataType: 'json'
+                    }).then(function(data) {
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const selected = items.find(item => String(item.id) === String(oldStatusValue));
+                        if (selected) {
+                            const option = new Option(
+                                selected.text ?? selected.name ?? selected.title,
+                                selected.id, true, true
+                            );
+                            $status.append(option).trigger('change');
+                        } else {
+                            const fallback = new Option(oldStatusValue, oldStatusValue, true, true);
+                            $status.append(fallback).trigger('change');
+                        }
+                    }).catch(function() {
+                        const fallback = new Option(oldStatusValue, oldStatusValue, true, true);
+                        $status.append(fallback).trigger('change');
+                    });
+                }
+            }
+
         });
     </script>
 @endpush

@@ -55,33 +55,9 @@ class ProductChildCategoryController extends Controller
         try {
             $formData = $request->validated();
 
-            // Build a contextual base slug using parent subcategory (if found)
-            $sub = ProductSubCategory::select('id', 'name', 'slug')
-                ->find($formData['product_sub_category_id']);
-
-            $base = Str::slug(
-                trim(sprintf('%s %s', $sub?->slug ?? $sub?->name ?? '', $formData['name']))
-            );
-
-            if ($base === '') {
-                $base = Str::slug($formData['name']);
-            }
-
-            // Ensure global uniqueness against product_child_categories.slug
-            $slug = $base;
-            $i = 2;
-            while (ProductChildCategory::where('slug', $slug)->exists()) {
-                $slug = "{$base}-{$i}";
-                $i++;
-            }
-
+          
             // Create record
-            ProductChildCategory::create([
-                'name' => $formData['name'],
-                'slug' => $slug,
-                'description' => $formData['description'] ?? null,
-                'product_sub_category_id' => $formData['product_sub_category_id'],
-            ]);
+            ProductChildCategory::create($formData);
 
             DB::commit();
 

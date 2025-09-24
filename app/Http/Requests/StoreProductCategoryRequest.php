@@ -41,9 +41,9 @@ class StoreProductCategoryRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'name'      => Str::ucfirst(Str::lower(trim($this->input('name')))),
+            'name'      => Str::title(Str::lower(trim($this->input('name')))),
             'slug'      => Str::slug(trim($this->input('name'))),
-            'is_active' => $this->boolean('is_active'), // Laravel 11 boolean helper
+            'is_active' => $this->boolean('is_active'),
         ]);
     }
 

@@ -16,10 +16,14 @@ class ProductChildCategory extends Model
     protected $fillable = [
         'name',
         'slug',
+        'is_active',
         'description',
         'product_sub_category_id'
     ];
 
+    protected $casts = [
+        'is_active' => 'boolean',
+    ];
 
     /** Scope: search by name/slug/description */
     public function scopeSearch($query, ?string $term)
@@ -43,6 +47,4 @@ class ProductChildCategory extends Model
     {
         return $this->belongsTo(ProductSubCategory::class, 'product_sub_category_id');
     }
-
-    
 }
