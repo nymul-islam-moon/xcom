@@ -31,7 +31,7 @@ class StoreProductSubCategoryRequest extends FormRequest
     protected function prepareForValidation()
     {
         // Normalize name
-        $name = Str::ucfirst(Str::lower(trim($this->input('name'))));
+        $name = Str::title(Str::lower(trim($this->input('name'))));
 
         // Attempt to get parent category name for slug uniqueness
         $categoryName = '';

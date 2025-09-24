@@ -34,7 +34,7 @@ class UpdateProductSubCategoryRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $name = Str::ucfirst(Str::lower(trim($this->input('name', ''))));
+        $name = Str::title(Str::lower(trim($this->input('name', ''))));
         $categoryId = $this->input('product_category_id');
 
         $categoryName = '';

@@ -38,19 +38,6 @@
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
                             <h3 class="card-title flex-grow-1 mb-0">All Subcategories</h3>
-
-                            {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('admin.products.sub-categories.index') }}" method="GET"
-                                class="d-none d-sm-flex me-2">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                                        placeholder="Search name/slug/desc">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </form>
-
                             <a href="{{ route('admin.products.sub-categories.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Subcategory
                             </a>
