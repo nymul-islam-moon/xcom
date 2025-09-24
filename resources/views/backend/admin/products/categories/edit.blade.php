@@ -61,22 +61,6 @@
                         <div class="card-header d-flex align-items-center">
                             <div>
                                 <h3 class="card-title mb-0">Edit Category - {{ $category->name }}</h3>
-                                {{-- <small class="text-muted">ID: <span class="fw-semibold">{{ $category->id }}</span></small> --}}
-                            </div>
-
-                            <div class="ms-auto d-flex gap-2">
-                                <a href="{{ route('admin.products.categories.show', $category) }}"
-                                    class="btn btn-sm btn-outline-primary">
-                                    <i class="bi bi-eye"></i> View
-                                </a>
-                                <form action="{{ route('admin.products.categories.destroy', $category) }}" method="POST"
-                                    class="m-0 p-0"
-                                    onsubmit="return confirm('Delete this category? This action cannot be undone.');">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-sm btn-outline-danger"><i class="bi bi-trash"></i>
-                                        Delete</button>
-                                </form>
                             </div>
                         </div>
                         <div class="card-body">
@@ -144,7 +128,6 @@
                         </div>
 
                     </div>
-                    <!-- End Card -->
                 </div>
             </div>
         </div>

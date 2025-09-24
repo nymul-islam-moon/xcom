@@ -6,6 +6,7 @@ use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
 
 class StoreProductCategoryRequest extends FormRequest
@@ -30,8 +31,8 @@ class StoreProductCategoryRequest extends FormRequest
     {
         return [
             'name'        => 'category name',
-            'description' => 'description',
             'is_active'   => 'status',
+            'description' => 'description',
         ];
     }
 
@@ -55,10 +56,10 @@ class StoreProductCategoryRequest extends FormRequest
         $categoryId = $this->route('category') ?? null; // for update requests
 
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:product_categories,name' . ($categoryId ? ",$categoryId" : '')],
-            'slug' => ['required', 'string', 'max:255', 'unique:product_categories,slug' . ($categoryId ? ",$categoryId" : '')],
-            'is_active' => ['required', 'boolean'], // boolean covers true/false (1/0)
-            'description' => ['nullable', 'string'],
+            'name'          => ['required', 'string', 'max:255', 'unique:product_categories,name'],
+            'slug'          => ['required', 'string', 'max:255', 'unique:product_categories,slug'],
+            'is_active'     => ['required', 'boolean'],
+            'description'   => ['nullable', 'string'],
         ];
     }
 
@@ -68,11 +69,11 @@ class StoreProductCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required' => 'Please enter a :attribute.',
-            'name.unique'   => 'The :attribute ":input" is already in use.',
-            'name.max'      => 'The :attribute may not be greater than :max characters.',
-            'is_active.required' => 'Please select a :attribute.',
-            'is_active.boolean'  => 'The selected :attribute is invalid.',
+            'name.required'         => 'Please enter a :attribute.',
+            'name.unique'           => 'The :attribute ":input" is already in use.',
+            'name.max'              => 'The :attribute may not be greater than :max characters.',
+            'is_active.required'    => 'Please select a :attribute.',
+            'is_active.boolean'     => 'The selected :attribute is invalid.',
         ];
     }
 
@@ -82,7 +83,7 @@ class StoreProductCategoryRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         // Log all errors
-        Log::error('Product Category validation failed', [
+        Log::error('Product Category Store validation failed', [
             'errors' => $validator->errors()->toArray(),
             'input'  => $this->all(),
         ]);
