@@ -11,16 +11,12 @@
                     <h3 class="mb-0">Subcategory Details</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('admin.products.categories.index') }}">Categories</a>
-                        </li>
-                        <li class="breadcrumb-item">
-                            <a href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">Details</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Sub-Category', 'route' => 'admin.products.sub-categories.index'],
+                        ['label' => 'Details', 'active' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -90,15 +86,16 @@
                                     @endif
                                 </dd>
 
-                                {{-- Products (optional if you load withCount) --}}
-                                @isset($sub_category->products_count)
-                                    <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
-                                        Products
-                                    </dt>
-                                    <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
-                                        <span class="badge text-bg-secondary">{{ $sub_category->products_count }}</span>
-                                    </dd>
-                                @endisset
+                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
+                                    Status
+                                </dt>
+                                <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
+                                    @if ($sub_category->is_active)
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Active</span>
+                                    @else
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactive</span>
+                                    @endif
+                                </dd>
 
                                 {{-- Created --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">

@@ -4,14 +4,12 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\DataTables\Backend\ProductSubCategoriesDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductSubCategoryRequest;
-use App\Http\Requests\UpdateProductSubCategoryRequest;
+use App\Http\Requests\Backend\Admin\StoreProductSubCategoryRequest;
+use App\Http\Requests\Backend\Admin\UpdateProductSubCategoryRequest;
 use App\Models\ProductSubCategory;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
-
-
 
 class ProductSubCategoryController extends Controller
 {
@@ -23,15 +21,6 @@ class ProductSubCategoryController extends Controller
      */
     public function index(ProductSubCategoriesDataTable $dataTable)
     {
-        // $term = $request->query('q', '');
-
-        // $productSubCategories = ProductSubCategory::query()
-        //     ->withCount(['productChildCategories'])
-        //     ->with('productCategory:id,name')
-        //     ->search($term)
-        //     ->orderBy('name')
-        //     ->paginate(15);
-
         return $dataTable->render('backend.admin.products.subcategories.index');
     }
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Backend\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
@@ -34,37 +34,24 @@ class UpdateProductSubCategoryRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
-        $name = Str::title(Str::lower(trim($this->input('name', ''))));
-        $categoryId = $this->input('product_category_id');
+        // Normalize name
+        $name = Str::title(Str::lower(trim($this->input('name'))));
 
-        $categoryName = '';
+        // Always build slug from category slug + subcategory name
+        $categorySlug = ProductCategory::where('id', $this->input('product_category_id'))->value('slug');
 
-        // If category id isn't provided in the request, try to fall back to the current model's category
-        if (! $categoryId) {
-            /** @var \App\Models\ProductSubCategory|null $sub */
-            $sub = $this->route('sub_category');
-            $categoryId = $sub?->product_category_id;
-        }
-
-        if ($categoryId) {
-            try {
-                $categoryName = ProductCategory::where('id', $categoryId)->value('name') ?? '';
-            } catch (\Throwable $e) {
-                // Log but don't break the request lifecycle
-                Log::error('Error fetching category name for subcategory slug (update): '.$e->getMessage());
-                $categoryName = '';
-            }
-        }
-
-        $slugBase = trim($name . ($categoryName ? ('-' . $categoryName) : ''));
-        $slug = Str::slug($slugBase);
+        $slug = implode('-', [
+            $categorySlug,
+            Str::slug($name),
+        ]);
 
         $this->merge([
-            'name'          => $name,
-            'slug'          => $slug,
-            'is_active'     => $this->boolean('is_active'),
+            'name'      => $name,
+            'slug'      => $slug,
+            'is_active' => $this->boolean('is_active'),
         ]);
     }
+
 
     public function rules(): array
     {
@@ -79,7 +66,9 @@ class UpdateProductSubCategoryRequest extends FormRequest
 
         return [
             'name' => [
-                'required', 'string', 'max:255',
+                'required',
+                'string',
+                'max:255',
                 // UNIQUE within the same parent category, but ignore this row
                 Rule::unique('product_sub_categories', 'name')
                     ->where(fn($q) => $q->where(
@@ -89,12 +78,14 @@ class UpdateProductSubCategoryRequest extends FormRequest
                     ->ignore($sub?->id),
             ],
             'slug' => [
-                'required', 'string', 'max:255',
+                'required',
+                'string',
+                'max:255',
                 $slugUniqueRule,
             ],
             'product_category_id' => ['required', 'integer', 'exists:product_categories,id'],
             'description'         => ['nullable', 'string'],
-            'is_active'           => ['required', 'boolean'], 
+            'is_active'           => ['required', 'boolean'],
         ];
     }
 

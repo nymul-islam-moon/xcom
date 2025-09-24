@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Backend\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Log;
@@ -33,28 +33,18 @@ class StoreProductSubCategoryRequest extends FormRequest
         // Normalize name
         $name = Str::title(Str::lower(trim($this->input('name'))));
 
-        // Attempt to get parent category name for slug uniqueness
-        $categoryName = '';
-        $categoryId = $this->input('product_category_id');
+        // Always build slug from category slug + subcategory name
+        $categorySlug = ProductCategory::where('id', $this->input('product_category_id'))->value('slug');
 
-        if ($categoryId) {
-            try {
-                $categoryName = ProductCategory::where('id', $categoryId)->value('name') ?? '';
-            } catch (\Throwable $e) {
-                // don't break validation if DB is unreachable; log for debugging
-                Log::error('Error fetching category name for subcategory slug: ' . $e->getMessage());
-                $categoryName = '';
-            }
-        }
-
-        // Build slug: include category name when available to avoid collisions across categories
-        $slugBase = $name . ($categoryName ? ('-' . $categoryName) : '');
-        $slug = Str::slug($slugBase);
+        $slug = implode('-', [
+            $categorySlug,
+            Str::slug($name),
+        ]);
 
         $this->merge([
-            'name'          => $name,
-            'slug'          => $slug,
-            'is_active'     => $this->boolean('is_active'),
+            'name'      => $name,
+            'slug'      => $slug,
+            'is_active' => $this->boolean('is_active'),
         ]);
     }
 

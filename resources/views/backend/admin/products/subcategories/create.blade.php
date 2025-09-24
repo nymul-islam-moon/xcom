@@ -16,14 +16,12 @@
                     <h3 class="mb-0">Create Subcategory</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="">Products</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Create</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Sub-Category', 'route' => 'admin.products.sub-categories.index'],
+                        ['label' => 'Create', 'active' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -63,7 +61,8 @@
                                     <label for="product_category_id" class="form-label">Category <span
                                             class="text-danger">*</span></label>
                                     <select name="product_category_id" id="product_category_id"
-                                        class="form-select @error('product_category_id') is-invalid @enderror" required></select>
+                                        class="form-select @error('product_category_id') is-invalid @enderror"
+                                        required></select>
                                     @error('product_category_id')
                                         <div class="invalid-feedback">{{ $message }}</div>
                                     @enderror

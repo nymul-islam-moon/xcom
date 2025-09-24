@@ -16,14 +16,12 @@
                     <h3 class="mb-0">Edit Subcategory</h3>
                 </div>
                 <div class="col-sm-6">
-                    <ol class="breadcrumb float-sm-end">
-                        <li class="breadcrumb-item"><a href="">Home</a></li>
-                        <li class="breadcrumb-item"><a href="{{ route('admin.products.categories.index') }}">Categories</a>
-                        </li>
-                        <li class="breadcrumb-item"><a
-                                href="{{ route('admin.products.sub-categories.index') }}">Subcategories</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Edit</li>
-                    </ol>
+                    <x-admin.breadcrumbs :items="[
+                        ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
+                        ['label' => 'Product', 'route' => 'admin.products.index'],
+                        ['label' => 'Sub-Category', 'route' => 'admin.products.sub-categories.index'],
+                        ['label' => 'Edit', 'active' => true],
+                    ]" />
                 </div>
             </div>
         </div>
@@ -157,18 +155,24 @@
                         dataType: 'json',
                         delay: 250,
                         data: function(params) {
-                            return { q: params.term || '' };
+                            return {
+                                q: params.term || ''
+                            };
                         },
                         processResults: function(data) {
                             // Support common shapes: [] or { results: [] } or { data: [] }
-                            const items = Array.isArray(data) ? data : (data.results || data.data || []);
+                            const items = Array.isArray(data) ? data : (data.results || data.data ||
+                        []);
                             const results = Array.isArray(items) ? items.map(function(item) {
                                 return {
                                     id: String(item.id),
-                                    text: item.text ?? item.name ?? item.title ?? String(item.id)
+                                    text: item.text ?? item.name ?? item.title ?? String(item
+                                        .id)
                                 };
                             }) : [];
-                            return { results: results };
+                            return {
+                                results: results
+                            };
                         },
                         cache: true
                     },
@@ -185,7 +189,8 @@
             // 2) Otherwise, try to fetch label from API dataset and set it
             // 3) Fallback - append plain value as label
             (function preloadStatus() {
-                if (selectedStatusValue === null || selectedStatusValue === undefined || selectedStatusValue === '') {
+                if (selectedStatusValue === null || selectedStatusValue === undefined || selectedStatusValue ===
+                    '') {
                     return;
                 }
 
@@ -202,18 +207,21 @@
                     dataType: 'json'
                 }).done(function(data) {
                     const items = Array.isArray(data) ? data : (data.results || data.data || []);
-                    const found = (Array.isArray(items) ? items : []).find(item => String(item.id) === String(selectedStatusValue));
+                    const found = (Array.isArray(items) ? items : []).find(item => String(item.id) ===
+                        String(selectedStatusValue));
                     if (found) {
                         const label = found.text ?? found.name ?? found.title ?? String(found.id);
                         const opt = new Option(label, String(found.id), true, true);
                         $status.append(opt).trigger('change');
                     } else {
                         // fallback: use numeric value as label
-                        const fallback = new Option(String(selectedStatusValue), String(selectedStatusValue), true, true);
+                        const fallback = new Option(String(selectedStatusValue), String(
+                            selectedStatusValue), true, true);
                         $status.append(fallback).trigger('change');
                     }
                 }).fail(function() {
-                    const fallback = new Option(String(selectedStatusValue), String(selectedStatusValue), true, true);
+                    const fallback = new Option(String(selectedStatusValue), String(
+                        selectedStatusValue), true, true);
                     $status.append(fallback).trigger('change');
                 });
             })();
@@ -230,13 +238,20 @@
                     url: "{{ route('api.select-categories') }}",
                     dataType: 'json',
                     delay: 200,
-                    data: params => ({ q: params.term || '' }),
+                    data: params => ({
+                        q: params.term || ''
+                    }),
                     processResults: function(data, params) {
                         const term = (params && params.term ? params.term.toLowerCase() : '');
-                        const arr = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data : []);
-                        const filtered = term ? arr.filter(c => String(c.name).toLowerCase().includes(term)) : arr;
+                        const arr = Array.isArray(data) ? data : (Array.isArray(data.data) ? data.data :
+                            []);
+                        const filtered = term ? arr.filter(c => String(c.name).toLowerCase().includes(
+                            term)) : arr;
                         return {
-                            results: filtered.map(c => ({ id: c.id, text: c.name }))
+                            results: filtered.map(c => ({
+                                id: c.id,
+                                text: c.name
+                            }))
                         };
                     },
                     cache: true
