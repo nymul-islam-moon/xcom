@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\DataTables\Backend\ProductCategoriesDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductCategoryRequest;
-use App\Http\Requests\UpdateProductCategoryRequest;
+use App\Http\Requests\Backend\Admin\StoreProductCategoryRequest;
+use App\Http\Requests\Backend\Admin\UpdateProductCategoryRequest;
 use App\Models\ProductCategory;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;

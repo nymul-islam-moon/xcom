@@ -24,27 +24,27 @@ class ProductCategoriesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.categories.edit', $row->id),
+                        'url'  => route('admin.products.categories.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.categories.show', $row->id),
+                        'url'  => route('admin.products.categories.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
                         'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.categories.destroy', $row->id),
+                        'url'   => route('admin.products.categories.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
 
                 return view('components.backend.data-table-buttons', [
-                    'id' => $row->id,
+                    'id' => $row->slug,
                     'actions' => $actions,
                 ])->render();
             })
