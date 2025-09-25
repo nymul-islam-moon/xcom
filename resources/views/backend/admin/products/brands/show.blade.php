@@ -58,7 +58,7 @@
                                 {{-- Status --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 border-bottom">Status</dt>
                                 <dd class="col-6 col-sm-9 text-end py-2 border-bottom mb-0">
-                                    @if($brand->status)
+                                    @if($brand->is_active)
                                         <span class="badge bg-success">Active</span>
                                     @else
                                         <span class="badge bg-secondary">Inactive</span>
