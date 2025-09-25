@@ -1,15 +1,14 @@
 <?php
 
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Admin\ProductBrandController;
-use Illuminate\Support\Facades\Route;
-
-use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
-
 use App\Http\Controllers\Backend\Admin\ProductCategoryController;
-use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
+use App\Http\Controllers\Backend\Admin\ProductAttributeController;
 use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
-use App\Http\Controllers\Backend\DashboardController;
+use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
+use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -41,7 +40,7 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('brands', ProductBrandController::class);
 
-        // Route::resource('attributes', ProductAttributeController::class);
+        Route::resource('attributes', ProductAttributeController::class);
 
         // Route::prefix('attributes/{attribute}')->group(function () {
         //     Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');

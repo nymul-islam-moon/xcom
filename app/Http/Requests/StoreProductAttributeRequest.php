@@ -2,7 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class StoreProductAttributeRequest extends FormRequest
@@ -16,6 +19,11 @@ class StoreProductAttributeRequest extends FormRequest
     }
 
     /**
+     * Stop validation on first failure.
+     */
+    protected $stopOnFirstFailure = true;
+
+    /**
      * Custom attribute names (for prettier errors).
      */
     public function attributes(): array
@@ -26,6 +34,30 @@ class StoreProductAttributeRequest extends FormRequest
             'slug'        => 'attribute slug',
         ];
     }
+
+     /**
+     * Prepare the data for validation.
+     */
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'name'      => Str::title(Str::lower(trim($this->input('name')))),
+            'slug'      => Str::slug(trim($this->input('name'))),
+        ]);
+    }
+
+     /**
+     * Get the validation rules that apply to the request.
+     */
+    public function rules(): array
+    {
+        return [
+            'name'        => 'required|string|min:3|unique:product_attributes,name',
+            'slug'        => 'nullable|string|unique:product_attributes,slug',
+            'description' => 'nullable|string',
+        ];
+    }
+
 
     /**
      * Custom validation messages.
@@ -42,34 +74,22 @@ class StoreProductAttributeRequest extends FormRequest
         ];
     }
 
-    /**
-     * Get the validation rules that apply to the request.
+   /**
+     * Handle failed validation.
      */
-    public function rules(): array
+    protected function failedValidation(Validator $validator)
     {
-        return [
-            'name'        => 'required|string|min:3|unique:product_attributes,name',
-            'description' => 'nullable|string',
-            'slug'        => 'nullable|string|unique:product_attributes,slug',
-        ];
-    }
+        // Log all errors
+        Log::error('Product Category Store validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input'  => $this->all(),
+        ]);
 
-    /**
-     * Prepare the data for validation.
-     */
-    protected function prepareForValidation(): void
-    {
-        if ($this->has('name')) {
-            $name = trim($this->input('name'));      // remove spaces
-            $name = strtolower($name);               // all lowercase
-            $name = ucfirst($name);                  // capitalize first letter
-            $this->merge(['name' => $name]);
-        }
-
-        // Auto-generate slug if not provided
-        if (!$this->filled('slug') && $this->filled('name')) {
-            $slug = Str::slug($this->input('name'));
-            $this->merge(['slug' => $slug]);
-        }
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+        );
     }
+   
 }

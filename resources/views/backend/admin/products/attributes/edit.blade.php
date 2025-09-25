@@ -3,7 +3,7 @@
 
 @section('title', 'Edit Attribute')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -75,6 +75,15 @@
                                     </button>
                                 </div>
                             </form>
+                        </div>
+                         <div class="card-footer d-flex align-items-center justify-content-between">
+                            <div class="small text-muted">
+                                Created: {{ optional($attribute->created_at)->format('M d, Y h:i A') }}
+                            </div>
+
+                            <div class="small text-muted ms-auto">
+                                Last updated: {{ optional($attribute->updated_at)->diffForHumans() ?? '—' }}
+                            </div>
                         </div>
                     </div> <!-- /card -->
                 </div>

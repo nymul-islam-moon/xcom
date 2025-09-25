@@ -1,7 +1,8 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Backend\Admin;
 
+use App\DataTables\Backend\ProductAttributesDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeRequest;
 use App\Http\Requests\UpdateProductAttributeRequest;
@@ -15,18 +16,9 @@ class ProductAttributeController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ProductAttributesDataTable $dataTable)
     {
-        $term = $request->query('q', '');
-
-        $attributes = ProductAttribute::query()
-            ->search($term)
-            ->orderBy('name')
-            ->paginate(15)
-            ->appends(['q' => $term]);
-
-
-        return view('backend.admin.products.attributes.index', compact('attributes'));
+        return $dataTable->render('backend.admin.products.attributes.index');
     }
     /**
      * Show the form for creating a new resource.
@@ -45,9 +37,7 @@ class ProductAttributeController extends Controller
 
         try {
             $formData = $request->validated();
-            $formData['name'] = Str::ucfirst(Str::lower(trim((string) $formData['name'])));
-            $formData['slug'] = Str::slug($formData['name']);
-
+            
             ProductAttribute::create($formData);
 
             DB::commit();
