@@ -1,9 +1,13 @@
-{{-- resources/views/admin/brands/create.blade.php --}}
 @extends('layouts.backend.app')
 
 @section('title', 'Create Brand')
 
-@section('admin_content')
+@push('backend_styles')
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/css/select2.min.css" rel="stylesheet" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+@endpush
+
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -63,6 +67,18 @@
                                     <div class="form-text">PNG/JPG/SVG. Recommended square ratio.</div>
                                 </div>
 
+                                <div class="mb-3">
+                                    <label for="is_active" class="form-label">Select Status <span
+                                            class="text-danger">*</span></label>
+                                    <select name="is_active" id="brand_status"
+                                        class="form-select select2 @error('is_active') is-invalid @enderror" required>
+                                        <!-- Option will be loaded via AJAX -->
+                                    </select>
+                                    @error('is_active')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                                 {{-- Description --}}
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
@@ -73,21 +89,6 @@
                                     @enderror
                                 </div>
 
-                                {{-- Status --}}
-                                <div class="mb-3">
-                                    <label for="status" class="form-label">Status <span
-                                            class="text-danger">*</span></label>
-                                    <select name="status" id="status"
-                                        class="form-select @error('status') is-invalid @enderror" required>
-                                        <option value="1" {{ old('status', '1') == '1' ? 'selected' : '' }}>Active
-                                        </option>
-                                        <option value="0" {{ old('status') === '0' ? 'selected' : '' }}>Inactive
-                                        </option>
-                                    </select>
-                                    @error('status')
-                                        <div class="invalid-feedback">{{ $message }}</div>
-                                    @enderror
-                                </div>
 
                                 {{-- Actions --}}
                                 <div class="d-flex justify-content-between">
@@ -106,3 +107,79 @@
         </div>
     </div>
 @endsection
+
+@push('backend_scripts')
+    <!-- Select2 JS -->
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.0.13/dist/js/select2.min.js"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            const $status = $('#brand_status');
+
+            $status.select2({
+                placeholder: 'Select status',
+                allowClear: true,
+                width: '100%',
+                ajax: {
+                    url: "{{ route('api.select-status') }}",
+                    dataType: 'json',
+                    delay: 250,
+                    data: function(params) {
+                        return {
+                            q: params.term || ''
+                        };
+                    },
+                    processResults: function(data) {
+                        // Normalize API data to Select2 format
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const results = items.map(function(item) {
+                            return {
+                                id: item.id,
+                                text: item.text ?? item.name ?? item.title ?? ''
+                            };
+                        });
+                        return {
+                            results: results
+                        };
+                    },
+                    cache: true
+                },
+                dropdownParent: $('body') // ensures dropdown overlays correctly
+            });
+
+            // Preload old value
+            const oldValue = @json(old('is_active'));
+            const oldLabel = @json(old('is_active_label') ?? null);
+
+            if (oldValue) {
+                if (oldLabel) {
+                    const option = new Option(oldLabel, oldValue, true, true);
+                    $status.append(option).trigger('change');
+                } else {
+                    $.ajax({
+                        url: "{{ route('api.select-status') }}",
+                        dataType: 'json'
+                    }).then(function(data) {
+                        const items = Array.isArray(data) ? data : (data.results || []);
+                        const selected = items.find(item => String(item.id) === String(oldValue));
+                        if (selected) {
+                            const option = new Option(
+                                selected.text ?? selected.name ?? selected.title,
+                                selected.id, true, true
+                            );
+                            $status.append(option).trigger('change');
+                        } else {
+                            const fallback = new Option(oldValue, oldValue, true, true);
+                            $status.append(fallback).trigger('change');
+                        }
+                    }).catch(function() {
+                        const fallback = new Option(oldValue, oldValue, true, true);
+                        $status.append(fallback).trigger('change');
+                    });
+                }
+            }
+
+        });
+    </script>
+@endpush

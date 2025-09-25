@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Backend\Admin;
 
+use App\DataTables\Backend\ProductBrandsDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreBrandRequest;
-use App\Http\Requests\UpdateBrandRequest;
+use App\Http\Requests\Backend\Admin\StoreBrandRequest;
+use App\Http\Requests\Backend\Admin\UpdateBrandRequest;
 use App\Models\Brand;
 use App\Services\MediaService;
 use Illuminate\Http\Request;
@@ -17,17 +18,9 @@ class ProductBrandController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ProductBrandsDataTable $dataTable)
     {
-        $term = $request->query('q', '');
-
-        $brands = Brand::query()
-            ->search($term)
-            ->orderBy('name')
-            ->paginate(15)
-            ->appends(['q' => $term]);
-
-        return view('backend.admin.products.brands.index', compact('brands'));
+        return $dataTable->render('backend.admin.products.brands.index');
     }
 
     /**
@@ -50,9 +43,6 @@ class ProductBrandController extends Controller
         if ($path = $mediaService->storeFromRequest($request, 'image', 'brands')) {
             $data['image'] = $path;
         }
-
-        // slug directly from unique name
-        $data['slug'] = Str::slug($data['name']);
 
         Brand::create($data);
 

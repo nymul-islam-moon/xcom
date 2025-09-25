@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Backend\Admin\AdminController;
+use App\Http\Controllers\Backend\Admin\ProductBrandController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
@@ -38,7 +39,7 @@ Route::middleware('auth:admin')->group(function () {
         Route::resource('sub-categories', ProductSubCategoryController::class);
         Route::resource('child-categories', ProductChildCategoryController::class);
 
-        // Route::resource('brands', ProductBrandController::class);
+        Route::resource('brands', ProductBrandController::class);
 
         // Route::resource('attributes', ProductAttributeController::class);
 
