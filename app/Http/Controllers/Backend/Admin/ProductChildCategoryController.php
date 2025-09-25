@@ -4,8 +4,8 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\DataTables\Backend\ProductChildCategoriesDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreProductChildCategoryRequest;
-use App\Http\Requests\UpdateProductChildCategoryRequest;
+use App\Http\Requests\Backend\Admin\StoreProductChildCategoryRequest;
+use App\Http\Requests\Backend\Admin\UpdateProductChildCategoryRequest;
 use App\Models\ProductChildCategory;
 use App\Models\ProductSubCategory;
 use Illuminate\Support\Facades\DB;
@@ -19,20 +19,6 @@ class ProductChildCategoryController extends Controller
      */
     public function index(ProductChildCategoriesDataTable $dataTable)
     {
-        // $term = $request->query('q', '');
-
-        // $productChildCategories = \App\Models\ProductChildCategory::query()
-        //     ->with([
-        //         // include the FK so Eloquent can hop to productCategory
-        //         'productSubCategory:id,name,product_category_id',
-        //         // actually load the category too
-        //         'productSubCategory.productCategory:id,name',
-        //     ])
-        //     ->search($term)
-        //     ->orderBy('name')
-        //     ->paginate(15)
-        //     ->appends(['q' => $term]); // keeps search term in pagination links
-
         return $dataTable->render('backend.admin.products.childcategories.index');
     }
 
@@ -55,8 +41,6 @@ class ProductChildCategoryController extends Controller
         try {
             $formData = $request->validated();
 
-          
-            // Create record
             ProductChildCategory::create($formData);
 
             DB::commit();

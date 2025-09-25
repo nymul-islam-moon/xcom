@@ -1,14 +1,14 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Backend\Admin;
 
 use App\Models\ProductSubCategory;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
-use Illuminate\Support\Str;
 
-class StoreProductChildCategoryRequest extends FormRequest
+class UpdateProductChildCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,80 +19,72 @@ class StoreProductChildCategoryRequest extends FormRequest
     }
 
     /**
-     * Stop validation on first failure for this request.
-     * Set to true if you prefer "bail" behavior globally here.
+     * Stop validation on first failure.
      */
     protected $stopOnFirstFailure = true;
 
-
     /**
-     * Custom attribute names (for prettier errors).
+     * Custom attribute names.
      */
     public function attributes(): array
     {
         return [
             'name'                      => 'category name',
             'description'               => 'description',
+            'product_sub_category_id'   => 'sub-category',
             'slug'                      => 'slug',
             'is_active'                 => 'status',
-            'product_sub_category_id'   => 'sub-category',
         ];
     }
 
+    /**
+     * Prepare and normalize inputs before validation.
+     * Build a slug that includes the parent category name to avoid collisions across categories.
+     */
     protected function prepareForValidation()
     {
         // Normalize name
         $name = Str::title(Str::lower(trim($this->input('name'))));
 
-        // Attempt to get parent category name for slug uniqueness
-        $subCategoryName = '';
-        $subCategoryId = $this->input('product_sub_category_id');
+        // Always build slug from category slug + subcategory name
+        $subCategorySlug = ProductSubCategory::where('id', $this->input('product_sub_category_id'))->value('slug');
 
-        if ($subCategoryId) {
-            try {
-                $subCategoryName = ProductSubCategory::where('id', $subCategoryId)->value('name') ?? '';
-            } catch (\Throwable $e) {
-                // don't break validation if DB is unreachable; log for debugging
-                Log::error('Error fetching subcategory name for childCategory slug: ' . $e->getMessage());
-                $subCategoryName = '';
-            }
-        }
-
-        // Build slug: include category name when available to avoid collisions across categories
-        $slugBase = $name . ($subCategoryName ? ('-' . $subCategoryName) : '');
-        $slug = Str::slug($slugBase);
+        $slug = implode('-', [
+            $subCategorySlug,
+            Str::slug($name),
+        ]);
 
         $this->merge([
-            'name'          => $name,
-            'slug'          => $slug,
-            'is_active'     => $this->boolean('is_active'),
+            'name'      => $name,
+            'slug'      => $slug,
+            'is_active' => $this->boolean('is_active'),
         ]);
     }
 
-
-
-
     /**
-     * Get the validation rules that apply to the request.
+     * Validation rules.
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
     public function rules(): array
     {
+        $childCategoryId = $this->route('child_category') ?? $this->route('id');
+
         return [
             'name' => [
                 'required',
                 'string',
                 'max:255',
-                // unique within the same parent category
+                // unique within the same parent sub-category, but ignore current record
                 Rule::unique('product_child_categories', 'name')
                     ->where(fn($q) => $q->where('product_sub_category_id', $this->input('product_sub_category_id')))
+                    ->ignore($childCategoryId),
             ],
             'slug' => [
                 'required',
                 'string',
                 'max:255',
-                Rule::unique('product_child_categories', 'slug'),
+                Rule::unique('product_child_categories', 'slug')->ignore($childCategoryId),
             ],
             'product_sub_category_id'   => ['required', 'integer', 'exists:product_sub_categories,id'],
             'is_active'                 => ['required', 'boolean'],
@@ -100,21 +92,28 @@ class StoreProductChildCategoryRequest extends FormRequest
         ];
     }
 
+
     /**
-     * Custom messages.
+     * Custom error messages.
      */
     public function messages(): array
     {
         return [
             'name.required'                     => 'Please enter a :attribute.',
-            'name.unique'                       => 'The :attribute ":input" is already in use.',
+            'name.unique'                       => 'The :attribute ":input" is already in use within the selected sub-category.',
             'name.max'                          => 'The :attribute may not be greater than :max characters.',
+
+            'slug.required'                     => 'Please enter a :attribute.',
+            'slug.unique'                       => 'The :attribute ":input" is already in use.',
+            'slug.max'                          => 'The :attribute may not be greater than :max characters.',
+
             'product_sub_category_id.required'  => 'Please select a :attribute.',
-            'product_sub_category_id.exists'    => 'The selected :attribute is already exists.',
-            'slug.required'                     => 'The :attribute is required.',
-            'slug.unique'                       => 'The generated :attribute conflicts with an existing one. Please change the name.',
+            'product_sub_category_id.exists'    => 'The selected :attribute does not exist.',
+
             'is_active.required'                => 'Please select a :attribute.',
-            'is_active.boolean'                 => 'The selected :attribute is invalid.',
+            'is_active.boolean'                 => 'The :attribute must be true or false.',
+
+            'description.string'                => 'The :attribute must be a valid string.',
         ];
     }
 }

@@ -110,7 +110,6 @@ class ProductCategoriesDataTable extends DataTable
                 ->width(120)
                 ->addClass('text-center'),
 
-            Column::make('id')->visible(false),
             Column::make('name'),
             Column::make('slug'),
             Column::make('is_active'),

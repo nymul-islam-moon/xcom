@@ -66,15 +66,7 @@
                                     @endif
                                 </dd>
 
-                                @isset($category->products_count)
-                                    <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
-                                        Products
-                                    </dt>
-                                    <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
-                                        <span class="badge text-bg-secondary">{{ $category->products_count }}</span>
-                                    </dd>
-                                @endisset
-
+                               
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
                                     Status
                                 </dt>

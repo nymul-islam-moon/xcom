@@ -55,10 +55,8 @@ class UpdateProductSubCategoryRequest extends FormRequest
 
     public function rules(): array
     {
-        /** @var \App\Models\ProductSubCategory|null $sub */
-        $sub = $this->route('sub_category'); // from controller signature
+        $sub = $this->route('sub_category');
 
-        // Build slug unique rule and ignore current record when updating
         $slugUniqueRule = Rule::unique('product_sub_categories', 'slug');
         if ($sub?->id) {
             $slugUniqueRule = $slugUniqueRule->ignore($sub->id);

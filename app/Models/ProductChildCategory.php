@@ -25,6 +25,11 @@ class ProductChildCategory extends Model
         'is_active' => 'boolean',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     /** Scope: search by name/slug/description */
     public function scopeSearch($query, ?string $term)
     {

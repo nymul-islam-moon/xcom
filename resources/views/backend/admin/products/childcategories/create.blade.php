@@ -16,11 +16,11 @@
                     <h3 class="mb-0">Create Child Category</h3>
                 </div>
                 <div class="col-sm-6">
-                    <x-admin.breadcrumbs :items="[
+                   <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
                         ['label' => 'Product', 'route' => 'admin.products.index'],
-                        ['label' => 'Child Category', 'route' => 'admin.child-category.index'],
-                        ['label' => 'Child Category Create', 'action' => true],
+                        ['label' => 'Child-Category', 'route' => 'admin.products.child-categories.index'],
+                        ['label' => 'Child Category Create', 'active' => true],
                     ]" />
                 </div>
             </div>

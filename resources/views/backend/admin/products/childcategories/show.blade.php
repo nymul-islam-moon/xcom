@@ -3,7 +3,7 @@
 
 @section('title', 'Child Category Details')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -102,15 +102,18 @@
                                     @endif
                                 </dd>
 
-                                {{-- Products (optional) --}}
-                                @isset($child_category->products_count)
-                                    <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
-                                        Products
-                                    </dt>
-                                    <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
-                                        <span class="badge text-bg-secondary">{{ $child_category->products_count }}</span>
-                                    </dd>
-                                @endisset
+
+                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
+                                    Status
+                                </dt>
+                                <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0">
+                                    @if ($child_category->is_active)
+                                        <span class="badge bg-success"><i class="bi bi-check-circle"></i> Active</span>
+                                    @else
+                                        <span class="badge bg-danger"><i class="bi bi-x-circle"></i> Inactive</span>
+                                    @endif
+                                </dd>
+
 
                                 {{-- Created --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">

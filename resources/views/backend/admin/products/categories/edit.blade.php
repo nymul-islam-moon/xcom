@@ -64,7 +64,7 @@
                             </div>
                         </div>
                         <div class="card-body">
-                            <form action="{{ route('admin.products.categories.update', $category->id) }}" method="POST">
+                            <form action="{{ route('admin.products.categories.update', $category->slug) }}" method="POST">
                                 @csrf
                                 @method('PUT')
 
