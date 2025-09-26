@@ -2,7 +2,7 @@
 
 namespace App\DataTables\Backend;
 
-use App\Models\ProductSubCategory;
+use App\Models\ProductAttributeValue;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
@@ -12,7 +12,7 @@ use Yajra\DataTables\Html\Editor\Editor;
 use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
-class ProductSubCategoriesDataTable extends DataTable
+class ProductAttributeValuesDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
@@ -24,7 +24,7 @@ class ProductSubCategoriesDataTable extends DataTable
         $dt = (new EloquentDataTable($query));
         return $dt
             ->addIndexColumn()
-            ->addColumn('action', function (ProductSubCategory $row) {
+            ->addColumn('action', function (ProductAttributeValue $row) {
                 $actions = [
                     [
                         'type' => 'link',
@@ -54,27 +54,21 @@ class ProductSubCategoriesDataTable extends DataTable
                     'actions' => $actions,
                 ])->render();
             })
-            ->editColumn('product_category_id', function (ProductSubCategory $row) {
-                return $row->product_category_id ? $row->productCategory->name : 'N/A';
-            })
-            ->editColumn('created_at', function (ProductSubCategory $row) {
+            ->editColumn('created_at', function (ProductAttributeValue $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
             })
-            ->editColumn('updated_at', function (ProductSubCategory $row) {
+            ->editColumn('updated_at', function (ProductAttributeValue $row) {
                 return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
             })
-            ->editColumn('is_active', function (ProductSubCategory $row) {
-                return $row->is_active ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
-            })
-            ->rawColumns(['action', 'is_active']);
+            ->rawColumns(['action']);
     }
 
     /**
      * Get the query source of dataTable.
      */
-    public function query(ProductSubCategory $model): QueryBuilder
+    public function query(ProductAttributeValue $model): QueryBuilder
     {
-        return $model->newQuery()->select('product_sub_categories.*');
+        return $model->newQuery()->select('product_attribute_values.*');
     }
 
     /**
@@ -119,17 +113,14 @@ class ProductSubCategoriesDataTable extends DataTable
                 ->searchable(false)
                 ->width(30)
                 ->addClass('text-center'),
-
             Column::computed('action')
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)
                 ->addClass('text-center'),
-            Column::make('name'),
+
+            Column::make('value'),
             Column::make('slug'),
-            Column::make('product_category_id')->title('Category'),
-            Column::make('is_active'),
-            Column::make('description'),
             Column::make('created_at'),
             Column::make('updated_at'),
         ];
@@ -140,6 +131,6 @@ class ProductSubCategoriesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ProductSubCategories_' . date('YmdHis');
+        return 'ProductAttributeValues_' . date('YmdHis');
     }
 }

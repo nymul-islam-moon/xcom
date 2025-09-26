@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Backend\Admin;
 
 use App\DataTables\Backend\ProductAttributesDataTable;
+use App\DataTables\Backend\ProductAttributeValuesDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeRequest;
 use App\Http\Requests\UpdateProductAttributeRequest;
@@ -59,23 +60,10 @@ class ProductAttributeController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(ProductAttribute $attribute, Request $request)
+    public function show(ProductAttribute $attribute, ProductAttributeValuesDataTable $dataTable)
     {
-        $term = (string) $request->query('q', '');
 
-        $attributeValues = $attribute->values()
-            ->when($term !== '', function ($q) use ($term) {
-                // Escape SQL wildcards and search by value/name or slug
-                $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $term) . '%';
-                $q->where(function ($w) use ($like) {
-                    $w->where('value', 'like', $like);
-                });
-            })
-            ->orderBy('value')
-            ->paginate(15)
-            ->withQueryString();
-
-        return view('backend.admin.products.attributes.show', compact('attribute', 'attributeValues'));
+        return $dataTable->render('backend.admin.products.attributes.show', compact('attribute'));
     }
 
 
@@ -96,8 +84,6 @@ class ProductAttributeController extends Controller
 
         try {
             $formData = $request->validated();
-
-            // dd($formData);
 
             $attribute->update($formData);
 

@@ -6,6 +6,7 @@ use App\Http\Controllers\Backend\Admin\AdminController;
 use App\Http\Controllers\Backend\Admin\ProductBrandController;
 use App\Http\Controllers\Backend\Admin\ProductCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductAttributeController;
+use App\Http\Controllers\Backend\Admin\ProductAttributeValueController;
 use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
@@ -42,9 +43,9 @@ Route::middleware('auth:admin')->group(function () {
 
         Route::resource('attributes', ProductAttributeController::class);
 
-        // Route::prefix('attributes/{attribute}')->group(function () {
-        //     Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
-        // });
+        Route::prefix('attributes/{attribute}')->group(function () {
+            Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
+        });
         // Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
         // Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
         // Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');

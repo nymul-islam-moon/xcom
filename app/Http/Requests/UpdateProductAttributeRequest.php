@@ -2,8 +2,10 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 class UpdateProductAttributeRequest extends FormRequest
@@ -13,46 +15,25 @@ class UpdateProductAttributeRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Normalize inputs before validation.
-     * - Support route model binding (`attribute`) or id in URL.
-     * - Trim name.
-     * - Auto-generate slug from name if not provided.
-     */
+    protected $stopOnFirstFailure = true;
+    
     protected function prepareForValidation(): void
     {
-        $routeAttr = $this->route('attribute') ?? $this->route('attribute_id');
-        $attributeId = is_object($routeAttr) ? ($routeAttr->id ?? null) : $routeAttr;
-
-        $name = is_string($this->input('name')) ? trim($this->input('name')) : $this->input('name');
-        $slug = $this->input('slug') ?: Str::slug((string) $name);
-
         $this->merge([
-            '_attribute_id' => $attributeId, // internal use for rules()
-            'name'          => $name,
-            'slug'          => $slug,
+            'name'      => Str::title(Str::lower(trim($this->input('name')))),
+            'slug'      => Str::slug(trim($this->input('name'))),
         ]);
     }
 
     public function rules(): array
     {
-        $attributeId = $this->input('_attribute_id');
+        $attribute = $this->route('attribute');
+        $attributeId = is_object($attribute) ? $attribute->getKey() : $attribute;
 
         return [
-            'name' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('attributes', 'name')->ignore($attributeId),
-            ],
-            'slug' => [
-                'required',
-                'string',
-                'max:255',
-                Rule::unique('attributes', 'slug')->ignore($attributeId),
-            ],
-            'description' => 'nullable|string',
-            // If you later add 'description' or other fields, validate them here.
+            'name'          => ['required', 'string', 'max:255', 'unique:product_attributes,name,' . $attributeId],
+            'slug'          => ['required', 'string', 'max:255', 'unique:product_attributes,slug,' . $attributeId],
+            'description'   => 'nullable|string',
         ];
     }
 
@@ -64,5 +45,23 @@ class UpdateProductAttributeRequest extends FormRequest
             'slug.required' => 'A slug is required (it is generated from the name if omitted).',
             'slug.unique'   => 'An attribute with this slug already exists.',
         ];
+    }
+
+    /**
+     * Handle failed validation.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        // Log all errors
+        Log::error('Product Category Update validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input'  => $this->all(),
+        ]);
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+        );
     }
 }

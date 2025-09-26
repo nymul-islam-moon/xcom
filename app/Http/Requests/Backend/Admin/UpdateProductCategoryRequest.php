@@ -55,7 +55,7 @@ class UpdateProductCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $category = $this->route('category'); // model or id from admin.products.categories.* routes
+        $category = $this->route('category');
         $categoryId = is_object($category) ? $category->getKey() : $category;
 
         return [
