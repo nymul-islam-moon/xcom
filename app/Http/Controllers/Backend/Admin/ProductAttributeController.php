@@ -38,7 +38,7 @@ class ProductAttributeController extends Controller
 
         try {
             $formData = $request->validated();
-            
+
             ProductAttribute::create($formData);
 
             DB::commit();
@@ -62,9 +62,10 @@ class ProductAttributeController extends Controller
      */
     public function show(ProductAttribute $attribute, ProductAttributeValuesDataTable $dataTable)
     {
-
-        return $dataTable->render('backend.admin.products.attributes.show', compact('attribute'));
+        return $dataTable->with('attribute_id', $attribute->id)
+            ->render('backend.admin.products.attributes.show', compact('attribute'));
     }
+
 
 
     /**

@@ -24,10 +24,9 @@ class ProductAttributeValueController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create($attributeId)
+    public function create(ProductAttribute $attribute)
     {
-        $attribute = ProductAttribute::findOrFail($attributeId);
-        // dd($attribute);
+        
         return view('backend.admin.products.attributes.values.create', compact('attribute'));
     }
 
@@ -47,7 +46,7 @@ class ProductAttributeValueController extends Controller
             DB::commit();
 
             return redirect()
-                ->route('admin.products.attributes.show', $attributeValue->product_attribute_id)
+                ->route('admin.products.attributes.show', $attributeValue->attribute->slug)
                 ->with('success', 'Attribute value created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -81,25 +80,15 @@ class ProductAttributeValueController extends Controller
         DB::beginTransaction();
 
         try {
-            $data = $request->validated();
+            $formData = $request->validated();
+            // dd($formData);
 
-            // normalize value: uppercase first character
-            if (isset($data['value']) && is_string($data['value'])) {
-                $data['value'] = strtoupper(strtolower(trim($data['value'])));
-            }
-
-            // regenerate slug if value changed
-            if (array_key_exists('value', $data) && $data['value'] !== $attributeValue->value) {
-                $data['slug'] = Str::slug($data['value']) ?: Str::random(6);
-            }
-
-            // perform update
-            $attributeValue->update($data);
+            $attributeValue->update($formData);
 
             DB::commit();
 
             return redirect()
-                ->route('admin.products.attributes.show', $data['attribute_id'] ?? $attributeValue->attribute_id)
+                ->route('admin.products.attributes.show', $attributeValue->attribute->slug)
                 ->with('success', 'Attribute value updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
@@ -122,7 +111,8 @@ class ProductAttributeValueController extends Controller
             $attributeValue->delete();
             DB::commit();
 
-            return redirect()->route('admin.products.attributes.show', $attributeValue->attribute_id);
+            return redirect()->route('admin.products.attributes.show', $attributeValue->attribute->slug)
+                    ->with('error', 'Attribute Value deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
             Log::error('Attribute Value Deleting Failed: ' . $e->getMessage());

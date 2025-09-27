@@ -30,21 +30,21 @@ class ProductAttributeValuesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.sub-categories.edit', $row->slug),
+                        'url'  => route('admin.products.attribute-values.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.sub-categories.show', $row->slug),
+                        'url'  => route('admin.products.attribute-values.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
                         'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.sub-categories.destroy', $row->slug),
+                        'url'   => route('admin.products.attribute-values.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -68,8 +68,13 @@ class ProductAttributeValuesDataTable extends DataTable
      */
     public function query(ProductAttributeValue $model): QueryBuilder
     {
-        return $model->newQuery()->select('product_attribute_values.*');
+        $attributeId = $this->attribute_id; // coming from with()
+
+        return $model->newQuery()
+            ->where('product_attribute_id', $attributeId)
+            ->select('product_attribute_values.*');
     }
+
 
     /**
      * Optional method if you want to use the html builder.

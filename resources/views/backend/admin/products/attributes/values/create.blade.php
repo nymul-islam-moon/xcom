@@ -2,7 +2,7 @@
 
 @section('title', 'Add Attribute Value')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row mb-3">
@@ -42,7 +42,7 @@
                         </div>
 
                         <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.products.attributes.show', $attribute->id) }}" class="btn btn-secondary">Back</a>
+                            <a href="{{ route('admin.products.attributes.show', $attribute->slug) }}" class="btn btn-secondary">Back</a>
                             <button type="submit" class="btn btn-success">Add Value</button>
                         </div>
                     </form>

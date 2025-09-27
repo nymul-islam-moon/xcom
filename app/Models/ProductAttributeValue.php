@@ -16,6 +16,11 @@ class ProductAttributeValue extends Model
 
     protected $fillable = ['product_attribute_id', 'value', 'slug'];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     public function attribute()
     {
         return $this->belongsTo(ProductAttribute::class, 'product_attribute_id');

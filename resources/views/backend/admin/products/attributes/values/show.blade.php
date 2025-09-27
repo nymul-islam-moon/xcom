@@ -1,9 +1,9 @@
 {{-- resources/views/admin/attribute-values/show.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Attribute Value Details')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -15,11 +15,7 @@
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
                         ['label' => 'Product', 'route' => 'admin.products.index'],
                         ['label' => 'Attribute', 'route' => 'admin.products.attributes.index'],
-                        [
-                            'label' => 'Attribute Values',
-                            'route' => 'admin.products.attributes.show',
-                            $attributeValue->attribute_id,
-                        ],
+                        ['label' => 'Attribute Values', 'route' => 'admin.products.attributes.show', $attributeValue->attribute->slug],
                         ['label' => 'Details', 'active' => true],
                     ]" />
                 </div>
@@ -60,15 +56,6 @@
                             @endif
 
                             <dl class="row mb-0">
-                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">ID</dt>
-                                <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0 fw-semibold text-break">
-                                    {{ $attributeValue->id }}</dd>
-
-                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">Attribute
-                                    ID</dt>
-                                <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0 text-break">
-                                    {{ $attributeValue->attribute_id }}</dd>
-
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">Attribute
                                     Name</dt>
                                 <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0 text-break">
@@ -90,13 +77,13 @@
                         </div>
 
                         <div class="card-footer d-flex align-items-center">
-                            <a href="{{ route('admin.products.attributes.show', $attributeValue->attribute_id) }}"
+                            <a href="{{ route('admin.products.attributes.show', $attributeValue->attribute->slug) }}"
                                 class="btn btn-secondary">
                                 <i class="bi bi-arrow-left"></i> Back to Attribute
                             </a>
 
                             <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap text-nowrap">
-                                <a href="{{ route('admin.products.attributes.show', $attributeValue->attribute_id) }}" class="btn btn-primary">All
+                                <a href="{{ route('admin.products.attributes.show', $attributeValue->attribute->slug) }}" class="btn btn-primary">All
                                     Attribute Values</a>
                             </div>
                         </div>

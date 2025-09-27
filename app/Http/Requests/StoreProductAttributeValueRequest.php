@@ -2,9 +2,14 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+use App\Models\ProductAttribute;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+
 
 class StoreProductAttributeValueRequest extends FormRequest
 {
@@ -13,24 +18,30 @@ class StoreProductAttributeValueRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Normalize inputs before validation:
-     * - Pull attribute id from body OR route (supports model binding)
-     * - Trim & uppercase the value
-     * - Generate a slug (no DB checks here; uniqueness validated in rules())
-     */
+    protected $stopOnFirstFailure = true;
+
+
+    public function attributes(): array
+    {
+        return [
+            'value'                => 'attribute value',
+            'slug'                 => 'slug',
+            'product_attribute_id' => 'attribute',
+        ];
+    }
+
     protected function prepareForValidation(): void
     {
-        $attrFromRoute = $this->route('attribute') ?? $this->route('product_attribute_id');
-        $attributeId = is_object($attrFromRoute) ? ($attrFromRoute->id ?? null) : $attrFromRoute;
+        $value = Str::title(Str::lower(trim($this->input('value'))));
 
-        $value = Str::ucfirst(Str::lower(trim((string) $this->input('value'))));
+        $attributeSlug = ProductAttribute::where('id', $this->input('product_attribute_id'))->value('slug');
 
-        // Base slug from normalized value, fallback to random string if empty.
-        $slug = Str::slug((string) $value) ?: Str::random(6);
+        $slug = implode('-', [
+            $attributeSlug,
+            Str::slug($value),
+        ]);
 
         $this->merge([
-            'product_attribute_id' => $this->input('product_attribute_id', $attributeId),
             'value'                => $value,
             'slug'                 => $slug,
         ]);
@@ -41,11 +52,7 @@ class StoreProductAttributeValueRequest extends FormRequest
         $attributeId = $this->input('product_attribute_id');
 
         return [
-            'product_attribute_id' => [
-                'required',
-                'integer',
-                Rule::exists('product_attributes', 'id'),
-            ],
+
             'value' => [
                 'required',
                 'string',
@@ -54,12 +61,18 @@ class StoreProductAttributeValueRequest extends FormRequest
                 Rule::unique('product_attribute_values', 'value')
                     ->where(fn($q) => $q->where('product_attribute_id', $attributeId)),
             ],
-            // slug is present (prepared) but uniqueness not enforced here because
-            // value uniqueness already guarantees unique logical entries.
+
+            'product_attribute_id' => [
+                'required',
+                'integer',
+                Rule::exists('product_attributes', 'id'),
+            ],
+            
             'slug' => [
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('product_attribute_values', 'slug'),
             ],
         ];
     }
@@ -75,12 +88,21 @@ class StoreProductAttributeValueRequest extends FormRequest
         ];
     }
 
-    public function attributes(): array
+    /**
+     * Handle failed validation.
+     */
+    protected function failedValidation(Validator $validator)
     {
-        return [
-            'product_attribute_id' => 'attribute',
-            'value'                => 'attribute value',
-            'slug'                 => 'slug',
-        ];
+        // Log all errors
+        Log::error('Product Category Store validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input'  => $this->all(),
+        ]);
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+        );
     }
 }

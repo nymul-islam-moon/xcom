@@ -2,8 +2,15 @@
 
 namespace App\Http\Requests;
 
+use Illuminate\Http\Exceptions\HttpResponseException;
+use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use App\Models\ProductAttributeValue;
+use Illuminate\Support\Facades\Log;
+use App\Models\ProductAttribute;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Str;
+
 
 class UpdateProductAttributeValueRequest extends FormRequest
 {
@@ -12,55 +19,67 @@ class UpdateProductAttributeValueRequest extends FormRequest
         return true;
     }
 
-    /**
-     * Normalize inputs before validation.
-     * - Pull attribute_id from route (supports model binding).
-     * - Trim the value.
-     *
-     * Note: the blade does not send attribute_id; we rely on route-model binding
-     * or a route param named "attribute" / "attribute_id".
-     */
     protected function prepareForValidation(): void
     {
-        $attrFromRoute = $this->route('attribute') ?? $this->route('attribute_id');
-        // If route-model binding provides an Attribute model, take its id
-        $attributeId = is_object($attrFromRoute) ? ($attrFromRoute->id ?? null) : $attrFromRoute;
+        // dd($this->input('product_attribute_id'));
 
+        $value = Str::title(Str::lower(trim($this->input('value'))));
+
+        $attributeSlug = ProductAttribute::where('id', $this->input('product_attribute_id'))->value('slug');
+
+
+        $slug = implode('-', [
+            $attributeSlug,
+            Str::slug($value),
+        ]);
         $this->merge([
-            // Merge attribute_id for internal use (won't be validated as required)
-            'attribute_id' => $attributeId,
-            'value'        => is_string($this->input('value')) ? trim($this->input('value')) : $this->input('value'),
+            'value' => $value,
+            'slug'  => $slug,
         ]);
     }
 
     public function rules(): array
     {
-        // attribute_id comes from prepareForValidation() (route/model)
-        $attributeId = $this->input('attribute_id');
+        // Grab current record (only available on update, not store)
+        $currentAttrVal = $this->route('attributeValue');
+        $currentId      = $currentAttrVal?->id;
 
-        // Determine current record id from route (model binding or plain id)
-        $routeAttrVal = $this->route('attribute_value') ?? $this->route('product_attribute_value_id');
-        $currentId = is_object($routeAttrVal) ? ($routeAttrVal->id ?? null) : $routeAttrVal;
+        // Get attribute_id (from request input or from current record)
+        $attributeId = $this->input('product_attribute_id') ?? $currentAttrVal?->product_attribute_id;
 
         return [
+            'product_attribute_id' => [
+                'required',
+                'exists:product_attributes,id',
+            ],
+
             'value' => [
                 'required',
                 'string',
                 'max:255',
+                Rule::unique('product_attribute_values', 'value')
+                    ->where(fn($q) => $q->where('product_attribute_id', $attributeId))
+                    ->ignore($currentId, 'id'), // IMPORTANT: ignore current row
+            ],
 
-                // Unique per attribute (attribute_id from route), ignoring current record
-                Rule::unique('attribute_values', 'value')
-                    ->where(fn ($q) => $q->where('attribute_id', $attributeId))
-                    ->ignore($currentId),
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                Rule::unique('product_attribute_values', 'slug')
+                    ->where(fn($q) => $q->where('product_attribute_id', $attributeId))
+                    ->ignore($currentId, 'id'),
             ],
         ];
     }
+
 
     public function messages(): array
     {
         return [
             'value.required' => 'Please provide a value for this attribute.',
             'value.unique'   => 'This value already exists for the selected attribute.',
+            'slug.required'  => 'Failed to generate slug for the attribute value.',
         ];
     }
 
@@ -68,6 +87,26 @@ class UpdateProductAttributeValueRequest extends FormRequest
     {
         return [
             'value' => 'attribute value',
+            'slug'  => 'slug',
         ];
+    }
+
+
+    /**
+     * Handle failed validation.
+     */
+    protected function failedValidation(Validator $validator)
+    {
+        // Log all errors
+        Log::error('Product Attribute Value Update validation failed', [
+            'errors' => $validator->errors()->toArray(),
+            'input'  => $this->all(),
+        ]);
+
+        throw new HttpResponseException(
+            redirect()->back()
+                ->withErrors($validator)
+                ->withInput()
+        );
     }
 }

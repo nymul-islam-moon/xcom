@@ -46,11 +46,11 @@ Route::middleware('auth:admin')->group(function () {
         Route::prefix('attributes/{attribute}')->group(function () {
             Route::get('values/create', [ProductAttributeValueController::class, 'create'])->name('attribute-values.create');
         });
-        // Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
-        // Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
-        // Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');
-        // Route::put('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'update'])->name('attribute-values.update');
-        // Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
+        Route::post('attribute-values/store', [ProductAttributeValueController::class, 'store'])->name('attribute-values.store');
+        Route::get('attribute-values/{attributeValue}/show', [ProductAttributeValueController::class, 'show'])->name('attribute-values.show');
+        Route::get('attribute-values/{attributeValue}/edit', [ProductAttributeValueController::class, 'edit'])->name('attribute-values.edit');
+        Route::put('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'update'])->name('attribute-values.update');
+        Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
     // Shop Management Routes
