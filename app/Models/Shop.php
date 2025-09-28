@@ -29,6 +29,7 @@ class Shop extends Authenticatable
         'name',
         'email',
         'phone',
+        'slug',
         'shop_keeper_name',
         'shop_keeper_phone',
         'shop_keeper_email',
@@ -37,13 +38,15 @@ class Shop extends Authenticatable
         'shop_keeper_nid',
         'dbid',
         'bank_name',
+        'is_active',
+        'status',
         'bank_account_number',
         'bank_branch',
         'shop_logo',
-        'website_url',
         'description',
         'business_address',
-        'password'
+        'password',
+        'email_verified_at',
     ];
 
     /**
@@ -56,6 +59,11 @@ class Shop extends Authenticatable
         'remember_token',
     ];
 
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -65,6 +73,7 @@ class Shop extends Authenticatable
     {
         return [
             'email_verified_at' => 'datetime',
+            'is_active' => 'boolean',
             'password' => 'hashed',
         ];
     }

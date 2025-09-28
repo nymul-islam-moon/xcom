@@ -9,6 +9,7 @@ use App\Http\Controllers\Backend\Admin\ProductAttributeController;
 use App\Http\Controllers\Backend\Admin\ProductAttributeValueController;
 use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
+use App\Http\Controllers\Backend\Admin\ShopController;
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
 
 // Guest (admin) routes
@@ -53,9 +54,8 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
-    // Shop Management Routes
-    // Route::resource('shops', ShopController::class);
-    // User Management Routes
+  
+    Route::resource('shops', ShopController::class);
     Route::resource('users', AdminController::class);
 
 

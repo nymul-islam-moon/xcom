@@ -1,13 +1,15 @@
 {{-- resources/views/admin/shops/create.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Create Shop')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-sm-6"><h3 class="mb-0">Create Shop</h3></div>
+                <div class="col-sm-6">
+                    <h3 class="mb-0">Create Shop</h3>
+                </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-end">
                         <li class="breadcrumb-item"><a href="">Home</a></li>
@@ -31,33 +33,42 @@
                             <h3 class="card-title mb-0">Add Shop (Single)</h3>
                         </div>
 
-                        <form action="{{ route('admin.shops.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+                        <form action="{{ route('admin.shops.store') }}" method="POST" enctype="multipart/form-data"
+                            novalidate>
                             @csrf
                             <div class="card-body">
                                 {{-- Basic Info --}}
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="name" class="form-label">Shop Name <span class="text-danger">*</span></label>
+                                        <label for="name" class="form-label">Shop Name <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" id="name" name="name"
-                                               class="form-control @error('name') is-invalid @enderror"
-                                               value="{{ old('name') }}" placeholder="Shop name" required>
-                                        @error('name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('name') is-invalid @enderror"
+                                            value="{{ old('name') }}" placeholder="Shop name" required>
+                                        @error('name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="email" class="form-label">Shop Email <span class="text-danger">*</span></label>
+                                        <label for="email" class="form-label">Shop Email <span
+                                                class="text-danger">*</span></label>
                                         <input type="email" id="email" name="email"
-                                               class="form-control @error('email') is-invalid @enderror"
-                                               value="{{ old('email') }}" placeholder="shop@example.com" required>
-                                        @error('email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('email') is-invalid @enderror"
+                                            value="{{ old('email') }}" placeholder="shop@example.com" required>
+                                        @error('email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="phone" class="form-label">Shop Phone</label>
                                         <input type="text" id="phone" name="phone"
-                                               class="form-control @error('phone') is-invalid @enderror"
-                                               value="{{ old('phone') }}" placeholder="+8801XXXXXXXXX" maxlength="15">
-                                        @error('phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('phone') is-invalid @enderror"
+                                            value="{{ old('phone') }}" placeholder="+8801XXXXXXXXX" maxlength="15">
+                                        @error('phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     {{-- <div class="col-md-6">
@@ -74,51 +85,67 @@
                                 {{-- Shopkeeper --}}
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="shop_keeper_name" class="form-label">Shopkeeper Name <span class="text-danger">*</span></label>
+                                        <label for="shop_keeper_name" class="form-label">Shopkeeper Name <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" id="shop_keeper_name" name="shop_keeper_name"
-                                               class="form-control @error('shop_keeper_name') is-invalid @enderror"
-                                               value="{{ old('shop_keeper_name') }}" placeholder="Full name" required>
-                                        @error('shop_keeper_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_name') is-invalid @enderror"
+                                            value="{{ old('shop_keeper_name') }}" placeholder="Full name" required>
+                                        @error('shop_keeper_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="shop_keeper_phone" class="form-label">Shopkeeper Phone <span class="text-danger">*</span></label>
+                                        <label for="shop_keeper_phone" class="form-label">Shopkeeper Phone <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" id="shop_keeper_phone" name="shop_keeper_phone"
-                                               class="form-control @error('shop_keeper_phone') is-invalid @enderror"
-                                               value="{{ old('shop_keeper_phone') }}" placeholder="+8801XXXXXXXXX" required>
-                                        @error('shop_keeper_phone') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_phone') is-invalid @enderror"
+                                            value="{{ old('shop_keeper_phone') }}" placeholder="+8801XXXXXXXXX" required>
+                                        @error('shop_keeper_phone')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="shop_keeper_email" class="form-label">Shopkeeper Email</label>
                                         <input type="email" id="shop_keeper_email" name="shop_keeper_email"
-                                               class="form-control @error('shop_keeper_email') is-invalid @enderror"
-                                               value="{{ old('shop_keeper_email') }}" placeholder="owner@example.com">
-                                        @error('shop_keeper_email') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_email') is-invalid @enderror"
+                                            value="{{ old('shop_keeper_email') }}" placeholder="owner@example.com">
+                                        @error('shop_keeper_email')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="shop_keeper_nid" class="form-label">Shopkeeper NID <span class="text-danger">*</span></label>
+                                        <label for="shop_keeper_nid" class="form-label">Shopkeeper NID <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" id="shop_keeper_nid" name="shop_keeper_nid"
-                                               class="form-control @error('shop_keeper_nid') is-invalid @enderror"
-                                               value="{{ old('shop_keeper_nid') }}" placeholder="NID number" required>
-                                        @error('shop_keeper_nid') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_nid') is-invalid @enderror"
+                                            value="{{ old('shop_keeper_nid') }}" placeholder="NID number" required>
+                                        @error('shop_keeper_nid')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="shop_keeper_tin" class="form-label">Shopkeeper TIN <span class="text-danger">*</span></label>
+                                        <label for="shop_keeper_tin" class="form-label">Shopkeeper TIN <span
+                                                class="text-danger">*</span></label>
                                         <input type="text" id="shop_keeper_tin" name="shop_keeper_tin"
-                                               class="form-control @error('shop_keeper_tin') is-invalid @enderror"
-                                               value="{{ old('shop_keeper_tin') }}" placeholder="TIN number" required>
-                                        @error('shop_keeper_tin') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_tin') is-invalid @enderror"
+                                            value="{{ old('shop_keeper_tin') }}" placeholder="TIN number" required>
+                                        @error('shop_keeper_tin')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="dbid" class="form-label">DBID (Digital Business ID)</label>
                                         <input type="text" id="dbid" name="dbid"
-                                               class="form-control @error('dbid') is-invalid @enderror"
-                                               value="{{ old('dbid') }}" placeholder="e.g., DBID-12345">
-                                        @error('dbid') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('dbid') is-invalid @enderror"
+                                            value="{{ old('dbid') }}" placeholder="e.g., DBID-12345">
+                                        @error('dbid')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -126,18 +153,22 @@
                                     <div class="col-md-6">
                                         <label for="shop_keeper_photo" class="form-label">Shopkeeper Photo</label>
                                         <input type="file" id="shop_keeper_photo" name="shop_keeper_photo"
-                                               class="form-control @error('shop_keeper_photo') is-invalid @enderror"
-                                               accept="image/*">
-                                        @error('shop_keeper_photo') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_keeper_photo') is-invalid @enderror"
+                                            accept="image/*">
+                                        @error('shop_keeper_photo')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                         <div class="form-text">Optional. JPG/PNG.</div>
                                     </div>
 
                                     <div class="col-md-6">
                                         <label for="shop_logo" class="form-label">Shop Logo</label>
                                         <input type="file" id="shop_logo" name="shop_logo"
-                                               class="form-control @error('shop_logo') is-invalid @enderror"
-                                               accept="image/*">
-                                        @error('shop_logo') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('shop_logo') is-invalid @enderror"
+                                            accept="image/*">
+                                        @error('shop_logo')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                         <div class="form-text">Optional. Square recommended.</div>
                                     </div>
                                 </div>
@@ -149,23 +180,29 @@
                                     <div class="col-md-4">
                                         <label for="bank_name" class="form-label">Bank Name</label>
                                         <input type="text" id="bank_name" name="bank_name"
-                                               class="form-control @error('bank_name') is-invalid @enderror"
-                                               value="{{ old('bank_name') }}" placeholder="e.g., BRAC Bank">
-                                        @error('bank_name') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('bank_name') is-invalid @enderror"
+                                            value="{{ old('bank_name') }}" placeholder="e.g., BRAC Bank">
+                                        @error('bank_name')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4">
                                         <label for="bank_account_number" class="form-label">Bank Account Number</label>
                                         <input type="text" id="bank_account_number" name="bank_account_number"
-                                               class="form-control @error('bank_account_number') is-invalid @enderror"
-                                               value="{{ old('bank_account_number') }}" placeholder="Account number">
-                                        @error('bank_account_number') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('bank_account_number') is-invalid @enderror"
+                                            value="{{ old('bank_account_number') }}" placeholder="Account number">
+                                        @error('bank_account_number')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                     <div class="col-md-4">
                                         <label for="bank_branch" class="form-label">Bank Branch</label>
                                         <input type="text" id="bank_branch" name="bank_branch"
-                                               class="form-control @error('bank_branch') is-invalid @enderror"
-                                               value="{{ old('bank_branch') }}" placeholder="Branch name">
-                                        @error('bank_branch') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                            class="form-control @error('bank_branch') is-invalid @enderror"
+                                            value="{{ old('bank_branch') }}" placeholder="Branch name">
+                                        @error('bank_branch')
+                                            <div class="invalid-feedback">{{ $message }}</div>
+                                        @enderror
                                     </div>
                                 </div>
 
@@ -175,17 +212,19 @@
                                 <div class="mb-3">
                                     <label for="business_address" class="form-label">Business Address</label>
                                     <textarea id="business_address" name="business_address" rows="2"
-                                              class="form-control @error('business_address') is-invalid @enderror"
-                                              placeholder="Full business address">{{ old('business_address') }}</textarea>
-                                    @error('business_address') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        class="form-control @error('business_address') is-invalid @enderror" placeholder="Full business address">{{ old('business_address') }}</textarea>
+                                    @error('business_address')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 <div class="mb-3">
                                     <label for="description" class="form-label">Description</label>
                                     <textarea id="description" name="description" rows="3"
-                                              class="form-control @error('description') is-invalid @enderror"
-                                              placeholder="Short description about the shop">{{ old('description') }}</textarea>
-                                    @error('description') <div class="invalid-feedback">{{ $message }}</div> @enderror
+                                        class="form-control @error('description') is-invalid @enderror" placeholder="Short description about the shop">{{ old('description') }}</textarea>
+                                    @error('description')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
                                 </div>
 
                                 {{-- Email Verified At --}}
@@ -193,8 +232,8 @@
                                     <label for="email_verified_at" class="form-label">Email Verified At</label>
                                     <div class="input-group">
                                         <input type="datetime-local" id="email_verified_at" name="email_verified_at"
-                                               class="form-control @error('email_verified_at') is-invalid @enderror"
-                                               value="{{ old('email_verified_at') }}">
+                                            class="form-control @error('email_verified_at') is-invalid @enderror"
+                                            value="{{ old('email_verified_at') }}">
                                         <button type="button" class="btn btn-outline-secondary" id="setNowBtn">
                                             <i class="bi bi-clock"></i> Set Now
                                         </button>
@@ -210,11 +249,12 @@
                                 {{-- Password --}}
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <label for="password" class="form-label">Password <span class="text-danger">*</span></label>
+                                        <label for="password" class="form-label">Password <span
+                                                class="text-danger">*</span></label>
                                         <div class="input-group">
                                             <input type="password" id="password" name="password"
-                                                   class="form-control @error('password') is-invalid @enderror"
-                                                   placeholder="••••••••" required>
+                                                class="form-control @error('password') is-invalid @enderror"
+                                                placeholder="••••••••" required>
                                             <button type="button" class="btn btn-outline-secondary" id="togglePassword">
                                                 <i class="bi bi-eye"></i>
                                             </button>
@@ -226,12 +266,15 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <label for="password_confirmation" class="form-label">Confirm Password <span class="text-danger">*</span></label>
+                                        <label for="password_confirmation" class="form-label">Confirm Password <span
+                                                class="text-danger">*</span></label>
                                         <div class="input-group">
-                                            <input type="password" id="password_confirmation" name="password_confirmation"
-                                                   class="form-control @error('password_confirmation') is-invalid @enderror"
-                                                   placeholder="••••••••" required>
-                                            <button type="button" class="btn btn-outline-secondary" id="togglePassword2">
+                                            <input type="password" id="password_confirmation"
+                                                name="password_confirmation"
+                                                class="form-control @error('password_confirmation') is-invalid @enderror"
+                                                placeholder="••••••••" required>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                id="togglePassword2">
                                                 <i class="bi bi-eye"></i>
                                             </button>
                                             @error('password_confirmation')
@@ -263,7 +306,7 @@
         </div> <!-- /.container-fluid -->
     </div> <!-- /.app-content -->
 
-    @push('admin_scripts')
+    @push('backend_scripts')
         <script>
             (function() {
                 const toggle = (inputId, btnId) => {
@@ -287,7 +330,8 @@
                     setNowBtn.addEventListener('click', () => {
                         const now = new Date();
                         const pad = n => String(n).padStart(2, '0');
-                        const fmt = `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
+                        const fmt =
+                            `${now.getFullYear()}-${pad(now.getMonth()+1)}-${pad(now.getDate())}T${pad(now.getHours())}:${pad(now.getMinutes())}`;
                         verified.value = fmt;
                     });
                 }

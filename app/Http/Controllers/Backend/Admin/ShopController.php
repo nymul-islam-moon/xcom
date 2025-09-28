@@ -1,9 +1,10 @@
 <?php
 
-namespace App\Http\Controllers\Admin;
+namespace App\Http\Controllers\Backend\Admin;
 
+use App\DataTables\Backend\ShopDataTable;
 use App\Http\Controllers\Controller;
-use App\Http\Requests\StoreShopRequest;
+use App\Http\Requests\Backend\Admin\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Jobs\ScanShopsCsvAndQueueChunks;
 use App\Jobs\ShopsCsvProcess;
@@ -20,17 +21,17 @@ class ShopController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index(Request $request)
+    public function index(ShopDataTable $dataTable)
     {
-        $term = $request->query('q', '');
+        // $term = $request->query('q', '');
 
-        $shops = Shop::query()
-            ->search($term)
-            ->orderBy('name')
-            ->paginate(15)
-            ->appends(['q' => $term]);
+        // $shops = Shop::query()
+        //     ->search($term)
+        //     ->orderBy('name')
+        //     ->paginate(15)
+        //     ->appends(['q' => $term]);
 
-        return view('admin.shops.index', compact('shops'));
+        return $dataTable->render('backend.admin.shops.index');
     }
 
     /**
@@ -38,7 +39,7 @@ class ShopController extends Controller
      */
     public function create()
     {
-        return view('admin.shops.create');
+        return view('backend.admin.shops.create');
     }
 
     /**
@@ -51,11 +52,9 @@ class ShopController extends Controller
         try {
             $formData = $request->validated();
 
-            // Handle password hashing
-            if (isset($formData['password'])) {
-                $formData['password'] = Hash::make($formData['password']);
-            }
-
+            $formData['password'] = Hash::make($formData['password']);
+            // dd($formData);
+           
             // Handle shop logo upload using MediaService
             if ($path = $mediaService->storeFromRequest($request, 'shop_logo', 'shops/logos')) {
                 $formData['shop_logo'] = $path;
@@ -65,9 +64,6 @@ class ShopController extends Controller
             if ($path = $mediaService->storeFromRequest($request, 'shop_keeper_photo', 'shops/shopkeepers')) {
                 $formData['shop_keeper_photo'] = $path;
             }
-
-            // Optional: create a slug from the shop name
-            $formData['slug'] = Str::slug($formData['name']);
 
             // Create the shop
             Shop::create($formData);
