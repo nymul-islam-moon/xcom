@@ -25,7 +25,6 @@ return new class extends Migration
             $table->string('shop_keeper_tin');
             $table->string('dbid')->nullable()->comment('Digital Business Identification');
             $table->string('bank_name')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->enum('status', [ 'pending', 'active', 'inactive', 'suspended' ])->default('pending');
             $table->string('bank_account_number')->nullable();
             $table->string('bank_branch')->nullable();

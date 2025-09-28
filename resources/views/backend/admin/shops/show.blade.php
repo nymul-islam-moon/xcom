@@ -1,9 +1,9 @@
 {{-- resources/views/admin/shops/show.blade.php --}}
-@extends('layouts.admin.app')
+@extends('layouts.backend.app')
 
 @section('title', 'Shop Details')
 
-@section('admin_content')
+@section('backend_content')
     <div class="app-content-header">
         <div class="container-fluid">
             <div class="row">
@@ -64,6 +64,29 @@
                                 <dd class="col-6 col-sm-9 text-end py-2 border-bottom mb-0 text-break">
                                     {{ $shop->phone ?? '-' }}
                                 </dd>
+
+                                {{-- Status --}}
+                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 border-bottom">Status</dt>
+                                <dd class="col-6 col-sm-9 text-end py-2 border-bottom mb-0 text-break">
+                                    @php
+                                        $status = $shop->status ?? null;
+                                        $statusLabels = [
+                                            'pending' => 'secondary',
+                                            'active' => 'success',
+                                            'inactive' => 'warning',
+                                            'suspended' => 'danger',
+                                        ];
+                                    @endphp
+
+                                    @if ($status && isset($statusLabels[$status]))
+                                        <span class="badge bg-{{ $statusLabels[$status] }}">
+                                            {{ ucfirst($status) }}
+                                        </span>
+                                    @else
+                                        <span class="text-muted">-</span>
+                                    @endif
+                                </dd>
+
 
                                 {{-- Shop Logo --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 border-bottom">Shop Logo</dt>
@@ -139,15 +162,6 @@
                                     {{ $shop->business_address ?? '-' }}
                                 </dd>
 
-                                {{-- Website --}}
-                                <dt class="col-6 col-sm-3 text-start text-muted small py-2 border-bottom">Website</dt>
-                                <dd class="col-6 col-sm-9 text-end py-2 border-bottom mb-0 text-break">
-                                    @if ($shop->website_url)
-                                        <a href="{{ $shop->website_url }}" target="_blank">{{ $shop->website_url }}</a>
-                                    @else
-                                        <em class="text-muted">Not provided</em>
-                                    @endif
-                                </dd>
 
                                 {{-- Description --}}
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 border-bottom">Description</dt>

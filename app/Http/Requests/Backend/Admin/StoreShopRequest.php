@@ -43,7 +43,6 @@ class StoreShopRequest extends FormRequest
             'shop_keeper_tin'       => 'shop keeper tin',
             'dbid'                  => 'digital business identification',
             'bank_name'             => 'bank name',
-            'is_active'             => 'is active',
             'status'                => 'status',
             'bank_account_number'   => 'bank account number',
             'bank_branch'           => 'bank branch',
@@ -66,7 +65,6 @@ class StoreShopRequest extends FormRequest
             'email'               => Str::lower(trim($this->input('email'))),
             'shop_keeper_email'   => Str::lower(trim($this->input('shop_keeper_email'))),
             'shop_keeper_name'    => Str::title(Str::lower(trim($this->input('shop_keeper_name')))),
-            'is_active'           => $this->boolean('is_active'),
             'status'              => in_array($this->input('status'), ['pending', 'active', 'inactive', 'suspended'])
                 ? $this->input('status')
                 : 'pending',
@@ -113,7 +111,6 @@ class StoreShopRequest extends FormRequest
 
             // Verification and status
             'email_verified_at'     => ['nullable', 'date'],
-            'is_active'             => ['nullable', 'boolean'],
             'status'                => ['required', 'in:pending,active,inactive,suspended'],
 
             // Password

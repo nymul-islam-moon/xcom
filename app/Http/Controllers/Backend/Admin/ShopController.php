@@ -23,13 +23,6 @@ class ShopController extends Controller
      */
     public function index(ShopDataTable $dataTable)
     {
-        // $term = $request->query('q', '');
-
-        // $shops = Shop::query()
-        //     ->search($term)
-        //     ->orderBy('name')
-        //     ->paginate(15)
-        //     ->appends(['q' => $term]);
 
         return $dataTable->render('backend.admin.shops.index');
     }
@@ -88,7 +81,7 @@ class ShopController extends Controller
      */
     public function show(Shop $shop)
     {
-        return view('admin.shops.show', compact('shop'));
+        return view('backend.admin.shops.show', compact('shop'));
     }
 
     /**
