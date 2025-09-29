@@ -89,7 +89,7 @@ class ShopController extends Controller
      */
     public function edit(Shop $shop)
     {
-        //
+        return view('backend.admin.shops.edit', compact('shop'));
     }
 
     /**

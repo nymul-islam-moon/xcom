@@ -1,4 +1,4 @@
-<x-admin.head-links />
+<x-backend.head-links />
 
 <body class="login-page bg-body-secondary">
     <div class="login-box">
@@ -7,9 +7,22 @@
         </div>
         <!-- /.login-logo -->
         <div class="card">
+
             <div class="card-body login-card-body">
                 <p class="login-box-msg">Sign in to start your session</p>
+                @if (session('success'))
+                    <div class="alert alert-success alert-dismissible fade show m-3" role="alert">
+                        {{ session('success') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
 
+                @if (session('error'))
+                    <div class="alert alert-danger alert-dismissible fade show m-3" role="alert">
+                        {{ session('error') }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                @endif
                 <form action="{{ route('shop.login.store') }}" method="post">
                     @csrf
                     @method('POST')

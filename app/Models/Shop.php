@@ -78,6 +78,33 @@ class Shop extends Authenticatable
         ];
     }
 
+    // In App\Models\Shop.php
+
+    public function validateShopUser()
+    {
+        if (is_null($this->email_verified_at)) {
+            return 'Your email is not verified. Please verify your email to continue.';
+        }
+
+        switch ($this->status) {
+            case 'suspended':
+                return 'Your shop account is suspended. Please contact support.';
+
+            case 'inactive':
+                return 'Your shop account is inactive. Please activate it to continue.';
+
+            case 'pending':
+                return 'Your shop account is pending approval. Please wait for admin approval.';
+
+            case 'active':
+                return true;
+
+            default:
+                return 'Unknown shop status.';
+        }
+    }
+
+
     /** Scope: search by name/email/phone */
     public function scopeSearch($query, ?string $term)
     {
