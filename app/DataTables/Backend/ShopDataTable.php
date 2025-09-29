@@ -29,6 +29,13 @@ class ShopDataTable extends DataTable
                 $actions = [
                     [
                         'type' => 'link',
+                        'label' => 'Payment',
+                        'icon' => 'bi bi-cash',
+                        'url'  => route('admin.shops.edit', $row->slug),
+                    ],
+                    ['type' => 'divider'],
+                    [
+                        'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
                         'url'  => route('admin.shops.edit', $row->slug),
@@ -69,6 +76,18 @@ class ShopDataTable extends DataTable
                     return '<span class="text-muted">No Image</span>';
                 }
             })
+            ->editColumn('status', function (Shop $row) {
+                $colors = [
+                    'pending'   => 'bg-warning text-dark',
+                    'active'    => 'bg-success',
+                    'inactive'  => 'bg-secondary',
+                    'suspended' => 'bg-danger',
+                ];
+
+                $class = $colors[$row->status] ?? 'bg-light text-dark';
+
+                return '<span class="badge ' . $class . '">' . ucfirst($row->status) . '</span>';
+            })
             ->addColumn('shopkeeper', function (Shop $row) {
                 return "<strong>{$row->shop_keeper_name}</strong><br><small>{$row->shop_keeper_phone}</small>";
             })
@@ -95,7 +114,7 @@ class ShopDataTable extends DataTable
                 });
             })
 
-            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo']);
+            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo', 'status']);
     }
 
     /**
@@ -151,6 +170,7 @@ class ShopDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::make('phone'),
+            Column::make('status'),
             Column::make('shopkeeper'),
             Column::make('bank'),
             Column::make('business_address'),

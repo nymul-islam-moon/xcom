@@ -78,8 +78,13 @@ class Shop extends Authenticatable
         ];
     }
 
-    // In App\Models\Shop.php
 
+
+    /**
+     * It will use for validation check
+     * 1. Shop is active or not
+     * 2. 
+     */
     public function validateShopUser()
     {
         if (is_null($this->email_verified_at)) {
@@ -96,13 +101,17 @@ class Shop extends Authenticatable
             case 'pending':
                 return 'Your shop account is pending approval. Please wait for admin approval.';
 
+            case 'expired':
+                return 'Your shop subscription has expired. Please renew to continue using your account.';
+
             case 'active':
                 return true;
 
             default:
-                return 'Unknown shop status.';
+                return 'Unknown shop status. Please contact support.';
         }
     }
+
 
 
     /** Scope: search by name/email/phone */
