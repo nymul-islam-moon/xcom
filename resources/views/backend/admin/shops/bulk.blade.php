@@ -30,7 +30,7 @@
                         </div>
 
                         @php($bulkErrors = $errors->getBag('bulkUpload'))
-                        <form action="{{ route('admin.bulkUpload.shop.store') }}" method="POST" enctype="multipart/form-data" novalidate>
+                        <form action="" method="POST" enctype="multipart/form-data" novalidate>
                             @csrf
                             <div class="card-body">
                                 <div class="mb-3">

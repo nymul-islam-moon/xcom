@@ -10,6 +10,7 @@ use App\Http\Controllers\Backend\Admin\ProductAttributeValueController;
 use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Backend\Admin\ShopController;
+use App\Http\Controllers\Backend\Admin\ShopSubscriptionController;
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
 
 // Guest (admin) routes
@@ -56,6 +57,7 @@ Route::middleware('auth:admin')->group(function () {
 
   
     Route::resource('shops', ShopController::class);
+    Route::resource('shop-subscription', ShopSubscriptionController::class);
     Route::resource('users', AdminController::class);
 
 

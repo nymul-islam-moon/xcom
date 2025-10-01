@@ -29,9 +29,9 @@ class ShopDataTable extends DataTable
                 $actions = [
                     [
                         'type' => 'link',
-                        'label' => 'Payment',
-                        'icon' => 'bi bi-cash',
-                        'url'  => route('admin.shops.edit', $row->slug),
+                        'label' => 'Subscription',
+                        'icon' => 'bi bi-cash-stack',
+                        'url'  => route('admin.shop-subscription.index', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
@@ -76,17 +76,23 @@ class ShopDataTable extends DataTable
                     return '<span class="text-muted">No Image</span>';
                 }
             })
-            ->editColumn('status', function (Shop $row) {
-                $colors = [
-                    'pending'   => 'bg-warning text-dark',
-                    'active'    => 'bg-success',
-                    'inactive'  => 'bg-secondary',
-                    'suspended' => 'bg-danger',
-                ];
+            ->editColumn('is_active', function (Shop $row) {
+                $class = $row->is_active ? 'bg-success' : 'bg-danger';
+                $label = $row->is_active ? 'Active' : 'Inactive';
 
-                $class = $colors[$row->status] ?? 'bg-light text-dark';
+                return '<span class="badge ' . $class . '">' . $label . '</span>';
+            })
+            ->editColumn('is_suspended', function (Shop $row) {
+                $class = $row->is_suspended ? 'bg-danger' : 'bg-success';
+                $label = $row->is_suspended ? 'Suspended' : 'Not Suspended';
 
-                return '<span class="badge ' . $class . '">' . ucfirst($row->status) . '</span>';
+                return '<span class="badge ' . $class . '">' . $label . '</span>';
+            })
+            ->editColumn('subscription_start', function (Shop $row) {
+                return $row->subscriptionDate('start_date');
+            })
+            ->editColumn('subscription_ends', function (Shop $row) {
+                return $row->subscriptionDate('end_date');
             })
             ->addColumn('shopkeeper', function (Shop $row) {
                 return "<strong>{$row->shop_keeper_name}</strong><br><small>{$row->shop_keeper_phone}</small>";
@@ -114,7 +120,7 @@ class ShopDataTable extends DataTable
                 });
             })
 
-            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo', 'status']);
+            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo', 'is_active', 'is_suspended', 'subscription_start', 'subscription_ends']);
     }
 
     /**
@@ -122,8 +128,11 @@ class ShopDataTable extends DataTable
      */
     public function query(Shop $model): QueryBuilder
     {
-        return $model->newQuery()->select('shops.*');
+        return $model->newQuery()
+            ->with('payments') // eager load payments
+            ->select('shops.*');
     }
+
 
     /**
      * Optional method if you want to use the html builder.
@@ -170,7 +179,10 @@ class ShopDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::make('phone'),
-            Column::make('status'),
+            Column::make('is_active'),
+            Column::make('is_suspended'),
+            Column::make('subscription_start'),
+            Column::make('subscription_ends'),
             Column::make('shopkeeper'),
             Column::make('bank'),
             Column::make('business_address'),

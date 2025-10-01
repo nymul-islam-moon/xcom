@@ -79,6 +79,73 @@ class Shop extends Authenticatable
     }
 
 
+    public function payments()
+    {
+        return $this->hasMany(ShopPayment::class);
+    }
+
+    /**
+     * Return the best applicable start_date or end_date for the collection.
+     *
+     * @param  string  $which  'end_date' or 'start_date'
+     * @return string         'Y-m-d' formatted date or 'Not Subscribed'
+     */
+    public function subscriptionDate(string $which = 'end_date'): string
+    {
+        $which = $which === 'start_date' ? 'start_date' : 'end_date'; // sanitize
+
+        if ($this->payments->isEmpty()) {
+            return 'Not Subscribed';
+        }
+
+        $today = \Carbon\Carbon::now()->startOfDay();
+
+        // Map over payments relation
+        $payments = $this->payments->map(function ($p) {
+            $p->start_obj = $p->start_date ? \Carbon\Carbon::parse($p->start_date)->startOfDay() : null;
+            $p->end_obj   = $p->end_date   ? \Carbon\Carbon::parse($p->end_date)->endOfDay()   : null;
+            return $p;
+        });
+
+        // 1) Active subscriptions
+        $active = $payments
+            ->filter(fn($p) => $p->start_obj && $p->end_obj && $today->between($p->start_obj, $p->end_obj))
+            ->sortByDesc(fn($p) => $p->end_obj->timestamp)
+            ->first();
+
+        if ($active) {
+            return $which === 'start_date'
+                ? ($active->start_obj ? $active->start_obj->format('Y-m-d') : 'Not Subscribed')
+                : ($active->end_obj ? $active->end_obj->format('Y-m-d') : 'Not Subscribed');
+        }
+
+        // 2) Future subscriptions
+        $future = $payments
+            ->filter(fn($p) => $p->start_obj && $p->start_obj->gt($today))
+            ->sortBy(fn($p) => $p->start_obj->timestamp)
+            ->first();
+
+        if ($future) {
+            return $which === 'start_date'
+                ? ($future->start_obj ? $future->start_obj->format('Y-m-d') : 'Not Subscribed')
+                : ($future->end_obj ? $future->end_obj->format('Y-m-d') : 'Not Subscribed');
+        }
+
+        // 3) Past subscriptions
+        $past = $payments
+            ->filter(fn($p) => $p->end_obj && $p->end_obj->lt($today))
+            ->sortByDesc(fn($p) => $p->end_obj->timestamp)
+            ->first();
+
+        if ($past) {
+            return $which === 'start_date'
+                ? ($past->start_obj ? $past->start_obj->format('Y-m-d') : 'Not Subscribed')
+                : ($past->end_obj ? $past->end_obj->format('Y-m-d') : 'Not Subscribed');
+        }
+
+        return 'Not Subscribed';
+    }
+
 
     /**
      * It will use for validation check

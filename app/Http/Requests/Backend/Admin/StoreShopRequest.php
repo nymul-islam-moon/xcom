@@ -43,7 +43,6 @@ class StoreShopRequest extends FormRequest
             'shop_keeper_tin'       => 'shop keeper tin',
             'dbid'                  => 'digital business identification',
             'bank_name'             => 'bank name',
-            'status'                => 'status',
             'bank_account_number'   => 'bank account number',
             'bank_branch'           => 'bank branch',
             'shop_logo'             => 'shop logo',
@@ -65,9 +64,6 @@ class StoreShopRequest extends FormRequest
             'email'               => Str::lower(trim($this->input('email'))),
             'shop_keeper_email'   => Str::lower(trim($this->input('shop_keeper_email'))),
             'shop_keeper_name'    => Str::title(Str::lower(trim($this->input('shop_keeper_name')))),
-            'status'              => in_array($this->input('status'), ['pending', 'active', 'inactive', 'suspended'])
-                ? $this->input('status')
-                : 'pending',
             'password'            => $this->input('password') ? $this->input('password') : null,
         ]);
     }
@@ -111,8 +107,6 @@ class StoreShopRequest extends FormRequest
 
             // Verification and status
             'email_verified_at'     => ['nullable', 'date'],
-            'status'                => ['required', 'in:pending,active,inactive,suspended'],
-
             // Password
             'password'              => ['required', 'string', 'min:8', 'confirmed'],
         ];
@@ -147,7 +141,7 @@ class StoreShopRequest extends FormRequest
     protected function failedValidation(Validator $validator)
     {
         // Log all errors
-        Log::error('Product Category Store validation failed', [
+        Log::error('Shop Store validation failed', [
             'errors' => $validator->errors()->toArray(),
             'input'  => $this->all(),
         ]);

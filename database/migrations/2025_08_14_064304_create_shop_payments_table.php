@@ -13,19 +13,18 @@ return new class extends Migration
     {
         Schema::create('shop_payments', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->nullable()->constrained('shops')->onDelete('cascade');
+            $table->foreignId('shop_id')
+                ->nullable()
+                ->constrained('shops')
+                ->onDelete('cascade');
 
-            // Payment info
+            // Subscription / plan info
             $table->string('payment_method'); // e.g., 'card', 'paypal'
-            $table->string('transaction_id')->nullable();
-            $table->date('payment_date'); // when payment was made
+            $table->date('payment_date'); // date payment was made
 
-            // Activation/subscription info
-            $table->date('start_date')->nullable(); // null until activated
-            $table->integer('duration_days'); // number of active days
-            $table->date('end_date')->nullable(); // calculated on approval
-
-            $table->enum('status', ['pending', 'active', 'expired'])->default('pending');
+            $table->date('start_date')->nullable(); // when subscription activates
+            $table->integer('duration_days'); // e.g., 30, 90, etc.
+            $table->date('end_date')->nullable(); // auto-calculated
 
             $table->timestamps();
         });

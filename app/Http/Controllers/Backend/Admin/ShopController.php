@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Backend\Admin;
 
 use App\DataTables\Backend\ShopDataTable;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Backend\Admin\StoreShopPaymentRequest;
 use App\Http\Requests\Backend\Admin\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Jobs\ScanShopsCsvAndQueueChunks;
 use App\Jobs\ShopsCsvProcess;
+use App\Models\Account;
 use Illuminate\Http\Request;
 use App\Models\Shop;
+use App\Models\ShopPayment;
 use App\Services\MediaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -47,7 +50,7 @@ class ShopController extends Controller
 
             $formData['password'] = Hash::make($formData['password']);
             // dd($formData);
-           
+
             // Handle shop logo upload using MediaService
             if ($path = $mediaService->storeFromRequest($request, 'shop_logo', 'shops/logos')) {
                 $formData['shop_logo'] = $path;
@@ -126,6 +129,55 @@ class ShopController extends Controller
 
             return redirect()->back()
                 ->with('error', 'Something went wrong while deleting the shop.');
+        }
+    }
+
+    public function subscription($slug)
+    {
+        return view('backend.admin.shops.subscription', compact('slug'));
+    }
+
+    public function subscription_store(StoreShopPaymentRequest $request)
+    {
+        DB::beginTransaction();
+
+        try {
+            $formData = $request->validated();
+
+            $shopPayment = ShopPayment::create($formData);
+
+            // for account table
+
+            $formData = [
+                'owner_id'       => $formData['shop_id'],
+                'owner_type'     => \App\Models\Shop::class,
+                'reference_type' => \App\Models\ShopPayment::class,
+                'reference_id'   => $shopPayment->id,
+                'category'       => 'payment',
+                'sub_type'       => 'subscription',
+                'direction'      => 'credit',
+                'amount'         => $formData['amount'],
+                'currency'       => $formData['currency'],
+                'provider'       => null,
+                'transaction_id' => null,
+                'payment_method' => $formData['payment_method'],
+                'status'         => 'completed',
+                'happened_at'    => now(),
+            ];
+
+            Account::create($formData);
+
+            DB::commit();
+
+            return redirect()->route('admin.shops.index')
+                ->with('success', 'Shop subscription activated');
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            Log::error('Shop subscription failed: ' . $e->getMessage());
+
+            return redirect()->back()
+                ->with('error', 'Something went wrong while subscription for shop.');
         }
     }
 
