@@ -21,14 +21,14 @@ Route::middleware('guest:admin')->group(function () {
 
 // Authenticated (admin) routes
 Route::middleware('auth:admin')->group(function () {
-    
+
     Route::get('/phpinfo', fn() => phpinfo());
 
     // auth route
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-    
+
     // one-click verify (no login required), signed + throttled
     Route::get('/email/verify/{id}/{hash}', [AdminAuthenticatedSessionController::class, 'verify'])
         ->middleware(['signed', 'throttle:6,1'])
@@ -55,9 +55,10 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
-  
+
     Route::resource('shops', ShopController::class);
-    Route::resource('shop-subscription', ShopSubscriptionController::class);
+    Route::get('shop-subscriptions/{shop}', [ShopSubscriptionController::class, 'index'])->name('shop-subscription.index');
+    Route::post('shop-subscriptions/store', [ShopSubscriptionController::class, 'store']);
     Route::resource('users', AdminController::class);
 
 

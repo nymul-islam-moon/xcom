@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('shop_suspensions', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('shop_id')->nullable()->constrained('shops')->onDelete('cascade');
+            $table->foreignId('shop_id')->constrained('shops')->onDelete('cascade');
 
             $table->timestamp('suspended_at');
             $table->timestamp('resumed_at')->nullable();

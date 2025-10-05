@@ -16,12 +16,13 @@
         <div class="container-fluid">
             <div class="row">
                 <div class="col-sm-6">
-                    <h3 class="mb-0">Product Shop</h3>
+                    <h3 class="mb-0">{{ $shop->name }}</h3>
                 </div>
                 <div class="col-sm-6">
                     <x-admin.breadcrumbs :items="[
                         ['label' => 'Home', 'route' => 'admin.dashboard', 'icon' => 'bi bi-house'],
-                        ['label' => 'Shop', 'active' => true],
+                        ['label' => 'Shops', 'route' => 'admin.shops.index'],
+                        ['label' => 'Shop Subcriptions', 'active' => true],
                     ]" />
                 </div>
             </div>

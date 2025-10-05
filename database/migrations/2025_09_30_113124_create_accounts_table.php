@@ -47,13 +47,6 @@ return new class extends Migration
             $table->uuid('uuid')->nullable()->unique(); // optional external UUID
 
             $table->timestamps();
-
-            // Indexes (avoid unique constraint on provider+transaction_id to keep provider ids optional)
-            $table->index(['reference_type', 'reference_id']);
-            $table->index(['owner_type', 'owner_id']);
-            $table->index(['provider', 'transaction_id']);
-            $table->index(['happened_at']);
-            $table->index(['category','sub_type']);
         });
 
     }

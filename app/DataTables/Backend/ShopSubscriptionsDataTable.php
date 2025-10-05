@@ -28,20 +28,20 @@ class ShopSubscriptionsDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('action', function (ShopPayment $row) {
                 $actions = [
-                    [
-                        'type' => 'link',
-                        'label' => 'Subscription',
-                        'icon' => 'bi bi-cash-stack',
-                        'url'  => '',
-                    ],
+                    // [
+                    //     'type' => 'link',
+                    //     'label' => 'Subscription',
+                    //     'icon' => 'bi bi-cash-stack',
+                    //     'url'  => '',
+                    // ],
 
-                    ['type' => 'divider'],
-                    [
-                        'type' => 'link',
-                        'label' => 'Show',
-                        'icon' => 'bi-eye',
-                        'url'  => '',
-                    ],
+                    // ['type' => 'divider'],
+                    // [
+                    //     'type' => 'link',
+                    //     'label' => 'Show',
+                    //     'icon' => 'bi-eye',
+                    //     'url'  => '',
+                    // ],
 
                 ];
                 return view('components.backend.data-table-buttons', [
@@ -84,7 +84,6 @@ class ShopSubscriptionsDataTable extends DataTable
                     : '';
             })
 
-
             ->rawColumns(['action']);
     }
 
@@ -93,7 +92,11 @@ class ShopSubscriptionsDataTable extends DataTable
      */
     public function query(ShopPayment $model): QueryBuilder
     {
-        return $model->newQuery();
+        $shopId = $this->shop_id; // coming from with()
+
+        return $model->newQuery()
+            ->where('shop_id', $shopId)
+            ->select('shop_payments.*');
     }
 
     /**

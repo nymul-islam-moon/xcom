@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('shop_payments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('shop_id')
-                ->nullable()
                 ->constrained('shops')
                 ->onDelete('cascade');
 
