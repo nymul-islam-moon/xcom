@@ -24,28 +24,32 @@
 
     <div class="app-content">
         <div class="container-fluid">
-            <div class="card">
-                <div class="card-header">
-                    <h5 class="mb-0">New Attribute Value</h5>
-                </div>
-                <div class="card-body">
-                    <form action="{{ route('admin.products.attribute-values.store') }}" method="POST">
-                        @csrf
-                        <input type="hidden" name="product_attribute_id" value="{{ $attribute->id }}">
-
-                        <div class="mb-3">
-                            <label for="value" class="form-label">Value</label>
-                            <input type="text" name="value" id="value" class="form-control" value="{{ old('value') }}" placeholder="Enter value (e.g. Red)" required>
-                            @error('value')
-                                <div class="invalid-feedback">{{ $message }}</div>
-                            @enderror
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="card">
+                        <div class="card-header">
+                            <h5 class="mb-0">New Attribute Value</h5>
                         </div>
-
-                        <div class="d-flex justify-content-between">
-                            <a href="{{ route('admin.products.attributes.show', $attribute->slug) }}" class="btn btn-secondary">Back</a>
-                            <button type="submit" class="btn btn-success">Add Value</button>
+                        <div class="card-body">
+                            <form action="{{ route('admin.products.attribute-values.store') }}" method="POST">
+                                @csrf
+                                <input type="hidden" name="product_attribute_id" value="{{ $attribute->id }}">
+    
+                                <div class="mb-3">
+                                    <label for="value" class="form-label">Value</label>
+                                    <input type="text" name="value" id="value" class="form-control" value="{{ old('value') }}" placeholder="Enter value (e.g. Red)" required>
+                                    @error('value')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+    
+                                <div class="d-flex justify-content-between">
+                                    <a href="{{ route('admin.products.attributes.show', $attribute->slug) }}" class="btn btn-secondary">Back</a>
+                                    <button type="submit" class="btn btn-success">Add Value</button>
+                                </div>
+                            </form>
                         </div>
-                    </form>
+                    </div>
                 </div>
             </div>
         </div>
