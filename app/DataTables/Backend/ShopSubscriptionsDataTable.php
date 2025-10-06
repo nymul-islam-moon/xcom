@@ -28,12 +28,13 @@ class ShopSubscriptionsDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('action', function (ShopPayment $row) {
                 $actions = [
-                    // [
-                    //     'type' => 'link',
-                    //     'label' => 'Subscription',
-                    //     'icon' => 'bi bi-cash-stack',
-                    //     'url'  => '',
-                    // ],
+                   [
+                        'type' => 'delete',
+                        'label' => 'Delete',
+                        'icon'  => 'bi-trash',
+                        'url'   => route('admin.shop-subscription.destroy', $row->id),
+                        'confirm' => 'Are you sure you want to delete this category?',
+                    ]
 
                     // ['type' => 'divider'],
                     // [
@@ -48,6 +49,14 @@ class ShopSubscriptionsDataTable extends DataTable
                     'id' => $row->slug,
                     'actions' => $actions,
                 ])->render();
+            })
+
+            ->addColumn('currency', function (ShopPayment $row) {
+                return $row->shop->accounts[0]->currency;
+            })
+
+            ->addColumn('amount', function (ShopPayment $row) {
+                return $row->shop->accounts[0]->amount;
             })
 
             ->editColumn('shop_id', function (ShopPayment $row) {
@@ -96,7 +105,8 @@ class ShopSubscriptionsDataTable extends DataTable
 
         return $model->newQuery()
             ->where('shop_id', $shopId)
-            ->select('shop_payments.*');
+            ->select('shop_payments.*')
+            ->latest();
     }
 
     /**
@@ -141,6 +151,8 @@ class ShopSubscriptionsDataTable extends DataTable
                 ->width(60)
                 ->addClass('text-center'),
             Column::make('shop_id'),
+            Column::make('currency'),
+            Column::make('amount'),
             Column::make('payment_method'),
             Column::make('payment_date'),
             Column::make('start_date'),

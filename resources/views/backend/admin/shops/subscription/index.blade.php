@@ -39,11 +39,8 @@
                             <h3 class="card-title flex-grow-1 mb-0">All Shops</h3>
 
                             <div class="d-flex gap-1">
-                                <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
-                                    <i class="bi bi-plus-lg"></i> Create shop
-                                </a>
-                                <a href="{{ route('admin.shops.create') }}" class="btn btn-sm btn-success">
-                                    <i class="bi bi-plus-lg"></i> Upload Shop (CSV/Excel)
+                                <a href="{{ route('admin.shop-subscription.create', $shop->slug) }}" class="btn btn-sm btn-success">
+                                    <i class="bi bi-plus-lg"></i> Buy Subscription
                                 </a>
                             </div>
                         </div>
