@@ -5,7 +5,7 @@ use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\Shop\Auth\ShopAuthenticatedSessionController;
-use App\Http\Controllers\Shop\ProductController;
+use App\Http\Controllers\Backend\Shop\ProductController;
 use App\Http\Controllers\Backend\Shop\ShopDashboardController;
 use Illuminate\Support\Facades\Route;
 
@@ -29,5 +29,5 @@ Route::middleware('auth:shop')->group(function () {
 //         ->name('select.sub-categories'); 
 //     Route::get('select-child-categories', [ProductChildCategoryController::class, 'selectChildCategories'])
 //         ->name('select.child-categories');
-//     Route::resource('/products', ProductController::class);
+    Route::resource('/products', ProductController::class);
 });
