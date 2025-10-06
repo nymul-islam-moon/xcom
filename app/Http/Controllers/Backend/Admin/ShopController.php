@@ -7,12 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Admin\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Jobs\ScanShopsCsvAndQueueChunks;
-use Illuminate\Http\Request;
 use App\Models\Shop;
 use App\Services\MediaService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 
 class ShopController extends Controller
 {
@@ -43,7 +43,7 @@ class ShopController extends Controller
         try {
             $formData = $request->validated();
 
-            $formData['password'] = Hash::make($formData['password']);
+            $formData['password'] = Hash::make(trim($formData['password']));
             // dd($formData);
 
             // Handle shop logo upload using MediaService
@@ -66,7 +66,7 @@ class ShopController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Shop creation failed: ' . $e->getMessage());
+            Log::error('Shop creation failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -120,7 +120,7 @@ class ShopController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Shop deletion failed: ' . $e->getMessage());
+            Log::error('Shop deletion failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->with('error', 'Something went wrong while deleting the shop.');
@@ -149,11 +149,11 @@ class ShopController extends Controller
                 'mimetypes:text/plain,text/csv,application/csv,application/vnd.ms-excel',
             ],
         ], [
-            'bulk_file.required'   => 'Please choose a CSV file to upload.',
-            'bulk_file.file'       => 'The upload must be a file.',
-            'bulk_file.max'        => 'The file may not be greater than 20MB.',
-            'bulk_file.mimes'      => 'Only .csv files are allowed.',
-            'bulk_file.mimetypes'  => 'The provided file type is not recognized as CSV.',
+            'bulk_file.required' => 'Please choose a CSV file to upload.',
+            'bulk_file.file' => 'The upload must be a file.',
+            'bulk_file.max' => 'The file may not be greater than 20MB.',
+            'bulk_file.mimes' => 'Only .csv files are allowed.',
+            'bulk_file.mimetypes' => 'The provided file type is not recognized as CSV.',
         ]);
 
         $storedPath = null;
@@ -177,12 +177,11 @@ class ShopController extends Controller
             ScanShopsCsvAndQueueChunks::dispatch(
                 path: $storedPath,
                 options: [
-                    'chunk_size'  => 5000,   // tune: 2000–10000
-                    'header_row'  => true,
+                    'chunk_size' => 5000,   // tune: 2000–10000
+                    'header_row' => true,
                     'insert_mode' => 'insert', // or 'upsert'
                 ]
             )->onQueue('shops-low')->afterCommit();
-
 
             return redirect()->route('admin.shops.index');
         } catch (\Throwable $e) {
@@ -190,8 +189,9 @@ class ShopController extends Controller
             if ($storedPath) {
                 $mediaService->deleteFile($storedPath, disk: 'public');
             }
+
             return back()->withInput()->withErrors(
-                ['bulk_file' => 'Upload failed: ' . $e->getMessage()],
+                ['bulk_file' => 'Upload failed: '.$e->getMessage()],
                 'bulkUpload'
             );
         }

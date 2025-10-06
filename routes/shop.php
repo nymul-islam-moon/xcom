@@ -4,9 +4,9 @@ use App\Http\Controllers\Admin\ProductBrandController;
 use App\Http\Controllers\Admin\ProductCategoryController;
 use App\Http\Controllers\Admin\ProductChildCategoryController;
 use App\Http\Controllers\Admin\ProductSubCategoryController;
-use App\Http\Controllers\Shop\Auth\ShopAuthenticatedSessionController;
+use App\Http\Controllers\Backend\Shop\Auth\ShopAuthenticatedSessionController;
 use App\Http\Controllers\Shop\ProductController;
-use App\Http\Controllers\Shop\ShopDashboardController;
+use App\Http\Controllers\Backend\Shop\ShopDashboardController;
 use Illuminate\Support\Facades\Route;
 
 

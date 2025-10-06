@@ -1,10 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Shop\Auth;
+namespace App\Http\Controllers\Backend\Shop\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Http\Request;
 
 
 class ShopAuthenticatedSessionController extends Controller
@@ -24,6 +25,7 @@ class ShopAuthenticatedSessionController extends Controller
 
         $remember = $request->boolean('remember');
 
+       
         // Attempt login using 'shop' guard
         if (auth()->guard('shop')->attempt($credentials, $remember)) {
             $request->session()->regenerate();

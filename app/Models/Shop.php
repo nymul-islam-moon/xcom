@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class Shop extends Authenticatable
 {
@@ -39,7 +40,6 @@ class Shop extends Authenticatable
         'dbid',
         'bank_name',
         'is_active',
-        'status',
         'bank_account_number',
         'bank_branch',
         'shop_logo',
@@ -80,7 +80,7 @@ class Shop extends Authenticatable
 
     public function accounts()
     {
-        return $this->morphMany(\App\Models\Account::class, 'owner');
+        return $this->morphMany(Account::class, 'owner');
     }
 
     public function payments()
@@ -162,25 +162,21 @@ class Shop extends Authenticatable
             return 'Your email is not verified. Please verify your email to continue.';
         }
 
-        switch ($this->status) {
-            case 'suspended':
-                return 'Your shop account is suspended. Please contact support.';
+        $today = Carbon::today();
 
-            case 'inactive':
-                return 'Your shop account is inactive. Please activate it to continue.';
+        $isSubscribed = $this->payments->contains(function ($payment) use ($today) {
+            return $today->between(
+                Carbon::parse($payment->start_date),
+                Carbon::parse($payment->end_date)
+            );
+        });
 
-            case 'pending':
-                return 'Your shop account is pending approval. Please wait for admin approval.';
-
-            case 'expired':
-                return 'Your shop subscription has expired. Please renew to continue using your account.';
-
-            case 'active':
-                return true;
-
-            default:
-                return 'Unknown shop status. Please contact support.';
+        if ( ! $isSubscribed )
+        {
+            return 'Your subscription has expired. Please renew or subscribe to keep using your account.';
         }
+
+        return true;
     }
 
     /** Scope: search by name/email/phone */
