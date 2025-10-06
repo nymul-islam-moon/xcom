@@ -58,7 +58,11 @@ Route::middleware('auth:admin')->group(function () {
 
     Route::resource('shops', ShopController::class);
     Route::get('shop-subscriptions/{shop}', [ShopSubscriptionController::class, 'index'])->name('shop-subscription.index');
-    Route::post('shop-subscriptions/store', [ShopSubscriptionController::class, 'store']);
+    Route::get('shop-subscriptions/{shop}/create', [ShopSubscriptionController::class, 'create'])->name('shop-subscription.create');
+    Route::post('shop-subscriptions/{shop}/store', [ShopSubscriptionController::class, 'store'])->name('shop-subscription.store');
+    Route::delete('shop-subscriptions/{shopPayment}/destroy', [ShopSubscriptionController::class, 'destroy'])->name('shop-subscription.destroy');
+
+
     Route::resource('users', AdminController::class);
 
 

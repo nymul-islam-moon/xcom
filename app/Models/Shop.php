@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Carbon\Carbon;
 
 class Shop extends Authenticatable
 {
@@ -39,7 +40,6 @@ class Shop extends Authenticatable
         'dbid',
         'bank_name',
         'is_active',
-        'status',
         'bank_account_number',
         'bank_branch',
         'shop_logo',
@@ -78,6 +78,10 @@ class Shop extends Authenticatable
         ];
     }
 
+    public function accounts()
+    {
+        return $this->morphMany(Account::class, 'owner');
+    }
 
     public function payments()
     {
@@ -88,7 +92,7 @@ class Shop extends Authenticatable
      * Return the best applicable start_date or end_date for the collection.
      *
      * @param  string  $which  'end_date' or 'start_date'
-     * @return string         'Y-m-d' formatted date or 'Not Subscribed'
+     * @return string 'Y-m-d' formatted date or 'Not Subscribed'
      */
     public function subscriptionDate(string $which = 'end_date'): string
     {
@@ -103,14 +107,15 @@ class Shop extends Authenticatable
         // Map over payments relation
         $payments = $this->payments->map(function ($p) {
             $p->start_obj = $p->start_date ? \Carbon\Carbon::parse($p->start_date)->startOfDay() : null;
-            $p->end_obj   = $p->end_date   ? \Carbon\Carbon::parse($p->end_date)->endOfDay()   : null;
+            $p->end_obj = $p->end_date ? \Carbon\Carbon::parse($p->end_date)->endOfDay() : null;
+
             return $p;
         });
 
         // 1) Active subscriptions
         $active = $payments
-            ->filter(fn($p) => $p->start_obj && $p->end_obj && $today->between($p->start_obj, $p->end_obj))
-            ->sortByDesc(fn($p) => $p->end_obj->timestamp)
+            ->filter(fn ($p) => $p->start_obj && $p->end_obj && $today->between($p->start_obj, $p->end_obj))
+            ->sortByDesc(fn ($p) => $p->end_obj->timestamp)
             ->first();
 
         if ($active) {
@@ -121,8 +126,8 @@ class Shop extends Authenticatable
 
         // 2) Future subscriptions
         $future = $payments
-            ->filter(fn($p) => $p->start_obj && $p->start_obj->gt($today))
-            ->sortBy(fn($p) => $p->start_obj->timestamp)
+            ->filter(fn ($p) => $p->start_obj && $p->start_obj->gt($today))
+            ->sortBy(fn ($p) => $p->start_obj->timestamp)
             ->first();
 
         if ($future) {
@@ -133,8 +138,8 @@ class Shop extends Authenticatable
 
         // 3) Past subscriptions
         $past = $payments
-            ->filter(fn($p) => $p->end_obj && $p->end_obj->lt($today))
-            ->sortByDesc(fn($p) => $p->end_obj->timestamp)
+            ->filter(fn ($p) => $p->end_obj && $p->end_obj->lt($today))
+            ->sortByDesc(fn ($p) => $p->end_obj->timestamp)
             ->first();
 
         if ($past) {
@@ -146,11 +151,10 @@ class Shop extends Authenticatable
         return 'Not Subscribed';
     }
 
-
     /**
      * It will use for validation check
      * 1. Shop is active or not
-     * 2. 
+     * 2.
      */
     public function validateShopUser()
     {
@@ -158,28 +162,22 @@ class Shop extends Authenticatable
             return 'Your email is not verified. Please verify your email to continue.';
         }
 
-        switch ($this->status) {
-            case 'suspended':
-                return 'Your shop account is suspended. Please contact support.';
+        $today = Carbon::today();
 
-            case 'inactive':
-                return 'Your shop account is inactive. Please activate it to continue.';
+        $isSubscribed = $this->payments->contains(function ($payment) use ($today) {
+            return $today->between(
+                Carbon::parse($payment->start_date),
+                Carbon::parse($payment->end_date)
+            );
+        });
 
-            case 'pending':
-                return 'Your shop account is pending approval. Please wait for admin approval.';
-
-            case 'expired':
-                return 'Your shop subscription has expired. Please renew to continue using your account.';
-
-            case 'active':
-                return true;
-
-            default:
-                return 'Unknown shop status. Please contact support.';
+        if ( ! $isSubscribed )
+        {
+            return 'Your subscription has expired. Please renew or subscribe to keep using your account.';
         }
+
+        return true;
     }
-
-
 
     /** Scope: search by name/email/phone */
     public function scopeSearch($query, ?string $term)
@@ -189,7 +187,7 @@ class Shop extends Authenticatable
             return $query;
         }
 
-        $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $term) . '%';
+        $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $term).'%';
 
         return $query->where(function ($w) use ($like) {
             $w->where('name', 'like', $like)

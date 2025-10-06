@@ -41,9 +41,6 @@ class ShopPayment extends Model
         return $this->belongsTo(Shop::class);
     }
 
-    
-
-
     /**
      * Accessor: Check if payment is expired
      */

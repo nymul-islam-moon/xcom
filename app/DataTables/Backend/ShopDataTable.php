@@ -106,6 +106,13 @@ class ShopDataTable extends DataTable
                     <small>Acc #: {$accountNumber}</small><br>
                     <small>Branch: {$branch}</small>";
             })
+            ->filterColumn('subscription_start', function ($query, $keyword) {
+                $query->where(function ($query) use ($keyword) {
+                    $query->where('bank_name', 'like', "%{$keyword}%")
+                        ->orWhere('bank_account_number', 'like', "%{$keyword}%")
+                        ->orWhere('bank_branch', 'like', "%{$keyword}%");
+                });
+            })
             ->filterColumn('bank', function ($query, $keyword) {
                 $query->where(function ($query) use ($keyword) {
                     $query->where('bank_name', 'like', "%{$keyword}%")
@@ -129,7 +136,7 @@ class ShopDataTable extends DataTable
     public function query(Shop $model): QueryBuilder
     {
         return $model->newQuery()
-            ->with('payments') // eager load payments
+            ->with(['payments', 'accounts']) // eager load payments
             ->select('shops.*');
     }
 
