@@ -21,13 +21,13 @@ Route::middleware('auth:shop')->group(function () {
     Route::get('/dashboard', [ShopDashboardController::class, 'index'])->name('dashboard');
 
 
-//     Route::get('select-brands', [ProductBrandController::class, 'selectBrands'])
-//         ->name('select.brands');
-//     // Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
-//         ->name('select.categories');
-//     Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
-//         ->name('select.sub-categories'); 
-//     Route::get('select-child-categories', [ProductChildCategoryController::class, 'selectChildCategories'])
-//         ->name('select.child-categories');
+    // Route::get('select-brands', [ProductBrandController::class, 'selectBrands'])
+    //     ->name('select.brands');
+    // Route::get('select-categories', [ProductCategoryController::class, 'selectCategories'])
+    //     ->name('select.categories');
+    // Route::get('select-sub-categories', [ProductSubCategoryController::class, 'selectSubCategories'])
+    //     ->name('select.sub-categories'); 
+    // Route::get('select-child-categories', [ProductChildCategoryController::class, 'selectChildCategories'])
+    //     ->name('select.child-categories');
     Route::resource('/products', ProductController::class);
 });

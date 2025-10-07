@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Models\Brand;
 use App\Models\ProductCategory;
 use App\Models\ProductSubCategory;
 use Illuminate\Support\Facades\Log;
@@ -30,6 +31,19 @@ class SelectController extends Controller
         }
 
         return response()->json($options);
+    }
+
+    public function brandSelect(Request $request)
+    {
+        $q = Brand::where('is_active', 1);
+
+        if ($request->filled('q')) {
+            $q->where('name', 'like', '%' . $request->q, '%');
+        }
+
+        $brands = $q->select('id', 'name')->orderBy('name')->get();
+
+        return response()->json($brands);
     }
 
     public function categorySelect(Request $request)
@@ -77,6 +91,42 @@ class SelectController extends Controller
 
             return response()->json([
                 'message' => 'Something went wrong while fetching subcategories.'
+            ], 500);
+        }
+    }
+
+    public function childCategorySelect(Request $request, int $subCategoryId)
+    {
+        try {
+            // Find category
+            $subCategory = ProductSubCategory::find($subCategoryId);
+
+            if (! $subCategory) {
+                return response()->json([]);
+            }
+
+            // Build query from relation
+            $q = $subCategory->productChildCategories()->where('is_active', 1);
+
+            // Apply search if present
+            if ($request->filled('q')) {
+                $q->where('name', 'like', '%' . $request->q . '%');
+            }
+
+            // Always return simple array [{id, name}, ...]
+            $subs = $q->select('id', 'name')->orderBy('name')->get();
+
+            return response()->json($subs);
+        } catch (\Throwable $e)
+        {
+            Log::error('Failed to fetch child-categories for category id ' . $subCategoryId, [
+                'exception' => $e,
+                'category_id' => $subCategoryId,
+                'request_q' => $request->q ?? null,
+            ]);
+
+            return response()->json([
+                'message' => 'Something went wrong while fetching child-categories.'
             ], 500);
         }
     }

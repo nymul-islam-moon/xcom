@@ -37,7 +37,6 @@
                             <div class="card-body">
                                 <input type="hidden" name="shop_slug" value="{{ $shop->slug }}" readonly>
 
-
                                 {{-- Payment Method --}}
                                 <div class="mb-3">
                                     <label for="payment_method" class="form-label">Payment Method <span
@@ -107,10 +106,23 @@
                                         placeholder="Auto-calculated">
                                 </div>
 
+                                {{-- Transaction Number --}}
+                                <div class="mb-3">
+                                    <label for="transaction_number" class="form-label">Transaction Number <span
+                                            class="text-danger">*</span></label>
+                                    <input type="text" name="transaction_number" id="transaction_number"
+                                        class="form-control @error('transaction_number') is-invalid @enderror"
+                                        value="{{ old('transaction_number') }}" placeholder="e.g., TX123456789">
+                                    @error('transaction_number')
+                                        <div class="invalid-feedback">{{ $message }}</div>
+                                    @enderror
+                                </div>
+
                             </div>
 
                             <div class="card-footer d-flex justify-content-end gap-2">
-                                <a href="{{ route('admin.shop-subscription.index', $shop->slug) }}" class="btn btn-outline-secondary">
+                                <a href="{{ route('admin.shop-subscription.index', $shop->slug) }}"
+                                    class="btn btn-outline-secondary">
                                     <i class="bi bi-arrow-left"></i> Back
                                 </a>
                                 <button type="submit" class="btn btn-primary">
@@ -118,6 +130,7 @@
                                 </button>
                             </div>
                         </form>
+
                     </div>
 
                 </div>
@@ -128,45 +141,44 @@
 @endsection
 
 @push('backend_scripts')
-<script>
-    $(function () {
-        // Laravel variable passed into JS
-        let startDateFromPHP = "{{ $startDate ?? '' }}";
+    <script>
+        $(function() {
+            // Laravel variable passed into JS
+            let startDateFromPHP = "{{ $startDate ?? '' }}";
 
-        let startDate;
-        if (startDateFromPHP) {
-            // Add 1 day if date exists
-            let dateObj = new Date(startDateFromPHP);
-            dateObj.setDate(dateObj.getDate() + 1);
-            startDate = dateObj.toISOString().split('T')[0];
-        } else {
-            // Otherwise use today's date
-            startDate = new Date().toISOString().split('T')[0];
-        }
-
-        // Set start date
-        $('#start_date').val(startDate);
-
-        // Auto-calculate end date
-        function calculateEndDate() {
-            let startDateVal = $('#start_date').val();
-            let duration = parseInt($('#duration_days').val());
-
-            if (startDateVal && !isNaN(duration)) {
-                let endDate = new Date(startDateVal);
-                endDate.setDate(endDate.getDate() + duration);
-                $('#end_date').val(endDate.toISOString().split('T')[0]);
+            let startDate;
+            if (startDateFromPHP) {
+                // Add 1 day if date exists
+                let dateObj = new Date(startDateFromPHP);
+                dateObj.setDate(dateObj.getDate() + 1);
+                startDate = dateObj.toISOString().split('T')[0];
             } else {
-                $('#end_date').val('');
+                // Otherwise use today's date
+                startDate = new Date().toISOString().split('T')[0];
             }
-        }
 
-        // Trigger on change
-        $('#start_date, #duration_days').on('change keyup', calculateEndDate);
+            // Set start date
+            $('#start_date').val(startDate);
 
-        // Initial calculation
-        calculateEndDate();
-    });
-</script>
+            // Auto-calculate end date
+            function calculateEndDate() {
+                let startDateVal = $('#start_date').val();
+                let duration = parseInt($('#duration_days').val());
+
+                if (startDateVal && !isNaN(duration)) {
+                    let endDate = new Date(startDateVal);
+                    endDate.setDate(endDate.getDate() + duration);
+                    $('#end_date').val(endDate.toISOString().split('T')[0]);
+                } else {
+                    $('#end_date').val('');
+                }
+            }
+
+            // Trigger on change
+            $('#start_date, #duration_days').on('change keyup', calculateEndDate);
+
+            // Initial calculation
+            calculateEndDate();
+        });
+    </script>
 @endpush
-

@@ -32,6 +32,7 @@ class StoreShopPaymentRequest extends FormRequest
             'start_date'            => 'subscription start date',
             'duration_days'         => 'subscription duration days',
             'end_date'              => 'subscription end date',
+            'transaction_number'    => 'payment transaction number',
         ];
     }
 
@@ -67,14 +68,15 @@ class StoreShopPaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'shop_id'           => ['required', 'integer'],
-            'payment_method'    => ['required', 'string', 'max:255'],
-            'payment_date'      => ['required', 'date'],
-            'amount'            => ['required', 'numeric', 'min:0'],
-            'currency'          => ['required', 'string', 'max:10'],
-            'start_date'        => ['required', 'date', 'after_or_equal:today'],
-            'duration_days'     => ['required', 'integer', 'min:1'],
-            'end_date'          => ['required', 'date', 'after:start_date'],
+            'shop_id'               => ['required', 'integer'],
+            'payment_method'        => ['required', 'string', 'max:255'],
+            'transaction_number'    => ['nullable', 'string', 'max:255'],
+            'payment_date'          => ['required', 'date'],
+            'amount'                => ['required', 'numeric', 'min:0'],
+            'currency'              => ['required', 'string', 'max:10'],
+            'start_date'            => ['required', 'date', 'after_or_equal:today'],
+            'duration_days'         => ['required', 'integer', 'min:1'],
+            'end_date'              => ['required', 'date', 'after:start_date'],
         ];
     }
 

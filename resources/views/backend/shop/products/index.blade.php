@@ -1,7 +1,15 @@
 {{-- resources/views/admin/dashboard.blade.php --}}
 @extends('layouts.backend.app')
 
-@section('title', 'Product Brand')
+@section('title', 'Products')
+
+@push('backend_styles')
+    <!-- DataTables CSS (Bootstrap5 integration) -->
+    <link href="https://cdn.datatables.net/1.13.8/css/dataTables.bootstrap5.min.css" rel="stylesheet">
+
+    <!-- Optional plugins CSS -->
+    <link href="https://cdn.datatables.net/buttons/2.4.2/css/buttons.bootstrap5.min.css" rel="stylesheet">
+@endpush
 
 @section('backend_content')
     <div class="app-content-header">
@@ -28,19 +36,7 @@
                     <div class="card mb-4">
                         <div class="card-header d-flex align-items-center">
                             <h3 class="card-title flex-grow-1 mb-0">All Products</h3>
-
-                            {{-- Optional: simple search by name/slug/description --}}
-                            <form action="{{ route('shop.products.index') }}" method="GET"
-                                class="d-none d-sm-flex me-2">
-                                <div class="input-group input-group-sm">
-                                    <input type="text" name="q" value="{{ request('q') }}" class="form-control"
-                                        placeholder="Search name/slug/desc">
-                                    <button class="btn btn-outline-secondary" type="submit">
-                                        <i class="bi bi-search"></i>
-                                    </button>
-                                </div>
-                            </form>
-
+                            
                             <a href="{{ route('shop.products.create') }}" class="btn btn-sm btn-success">
                                 <i class="bi bi-plus-lg"></i> Create Product
                             </a>
@@ -63,78 +59,7 @@
                         @endif
 
                         <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-bordered table-hover align-middle">
-                                    <thead>
-                                        <tr>
-                                            <th style="width: 60px">#</th>
-                                            <th style="min-width: 220px;">Name</th>
-                                            <th style="min-width: 200px;">Slug</th>
-                                            <th style="min-width: 200px;">Image</th>
-                                            <th style="min-width: 260px;">Description</th>
-                                            <th style="width: 170px;">Actions</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @forelse ($products as $idx => $product)
-                                            <tr>
-                                                <td>{{ $products->firstItem() + $idx }}</td>
-                                                <td class="fw-semibold text-break">{{ $product->name }}</td>
-                                                <td class="text-break">{{ $product->slug }}</td>
-                                                <td>
-                                                    @if ($product->image)
-                                                        <img src="{{ asset('storage/' . $product->image) }}"
-                                                            alt="{{ $product->name }}" class="img-thumbnail"
-                                                            style="width: 50px; height: 50px;">
-                                                    @else
-                                                        <span class="text-muted">No Image</span>
-                                                    @endif
-                                                </td>
-                                                <td>
-                                                    <div class="text-truncate" style="max-width: 420px">
-                                                        {{ $product->description ?? '—' }}
-                                                    </div>
-                                                </td>
-
-                                                <td>
-                                                    <div class="d-flex align-items-center gap-1 flex-wrap">
-                                                        <a href="{{ route('admin.products.brands.show', $product) }}"
-                                                            class="btn btn-sm btn-outline-secondary" title="View">
-                                                            <i class="bi bi-eye"></i>
-                                                        </a>
-                                                        <a href="{{ route('admin.products.brands.edit', $product) }}"
-                                                            class="btn btn-sm btn-primary" title="Edit">
-                                                            <i class="bi bi-pencil"></i>
-                                                        </a>
-                                                        <form action="{{ route('shop.products.destroy', $product) }}"
-                                                            method="POST" class="d-inline"
-                                                            onsubmit="return confirm('Delete this category? This action cannot be undone.');">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="btn btn-sm btn-danger"
-                                                                title="Delete">
-                                                                <i class="bi bi-trash"></i>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                </td>
-                                            </tr>
-                                        @empty
-                                            <tr>
-                                                <td colspan="8" class="text-center text-muted py-4">
-                                                    No categories found.
-                                                </td>
-                                            </tr>
-                                        @endforelse
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="card-footer clearfix">
-                            <div class="float-end">
-                                {{-- {!! $products->appends(['q' => request('q')])->links('pagination::bootstrap-5') !!} --}}
-                            </div>
+                            {{ $dataTable->table() }}
                         </div>
                     </div>
 
@@ -143,3 +68,17 @@
         </div> <!-- /.container-fluid -->
     </div> <!-- /.app-content -->
 @endsection
+
+@push('backend_scripts')
+    <!-- DataTables core -->
+    <script src="https://cdn.datatables.net/1.13.8/js/jquery.dataTables.min.js"></script>
+
+    <!-- DataTables Bootstrap 5 integration -->
+    <script src="https://cdn.datatables.net/1.13.8/js/dataTables.bootstrap5.min.js"></script>
+
+    <!-- Optional plugins (Buttons, Select) -->
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/dataTables.buttons.min.js"></script>
+    <script src="https://cdn.datatables.net/buttons/2.4.2/js/buttons.bootstrap5.min.js"></script>
+
+    {{ $dataTable->scripts(attributes: ['type' => 'module']) }}
+@endpush

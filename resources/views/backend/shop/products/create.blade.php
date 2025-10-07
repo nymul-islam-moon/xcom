@@ -616,11 +616,11 @@
                 });
 
                 // Load brands & categories via AJAX, then initialize Select2 & restore old selection
-                $.get('{{ route('shop.select.brands') }}', function(data) {
+                $.get('{{ route('api.select-brands') }}', function(data) {
                     populateSelect($('#brand_id'), data, @json(old('brand_id')));
                 });
 
-                $.get('{{ route('shop.select.categories') }}', function(data) {
+                $.get('{{ route('api.select-categories') }}', function(data) {
                     populateSelect($('#category_id'), data, @json(old('category_id')));
                 });
 
@@ -642,17 +642,16 @@
 
                     if (!id) return;
 
-                    $.get('{{ route('shop.select.sub-categories') }}', {
-                        category_id: id
-                    }, function(data) {
-                        // normalize to array if necessary
+                    $.get('{{ route('api.select-sub-categories', ['categoryId' => ':id']) }}'.replace(
+                        ':id', id), function(data) {
+                        // Normalize to array if necessary
                         const items = Array.isArray(data) ? data : (data && data.data ? data
                             .data : []);
                         if (items && items.length) {
                             populateSelect($sub, items, @json(old('subcategory_id')));
                             // DO NOT hide/show wrappers here
                         } else {
-                            // keep select cleared (no hide)
+                            // Keep select cleared (no hide)
                             $sub.val(null).trigger('change');
                             $sub.find('option').not(':disabled').remove();
                         }
@@ -661,6 +660,7 @@
                         $sub.val(null).trigger('change');
                         $sub.find('option').not(':disabled').remove();
                     });
+
                 });
 
 
@@ -676,24 +676,25 @@
 
                     if (!id) return;
 
-                    $.get('{{ route('shop.select.child-categories') }}', {
-                        subcategory_id: id
-                    }, function(data) {
-                        const items = Array.isArray(data) ? data : (data && data.data ? data
-                            .data : []);
-                        if (items && items.length) {
-                            populateSelect($child, items, @json(old('child_category_id')));
-                            // DO NOT hide/show wrappers here
-                        } else {
-                            // keep child cleared (no hide)
-                            $child.val(null).trigger('change');
-                            $child.find('option').not(':disabled').remove();
-                        }
-                    }).fail(function() {
+                    $.get('{{ route('api.select-child-categories', ['subCategoryId' => ':id']) }}'
+                        .replace(':id', id),
+                        function(data) {
+                            const items = Array.isArray(data) ? data : (data && data.data ? data
+                                .data : []);
+                            if (items && items.length) {
+                                populateSelect($child, items, @json(old('child_category_id')));
+                                // DO NOT hide/show wrappers here
+                            } else {
+                                // Keep child select cleared (no hide)
+                                $child.val(null).trigger('change');
+                                $child.find('option').not(':disabled').remove();
+                            }
+                        }).fail(function() {
                         console.error('Failed to fetch child categories');
                         $child.val(null).trigger('change');
                         $child.find('option').not(':disabled').remove();
                     });
+
                 });
 
 

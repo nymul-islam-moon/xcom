@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend\Shop;
 
+use App\DataTables\Backend\ProductsDataTable;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
@@ -19,11 +20,10 @@ class ProductController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(ProductsDataTable $dataTable)
     {
-        $products = Product::latest()->paginate(10); // instead of get()
 
-        return view('backend.shop.products.index', compact('products'));
+        return $dataTable->render('backend.shop.products.index');
     }
 
     /**

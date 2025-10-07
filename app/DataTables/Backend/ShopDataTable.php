@@ -147,7 +147,7 @@ class ShopDataTable extends DataTable
     public function html(): HtmlBuilder
     {
         return $this->builder()
-            ->setTableId('productcategories-table')
+            ->setTableId('shop-table')
             ->columns($this->getColumns())
             ->minifiedAjax()
             ->dom('Blfrtip') // <-- include 'l' so the length dropdown appears; 'B' is for Buttons
