@@ -749,6 +749,8 @@
                     html +=
                         `<th>Price</th><th>Sale Price</th><th>Stock</th><th>Slug</th><th>SKU</th><th>Images</th><th>Default</th></tr></thead><tbody>`;
 
+                    html += `<th>Actions</th></tr></thead><tbody>`;
+
                     combinations.forEach((combo, index) => {
                         html += `<tr>`;
                         combo.forEach(val => {
@@ -810,6 +812,10 @@
                                     ${defaultErr}
                                  </td>`;
 
+                        // Delete button cell (add it before closing the row)
+                        html +=
+                            `<td><button type="button" class="btn btn-sm btn-danger comb-delete" title="Remove combination"><i class="bi bi-trash"></i> Delete</button></td>`;
+
                         html += `</tr>`;
                     });
 
@@ -819,6 +825,19 @@
 
                 // Listen attribute changes
                 $(document).on('change', '.attribute-select', loadCombinations);
+
+
+                $(document).on('click', '.comb-delete', function(e) {
+                    e.preventDefault();
+                    const $tr = $(this).closest('tr');
+                    if (!$tr.length) return;
+
+                    // Remove the row
+                    $tr.remove();
+
+                    // Reindex remaining rows
+                    reindexCombinationRows();
+                });
 
                 // If there were old attribute_values, generate combos on load
                 @if (old('attribute_values'))
@@ -833,6 +852,43 @@
                     // but call it explicitly to ensure immediate UI update
                     toggleSections();
                 });
+
+                function reindexCombinationRows() {
+                    const $tbody = $('#combination-pricing').find('tbody');
+                    // If tbody doesn't exist or has no rows, show message
+                    if (!$tbody.length || $tbody.find('tr').length === 0) {
+                        $('#combination-pricing').html(
+                            '<div class="alert alert-info mb-0">Select attribute values to generate combinations...</div>'
+                        );
+                        return;
+                    }
+
+                    $tbody.find('tr').each(function(rowIndex) {
+                        const $tr = $(this);
+
+                        // Update name attributes
+                        $tr.find('[name]').each(function() {
+                            const $el = $(this);
+                            let name = $el.attr('name');
+                            if (!name) return;
+                            // replace leading combinations[\d+] with new index
+                            name = name.replace(/combinations\[\d+\]/,
+                                `combinations[${rowIndex}]`);
+                            $el.attr('name', name);
+                        });
+
+                        // Update id/for for the default checkbox (if present)
+                        const $checkbox = $tr.find('input[type="checkbox"][name*="[is_default]"]');
+                        if ($checkbox.length) {
+                            const newId = `comb_default_${rowIndex}`;
+                            $checkbox.attr('id', newId);
+                            // update label that references it
+                            $tr.find('label[for^="comb_default_"]').attr('for', newId);
+                        }
+
+                        // Optional: ensure file inputs have the correct name indices (they were handled by name replace above)
+                    });
+                }
 
                 // Toggle simple/variable sections based on variant_type and product_type
                 function toggleSections() {
