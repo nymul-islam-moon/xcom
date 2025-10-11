@@ -7,14 +7,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Admin\StoreProductCategoryRequest;
 use App\Http\Requests\Backend\Admin\UpdateProductCategoryRequest;
 use App\Models\ProductCategory;
-use Illuminate\Support\Str;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class ProductCategoryController extends Controller
 {
-
     public function __construct() {}
 
     /**
@@ -42,19 +40,16 @@ class ProductCategoryController extends Controller
         DB::beginTransaction();
 
         try {
-            $formData = $request->validated();
+            $category = ProductCategory::create($request->validated());
 
-            ProductCategory::create($formData);
-
+            // If transaction, slug will also be created because created event fires inside the transaction
             DB::commit();
 
             return redirect()->route('admin.products.categories.index')
                 ->with('success', 'Category created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-
-            // Optional: log the actual error
-            Log::error('Category creation failed: ' . $e->getMessage());
+            \Log::error('Category creation failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -87,7 +82,7 @@ class ProductCategoryController extends Controller
 
         try {
             $formData = $request->validated();
-            
+
             $category->update($formData);
 
             DB::commit();
@@ -98,7 +93,7 @@ class ProductCategoryController extends Controller
             DB::rollBack();
 
             // Optional: log the actual error
-            Log::error('Category update failed: ' . $e->getMessage());
+            Log::error('Category update failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -124,7 +119,7 @@ class ProductCategoryController extends Controller
             DB::rollBack();
 
             // Optional: log the actual error
-            Log::error('Category deletion failed: ' . $e->getMessage());
+            Log::error('Category deletion failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->with('error', 'Something went wrong while deleting the category.');
@@ -142,7 +137,7 @@ class ProductCategoryController extends Controller
             ->where('status', 1)
             ->when(
                 $q !== '',
-                fn($query) => $query->where('name', 'like', "%{$q}%")
+                fn ($query) => $query->where('name', 'like', "%{$q}%")
             )
             ->orderBy('name')
             ->get();

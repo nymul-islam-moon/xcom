@@ -43,7 +43,6 @@ class UpdateProductCategoryRequest extends FormRequest
     {
         $this->merge([
             'name'      => Str::title(Str::lower(trim($this->input('name')))),
-            'slug'      => Str::slug(trim($this->input('name'))),
             'is_active' => $this->boolean('is_active'),
         ]);
     }
@@ -60,7 +59,6 @@ class UpdateProductCategoryRequest extends FormRequest
 
         return [
             'name'          => ['required', 'string', 'max:255', 'unique:product_categories,name,' . $categoryId],
-            'slug'          => ['required', 'string', 'max:255', 'unique:product_categories,slug,' . $categoryId],
             'is_active'     => ['required', 'boolean'],
             'description'   => ['nullable', 'string'],
         ];

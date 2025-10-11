@@ -24,31 +24,33 @@ class ProductCategoriesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.categories.edit', $row->slug),
+                        'url'  => route('admin.products.categories.edit', $row->slugRelation->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.categories.show', $row->slug),
+                        'url'  => route('admin.products.categories.show', $row->slugRelation->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
                         'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.categories.destroy', $row->slug),
+                        'url'   => route('admin.products.categories.destroy', $row->slugRelation->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
 
                 return view('components.backend.data-table-buttons', [
-                    'id' => $row->slug,
+                    'id' => $row->slugRelation->slug,
                     'actions' => $actions,
                 ])->render();
             })
-
+            ->addColumn('slug', function (ProductCategory $row) {
+                return $row->slugRelation ? '<span class="badge bg-info text-dark">'. $row->slugRelation->slug .'</span>' : '';
+            })
             ->editColumn('created_at', function (ProductCategory $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
             })
@@ -58,7 +60,7 @@ class ProductCategoriesDataTable extends DataTable
             ->editColumn('is_active', function (ProductCategory $row) {
                 return $row->is_active ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
             })
-            ->rawColumns(['action', 'is_active']);
+            ->rawColumns(['action', 'is_active', 'slug']);
     }
 
     public function query(ProductCategory $model): QueryBuilder
