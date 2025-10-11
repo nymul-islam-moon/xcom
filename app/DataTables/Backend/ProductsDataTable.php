@@ -27,13 +27,6 @@ class ProductsDataTable extends DataTable
                 $actions = [
                     [
                         'type' => 'link',
-                        'label' => 'Subscription',
-                        'icon' => 'bi bi-cash-stack',
-                        'url' => route('admin.shop-subscription.index', $row->slug),
-                    ],
-                    ['type' => 'divider'],
-                    [
-                        'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
                         'url' => route('admin.shops.edit', $row->slug),
@@ -60,8 +53,50 @@ class ProductsDataTable extends DataTable
                     'actions' => $actions,
                 ])->render();
             })
+            ->addColumn('parent_categories', function (Product $row) {
+                $cat = optional($row->category)->name;
+                $sub = optional($row->subCategory)->name;
+                $child = optional($row->childCategory)->name;
 
-            ->rawColumns(['action']);
+                if (! $cat && ! $sub && ! $child) {
+                    return '-';
+                }
+
+                $html = [];
+
+                if ($cat) {
+                    $html[] = '<span class="badge bg-success w-100 mb-1">'.e($cat).'</span>';
+                }
+
+                if ($sub) {
+                    $html[] = '<span class="badge bg-warning text-dark w-100 mb-1">'.e($sub).'</span>';
+                }
+
+                if ($child) {
+                    $html[] = '<span class="badge bg-danger w-100">'.e($child).'</span>';
+                }
+
+                return '<div class="d-flex flex-column align-items-start">'.implode('', $html).'</div>';
+            })
+
+            ->addColumn('shop', function (Product $row) {
+                return '<span class="badge bg-success w-100 mb-1">'. $row->shop->name ?? 'N/A' .'</span>';
+            })
+
+            ->addColumn('brand', function (Product $row) {
+                return '<span class="badge bg-success w-100 mb-1">'. $row->brand->name ?? 'N/A' .'</span>';
+            })
+            ->editColumn('product_type', function (Product $row) {
+                return '<span class="badge bg-primary w-100 mb-1">'. $row->product_type .'</span>';
+            })
+            ->editColumn('created_at', function (Product $row) {
+                return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
+            })
+            ->editColumn('updated_at', function (Product $row) {
+                return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
+            })
+
+            ->rawColumns(['action', 'parent_categories', 'shop', 'brand', 'product_type']);
     }
 
     /**
@@ -114,6 +149,10 @@ class ProductsDataTable extends DataTable
                 ->width(60)
                 ->addClass('text-center'),
             Column::make('name'),
+            Column::make('product_type'),
+            Column::make('parent_categories'),
+            Column::make('shop'),
+            Column::make('brand'),
             Column::make('sku'),
             Column::make('slug'),
             Column::make('created_at'),

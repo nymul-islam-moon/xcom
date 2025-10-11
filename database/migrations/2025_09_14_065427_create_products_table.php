@@ -28,18 +28,7 @@ return new class extends Migration
             // Pricing
             $table->boolean('tax_included')->default(true);
             $table->decimal('tax_percentage', 5, 2)->nullable();
-
-            // Stock & inventory for simple product (optional, can rely on variants)
-            $table->integer('stock_quantity')->default(0);
-            $table->integer('low_stock_threshold')->nullable();
-            $table->timestamp('restock_date')->nullable();
-
-            // Dimensions
-            $table->decimal('weight', 10, 2)->nullable();
-            $table->decimal('width', 8, 2)->nullable();
-            $table->decimal('height', 8, 2)->nullable();
-            $table->decimal('depth', 8, 2)->nullable();
-
+            
             // Digital Products
             $table->string('download_url')->nullable();
             $table->string('license_key')->nullable();

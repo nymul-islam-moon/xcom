@@ -13,6 +13,7 @@ class Product extends Model
 
     // Fillable columns
     protected $fillable = [
+        'shop_id',
         'name',
         'sku',
         'slug',
@@ -29,7 +30,6 @@ class Product extends Model
         'tax_included',
         'tax_percentage',
         'allow_backorders',
-        'restock_date',
         'mpn',
         'gtin8',
         'gtin13',
@@ -74,6 +74,11 @@ class Product extends Model
     public function childCategory()
     {
         return $this->belongsTo(ProductChildCategory::class, 'child_category_id');
+    }
+
+    public function shop()
+    {
+        return $this->belongsTo(Shop::class, 'shop_id');
     }
 
     // Optional: brand

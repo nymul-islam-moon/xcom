@@ -1,12 +1,15 @@
 <?php
 
-namespace App\Http\Requests;
+namespace App\Http\Requests\Backend\Admin;
 
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
+
+
 
 class StoreProductRequest extends FormRequest
 {
@@ -36,6 +39,9 @@ class StoreProductRequest extends FormRequest
         $backorderOpts = ['no', 'notify', 'yes'];
 
         return [
+
+            'shop_id'               => ['required', 'integer', 'exists:shops,id'],
+
             // Basic info
             'name'                  => ['required', 'string', 'max:255'],
 
@@ -108,9 +114,9 @@ class StoreProductRequest extends FormRequest
             // Attributes (server renders attribute selects). Each attribute select is an array of value ids.
             // Example input: attribute_values[1] => [2,3]
             //
-            'attribute_values'                      => ['nullable', 'array'],
-            'attribute_values.*'                    => ['nullable', 'array'],
-            'attribute_values.*.*'                  => ['integer', 'distinct', 'exists:product_attribute_values,id'],
+            'attributes'                      => ['nullable', 'array'],
+            'attributes.*'                    => ['nullable', 'array'],
+            'attributes.*.*'                  => ['integer', 'distinct', 'exists:product_attribute_values,id'],
 
             //
             // Combinations (for variable products)
@@ -124,8 +130,8 @@ class StoreProductRequest extends FormRequest
             'combinations.*.stock_quantity'         => ['nullable', 'integer', 'min:0'],
             'combinations.*.sku'                    => ['nullable', 'string', 'max:100'],
             'combinations.*.slug'                   => ['nullable', 'string', 'max:100'],
-            'combinations.*.attributes'             => ['required_with:combinations.*', 'array', 'min:1'],
-            'combinations.*.attributes.*'           => ['integer', 'exists:product_attribute_values,id'],
+            'combinations.*.attribute_values'       => ['required_with:combinations.*', 'array', 'min:1'],
+            'combinations.*.attribute_values.*'     => ['integer', 'exists:product_attribute_values,id'],
             'combinations.*.is_default'             => ['sometimes', 'in:0,1'], // you send hidden 0 and checkbox 1
             // Per-combination uploaded files (optional)
             'combinations.*.main_image'             => ['nullable', 'file', 'image', 'max:5120'],
@@ -149,9 +155,11 @@ class StoreProductRequest extends FormRequest
     {
         // Normalize boolean-like fields
         $this->merge([
-            'is_featured'  => $this->boolean('is_featured'),
-            'tax_included' => $this->boolean('tax_included'),
-            'is_published' => $this->boolean('is_published'),
+            'name'          => Str::title(Str::lower(trim($this->input('name')))),
+            'is_featured'   => $this->boolean('is_featured'),
+            'tax_included'  => $this->boolean('tax_included'),
+            'is_published'  => $this->boolean('is_published'),
+            'shop_id'       => auth()->guard('shop')->id(),
         ]);
 
         // Normalize combinations is_default values (strings '0'|'1' -> int)
@@ -163,13 +171,6 @@ class StoreProductRequest extends FormRequest
                 }
             }
             $this->merge(['combinations' => $combinations]);
-        }
-
-        // Attach shop_id from the "shop" guard
-        if (auth()->guard('shop')->check()) {
-            $this->merge([
-                'shop_id' => auth()->guard('shop')->id(),
-            ]);
         }
     }
 

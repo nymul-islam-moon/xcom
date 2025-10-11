@@ -2,11 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
 
 class BrandSeeder extends Seeder
 {
@@ -17,67 +15,49 @@ class BrandSeeder extends Seeder
     {
         $brands = [
             [
-                'name' => 'Samsung',
-                'image' => 'brands/samsung.png',
-                'description' => 'Global brand known for electronics and appliances.',
-            ],
-            [
                 'name' => 'Apple',
+                'slug' => Str::slug('Apple'),
+                'is_active' => true,
                 'image' => 'brands/apple.png',
-                'description' => 'Premium electronics and smartphone brand.',
+                'description' => 'Apple Inc. designs and sells electronics, software, and online services.',
             ],
             [
-                'name' => 'Xiaomi',
-                'image' => 'brands/xiaomi.png',
-                'description' => 'Affordable and innovative electronic products.',
+                'name' => 'Samsung',
+                'slug' => Str::slug('Samsung'),
+                'is_active' => true,
+                'image' => 'brands/samsung.png',
+                'description' => 'Samsung Electronics is a global leader in consumer electronics and technology.',
             ],
             [
                 'name' => 'Nike',
+                'slug' => Str::slug('Nike'),
+                'is_active' => true,
                 'image' => 'brands/nike.png',
-                'description' => 'Leading brand in sportswear and sneakers.',
-            ],
-            [
-                'name' => 'Adidas',
-                'image' => 'brands/adidas.png',
-                'description' => 'Sporting goods and apparel company.',
+                'description' => 'Nike is a multinational corporation known for its footwear, apparel, and sports equipment.',
             ],
             [
                 'name' => 'Sony',
+                'slug' => Str::slug('Sony'),
+                'is_active' => true,
                 'image' => 'brands/sony.png',
-                'description' => 'Well-known brand for audio, video, and gaming.',
+                'description' => 'Sony Corporation produces electronics, gaming consoles, and entertainment content.',
             ],
             [
-                'name' => 'HP',
-                'image' => 'brands/hp.png',
-                'description' => 'Reliable computing and printing solutions.',
-            ],
-            [
-                'name' => 'Dell',
-                'image' => 'brands/dell.png',
-                'description' => 'Business and consumer laptop/desktop brand.',
-            ],
-            [
-                'name' => 'Unilever',
-                'image' => 'brands/unilever.png',
-                'description' => 'FMCG giant in personal care and household items.',
-            ],
-            [
-                'name' => 'Nestlé',
-                'image' => 'brands/nestle.png',
-                'description' => 'Food and beverage multinational company.',
+                'name' => 'Adidas',
+                'slug' => Str::slug('Adidas'),
+                'is_active' => true,
+                'image' => 'brands/adidas.png',
+                'description' => 'Adidas designs and manufactures shoes, clothing, and accessories.',
             ],
         ];
 
-        foreach ($brands as $brand) {
-            DB::table('brands')->insert([
-                'name' => $brand['name'],
-                'slug' => Str::slug($brand['name']),
-                'image' => $brand['image'],
-                'description' => $brand['description'],
-                'status' => true,
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ]);
+        // Add timestamps
+        $timestamp = now();
+        foreach ($brands as &$brand) {
+            $brand['created_at'] = $timestamp;
+            $brand['updated_at'] = $timestamp;
         }
+
+        DB::table('brands')->insert($brands);
     }
 }

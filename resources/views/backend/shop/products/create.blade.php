@@ -480,18 +480,18 @@
                                         @foreach ($attributes as $attribute)
                                             <div class="col-md-4">
                                                 <label class="form-label">{{ $attribute->name }}</label>
-                                                <select name="attribute_values[{{ $attribute->id }}][]"
-                                                    class="form-select select2 attribute-select @error('attribute_values.' . $attribute->id) is-invalid @enderror"
+                                                <select name="attribute[{{ $attribute->id }}][]"
+                                                    class="form-select select2 attribute-select @error('attribute.' . $attribute->id) is-invalid @enderror"
                                                     multiple data-placeholder="Select {{ $attribute->name }}"
-                                                    data-old='@json(old('attribute_values.' . $attribute->id, []))'>
+                                                    data-old='@json(old('attribute.' . $attribute->id, []))'>
                                                     @foreach ($attribute->values as $value)
                                                         <option value="{{ $value->id }}"
-                                                            {{ in_array($value->id, old('attribute_values.' . $attribute->id, [])) ? 'selected' : '' }}>
+                                                            {{ in_array($value->id, old('attribute.' . $attribute->id, [])) ? 'selected' : '' }}>
                                                             {{ $value->value }}
                                                         </option>
                                                     @endforeach
                                                 </select>
-                                                @error('attribute_values.' . $attribute->id)
+                                                @error('attribute.' . $attribute->id)
                                                     <div class="invalid-feedback">{{ $message }}</div>
                                                 @enderror
                                             </div>
@@ -798,7 +798,7 @@
                         // Hidden inputs for the attribute value ids
                         combo.forEach((val) => {
                             html +=
-                                `<input type="hidden" name="combinations[${index}][attributes][]" value="${val}">`;
+                                `<input type="hidden" name="combinations[${index}][attribute_values][]" value="${val}">`;
                         });
 
                         // Default checkbox — include a hidden field so unchecked becomes 0
@@ -839,8 +839,8 @@
                     reindexCombinationRows();
                 });
 
-                // If there were old attribute_values, generate combos on load
-                @if (old('attribute_values'))
+                // If there were old attribute, generate combos on load
+                @if (old('attribute'))
                     loadCombinations();
                 @endif
 
@@ -866,7 +866,7 @@
                     $tbody.find('tr').each(function(rowIndex) {
                         const $tr = $(this);
 
-                        // Update name attributes
+                        // Update name attribute_values
                         $tr.find('[name]').each(function() {
                             const $el = $(this);
                             let name = $el.attr('name');
