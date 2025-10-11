@@ -51,7 +51,7 @@
                                     Slug
                                 </dt>
                                 <dd class="col-6 col-sm-9 text-end py-2 py-sm-3 border-bottom mb-0 text-break">
-                                    {{ $category->slug ?? '—' }}
+                                    {{ $category->slugRelation->slug ?? '—' }}
                                 </dd>
 
                                 <dt class="col-6 col-sm-3 text-start text-muted small py-2 py-sm-3 border-bottom">
