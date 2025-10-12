@@ -24,21 +24,21 @@ class ProductCategoriesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.categories.edit', $row->slugRelation->slug),
+                        'url' => route('admin.products.categories.edit', $row->slugRelation->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.categories.show', $row->slugRelation->slug),
+                        'url' => route('admin.products.categories.show', $row->slugRelation->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.categories.destroy', $row->slugRelation->slug),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.products.categories.destroy', $row->slugRelation->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -49,7 +49,7 @@ class ProductCategoriesDataTable extends DataTable
                 ])->render();
             })
             ->addColumn('slug', function (ProductCategory $row) {
-                return $row->slugRelation ? '<span class="badge bg-info text-dark">'. $row->slugRelation->slug .'</span>' : '';
+                return $row->slugRelation ? '<span class="badge bg-info text-dark">'.$row->slugRelation->slug.'</span>' : '';
             })
             ->editColumn('created_at', function (ProductCategory $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
@@ -59,6 +59,11 @@ class ProductCategoriesDataTable extends DataTable
             })
             ->editColumn('is_active', function (ProductCategory $row) {
                 return $row->is_active ? '<span class="badge bg-success">Active</span>' : '<span class="badge bg-danger">Inactive</span>';
+            })
+            ->filterColumn('slug', function ($query, $keyword) {
+                $query->whereHas('slugRelation', function ($q) use ($keyword) {
+                    $q->where('slug', 'like', "%{$keyword}%");
+                });
             })
             ->rawColumns(['action', 'is_active', 'slug']);
     }
@@ -83,18 +88,17 @@ class ProductCategoriesDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
     }
-
 
     public function getColumns(): array
     {
@@ -123,6 +127,6 @@ class ProductCategoriesDataTable extends DataTable
 
     protected function filename(): string
     {
-        return 'ProductCategories_' . date('YmdHis');
+        return 'ProductCategories_'.date('YmdHis');
     }
 }
