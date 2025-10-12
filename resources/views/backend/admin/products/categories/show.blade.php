@@ -99,7 +99,7 @@
                                 <i class="bi bi-arrow-left"></i> Back
                             </a>
                             <div class="ms-auto d-flex align-items-center gap-2 flex-nowrap text-nowrap">
-                                <a href="{{ route('admin.products.categories.edit', $category) }}" class="btn btn-primary">
+                                <a href="{{ route('admin.products.categories.edit', $category->slugRelation->slug) }}" class="btn btn-primary">
                                     <i class="bi bi-pencil"></i> Edit
                                 </a>
                                 <form action="{{ route('admin.products.categories.destroy', $category) }}" method="POST"
