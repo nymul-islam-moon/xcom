@@ -2,20 +2,20 @@
 
 namespace App\Models;
 
-use App\Traits\HasSlug;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductCategory extends Model
 {
-    use HasFactory, HasSlug;
+    use HasFactory;
 
     protected $table = 'product_categories';
 
     protected $fillable = [
         'name',
         'is_active',
+        'slug',
         'description',
     ];
 
@@ -23,17 +23,9 @@ class ProductCategory extends Model
         'is_active' => 'boolean',
     ];
 
-    public function resolveRouteBinding($value, $field = null)
+    public function getRouteKeyName()
     {
-        $category = $this->whereHas('slugRelation', function ($query) use ($value) {
-            $query->where('slug', $value);
-        })->first();
-
-        if (! $category) {
-            throw (new ModelNotFoundException)->setModel(static::class, $value);
-        }
-
-        return $category;
+        return 'slug';
     }
 
     public function productSubCategories()
@@ -51,11 +43,5 @@ class ProductCategory extends Model
             'id',
             'id'
         );
-    }
-
-    // Morph relation to Slug
-    public function slugRelation()
-    {
-        return $this->morphOne(Slug::class, 'sluggable');
     }
 }

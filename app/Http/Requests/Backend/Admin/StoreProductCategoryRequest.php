@@ -7,6 +7,7 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StoreProductCategoryRequest extends FormRequest
 {
@@ -31,6 +32,7 @@ class StoreProductCategoryRequest extends FormRequest
         return [
             'name' => 'category name',
             'is_active' => 'status',
+            'slug' => 'slug',
             'description' => 'description',
         ];
     }
@@ -40,8 +42,15 @@ class StoreProductCategoryRequest extends FormRequest
      */
     protected function prepareForValidation()
     {
+        // Normalize name
+        $name = Str::title(Str::lower(trim($this->input('name'))));
+
+        // Build slug from normalized name
+        $slug = Str::slug($name);
+
         $this->merge([
-            'name' => Str::title(Str::lower(trim($this->input('name')))),
+            'name' => $name,
+            'slug' => $slug,
             'is_active' => $this->boolean('is_active'),
         ]);
     }
@@ -51,10 +60,34 @@ class StoreProductCategoryRequest extends FormRequest
      */
     public function rules(): array
     {
-        $categoryId = $this->route('category') ?? null; // for update requests
+        // Support both id or model bound via route('category')
+        $routeCategory = $this->route('category');
+        $categoryId = null;
+
+        if ($routeCategory) {
+            // If the route model is an Eloquent model, try to get its key
+            if (is_object($routeCategory) && method_exists($routeCategory, 'getKey')) {
+                $categoryId = $routeCategory->getKey();
+            } else {
+                $categoryId = $routeCategory;
+            }
+        }
 
         return [
-            'name' => ['required', 'string', 'max:255', 'unique:product_categories,name'],
+            'name' => [
+                'required',
+                'string',
+                'max:255',
+                // unique name (ignore current record on update)
+                Rule::unique('product_categories', 'name')->ignore($categoryId),
+            ],
+            'slug' => [
+                'required',
+                'string',
+                'max:255',
+                // unique slug (ignore current record on update)
+                Rule::unique('product_categories', 'slug')->ignore($categoryId),
+            ],
             'is_active' => ['required', 'boolean'],
             'description' => ['nullable', 'string'],
         ];
@@ -71,6 +104,8 @@ class StoreProductCategoryRequest extends FormRequest
             'name.max' => 'The :attribute may not be greater than :max characters.',
             'is_active.required' => 'Please select a :attribute.',
             'is_active.boolean' => 'The selected :attribute is invalid.',
+            'slug.required' => 'The :attribute is required.',
+            'slug.unique' => 'The generated :attribute conflicts with an existing one. Please change the name.',
         ];
     }
 
