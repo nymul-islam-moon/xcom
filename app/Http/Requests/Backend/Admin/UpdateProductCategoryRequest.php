@@ -2,9 +2,9 @@
 
 namespace App\Http\Requests\Backend\Admin;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -24,14 +24,14 @@ class UpdateProductCategoryRequest extends FormRequest
      */
     protected $stopOnFirstFailure = true;
 
-     /**
+    /**
      * Custom attribute names (for prettier errors).
      */
     public function attributes(): array
     {
         return [
-            'name'        => 'category name',
-            'is_active'   => 'status',
+            'name' => 'category name',
+            'is_active' => 'status',
             'description' => 'description',
         ];
     }
@@ -42,7 +42,7 @@ class UpdateProductCategoryRequest extends FormRequest
     protected function prepareForValidation()
     {
         $this->merge([
-            'name'      => Str::title(Str::lower(trim($this->input('name')))),
+            'name' => Str::title(Str::lower(trim($this->input('name')))),
             'is_active' => $this->boolean('is_active'),
         ]);
     }
@@ -58,26 +58,25 @@ class UpdateProductCategoryRequest extends FormRequest
         $categoryId = is_object($category) ? $category->getKey() : $category;
 
         return [
-            'name'          => ['required', 'string', 'max:255', 'unique:product_categories,name,' . $categoryId],
-            'is_active'     => ['required', 'boolean'],
-            'description'   => ['nullable', 'string'],
+            'name' => ['required', 'string', 'max:255', 'unique:product_categories,name,'.$categoryId],
+            'is_active' => ['required', 'boolean'],
+            'description' => ['nullable', 'string'],
         ];
     }
 
-     /**
+    /**
      * Custom messages.
      */
     public function messages(): array
     {
         return [
-            'name.required'         => 'Please enter a :attribute.',
-            'name.unique'           => 'The :attribute ":input" is already in use.',
-            'name.max'              => 'The :attribute may not be greater than :max characters.',
-            'is_active.required'    => 'Please select a :attribute.',
-            'is_active.boolean'     => 'The :attribute must be true or false.',
+            'name.required' => 'Please enter a :attribute.',
+            'name.unique' => 'The :attribute ":input" is already in use.',
+            'name.max' => 'The :attribute may not be greater than :max characters.',
+            'is_active.required' => 'Please select a :attribute.',
+            'is_active.boolean' => 'The :attribute must be true or false.',
         ];
     }
-
 
     /**
      * Handle failed validation.
@@ -87,7 +86,7 @@ class UpdateProductCategoryRequest extends FormRequest
         // Log all errors
         Log::error('Product Category Update validation failed', [
             'errors' => $validator->errors()->toArray(),
-            'input'  => $this->all(),
+            'input' => $this->all(),
         ]);
 
         throw new HttpResponseException(

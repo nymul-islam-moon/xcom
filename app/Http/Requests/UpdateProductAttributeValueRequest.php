@@ -2,15 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Models\ProductAttribute;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
-use App\Models\ProductAttributeValue;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
-use App\Models\ProductAttribute;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\Rule;
 
 class UpdateProductAttributeValueRequest extends FormRequest
 {
@@ -27,14 +25,13 @@ class UpdateProductAttributeValueRequest extends FormRequest
 
         $attributeSlug = ProductAttribute::where('id', $this->input('product_attribute_id'))->value('slug');
 
-
         $slug = implode('-', [
             $attributeSlug,
             Str::slug($value),
         ]);
         $this->merge([
             'value' => $value,
-            'slug'  => $slug,
+            'slug' => $slug,
         ]);
     }
 
@@ -42,7 +39,7 @@ class UpdateProductAttributeValueRequest extends FormRequest
     {
         // Grab current record (only available on update, not store)
         $currentAttrVal = $this->route('attributeValue');
-        $currentId      = $currentAttrVal?->id;
+        $currentId = $currentAttrVal?->id;
 
         // Get attribute_id (from request input or from current record)
         $attributeId = $this->input('product_attribute_id') ?? $currentAttrVal?->product_attribute_id;
@@ -58,7 +55,7 @@ class UpdateProductAttributeValueRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('product_attribute_values', 'value')
-                    ->where(fn($q) => $q->where('product_attribute_id', $attributeId))
+                    ->where(fn ($q) => $q->where('product_attribute_id', $attributeId))
                     ->ignore($currentId, 'id'), // IMPORTANT: ignore current row
             ],
 
@@ -67,19 +64,18 @@ class UpdateProductAttributeValueRequest extends FormRequest
                 'string',
                 'max:255',
                 Rule::unique('product_attribute_values', 'slug')
-                    ->where(fn($q) => $q->where('product_attribute_id', $attributeId))
+                    ->where(fn ($q) => $q->where('product_attribute_id', $attributeId))
                     ->ignore($currentId, 'id'),
             ],
         ];
     }
 
-
     public function messages(): array
     {
         return [
             'value.required' => 'Please provide a value for this attribute.',
-            'value.unique'   => 'This value already exists for the selected attribute.',
-            'slug.required'  => 'Failed to generate slug for the attribute value.',
+            'value.unique' => 'This value already exists for the selected attribute.',
+            'slug.required' => 'Failed to generate slug for the attribute value.',
         ];
     }
 
@@ -87,10 +83,9 @@ class UpdateProductAttributeValueRequest extends FormRequest
     {
         return [
             'value' => 'attribute value',
-            'slug'  => 'slug',
+            'slug' => 'slug',
         ];
     }
-
 
     /**
      * Handle failed validation.
@@ -100,7 +95,7 @@ class UpdateProductAttributeValueRequest extends FormRequest
         // Log all errors
         Log::error('Product Attribute Value Update validation failed', [
             'errors' => $validator->errors()->toArray(),
-            'input'  => $this->all(),
+            'input' => $this->all(),
         ]);
 
         throw new HttpResponseException(

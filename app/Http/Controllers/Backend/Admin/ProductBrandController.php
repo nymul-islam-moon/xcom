@@ -9,9 +9,9 @@ use App\Http\Requests\Backend\Admin\UpdateBrandRequest;
 use App\Models\Brand;
 use App\Services\MediaService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class ProductBrandController extends Controller
 {
@@ -34,7 +34,6 @@ class ProductBrandController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-
     public function store(StoreBrandRequest $request, MediaService $mediaService)
     {
         $data = $request->validated();
@@ -91,7 +90,6 @@ class ProductBrandController extends Controller
             ->with('success', 'Brand updated successfully');
     }
 
-
     /**
      * Remove the specified resource from storage.
      */
@@ -110,17 +108,19 @@ class ProductBrandController extends Controller
             $brand->delete();
 
             DB::commit();
+
             return redirect()
                 ->route('admin.products.brands.index')
                 ->with('success', 'Brand deleted successfully');
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Brand deletion failed: ' . $e->getMessage(), ['brand_id' => $brand->id]);
+            Log::error('Brand deletion failed: '.$e->getMessage(), ['brand_id' => $brand->id]);
+
             return back()->withErrors(['error' => 'Something went wrong while deleting the brand.']);
         }
     }
 
-     /**
+    /**
      * Get brands for select input.
      */
     public function selectBrands(Request $request)
@@ -131,7 +131,7 @@ class ProductBrandController extends Controller
             ->where('status', 1)
             ->when(
                 $q !== '',
-                fn($query) => $query->where('name', 'like', "%{$q}%")
+                fn ($query) => $query->where('name', 'like', "%{$q}%")
             )
             ->orderBy('name')
             ->get();

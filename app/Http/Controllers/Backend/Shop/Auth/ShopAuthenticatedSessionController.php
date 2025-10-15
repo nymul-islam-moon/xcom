@@ -3,10 +3,8 @@
 namespace App\Http\Controllers\Backend\Shop\Auth;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Http\Request;
-
+use Illuminate\Support\Facades\Auth;
 
 class ShopAuthenticatedSessionController extends Controller
 {
@@ -25,7 +23,6 @@ class ShopAuthenticatedSessionController extends Controller
 
         $remember = $request->boolean('remember');
 
-       
         // Attempt login using 'shop' guard
         if (auth()->guard('shop')->attempt($credentials, $remember)) {
             $request->session()->regenerate();
@@ -39,6 +36,7 @@ class ShopAuthenticatedSessionController extends Controller
             if ($validationResult !== true) {
                 // If validation failed, log out and redirect back with error
                 auth()->guard('shop')->logout();
+
                 return back()->with('error', $validationResult)->withInput();
             }
 
@@ -51,7 +49,6 @@ class ShopAuthenticatedSessionController extends Controller
             'email' => 'Invalid credentials.',
         ])->onlyInput('email');
     }
-
 
     public function destroy(Request $request)
     {

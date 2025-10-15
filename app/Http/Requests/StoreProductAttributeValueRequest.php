@@ -2,14 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Models\ProductAttribute;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
-use App\Models\ProductAttribute;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
-
+use Illuminate\Validation\Rule;
 
 class StoreProductAttributeValueRequest extends FormRequest
 {
@@ -20,12 +19,11 @@ class StoreProductAttributeValueRequest extends FormRequest
 
     protected $stopOnFirstFailure = true;
 
-
     public function attributes(): array
     {
         return [
-            'value'                => 'attribute value',
-            'slug'                 => 'slug',
+            'value' => 'attribute value',
+            'slug' => 'slug',
             'product_attribute_id' => 'attribute',
         ];
     }
@@ -42,8 +40,8 @@ class StoreProductAttributeValueRequest extends FormRequest
         ]);
 
         $this->merge([
-            'value'                => $value,
-            'slug'                 => $slug,
+            'value' => $value,
+            'slug' => $slug,
         ]);
     }
 
@@ -59,7 +57,7 @@ class StoreProductAttributeValueRequest extends FormRequest
                 'max:255',
                 // Ensure this value is unique *within* the same product attribute
                 Rule::unique('product_attribute_values', 'value')
-                    ->where(fn($q) => $q->where('product_attribute_id', $attributeId)),
+                    ->where(fn ($q) => $q->where('product_attribute_id', $attributeId)),
             ],
 
             'product_attribute_id' => [
@@ -67,7 +65,7 @@ class StoreProductAttributeValueRequest extends FormRequest
                 'integer',
                 Rule::exists('product_attributes', 'id'),
             ],
-            
+
             'slug' => [
                 'required',
                 'string',
@@ -81,10 +79,10 @@ class StoreProductAttributeValueRequest extends FormRequest
     {
         return [
             'product_attribute_id.required' => 'Please select an attribute.',
-            'product_attribute_id.exists'   => 'The selected attribute does not exist.',
-            'value.required'                => 'Please enter a value for the attribute.',
-            'value.unique'                  => 'This value already exists for the selected attribute.',
-            'slug.required'                 => 'Failed to generate slug for the attribute value.',
+            'product_attribute_id.exists' => 'The selected attribute does not exist.',
+            'value.required' => 'Please enter a value for the attribute.',
+            'value.unique' => 'This value already exists for the selected attribute.',
+            'slug.required' => 'Failed to generate slug for the attribute value.',
         ];
     }
 
@@ -96,7 +94,7 @@ class StoreProductAttributeValueRequest extends FormRequest
         // Log all errors
         Log::error('Product Category Store validation failed', [
             'errors' => $validator->errors()->toArray(),
-            'input'  => $this->all(),
+            'input' => $this->all(),
         ]);
 
         throw new HttpResponseException(

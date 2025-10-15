@@ -4,13 +4,11 @@ namespace App\View\Components\Admin;
 
 use Closure;
 use Illuminate\Contracts\View\View;
-use Illuminate\View\Component;
 use Illuminate\Support\Arr;
-use Illuminate\Support\Str;
+use Illuminate\View\Component;
 
 class Breadcrumbs extends Component
 {
-
     /**
      * Each item:
      * [
@@ -22,7 +20,6 @@ class Breadcrumbs extends Component
      *   'icon'  => string|null,           // e.g. 'bi bi-house'
      * ]
      */
-
     public array $items;
 
     /** 'start' or 'end' */
@@ -39,34 +36,35 @@ class Breadcrumbs extends Component
         $normalized = [];
         foreach ($items as $item) {
             $label = (string) (Arr::get($item, 'label') ?? '');
-            if ($label === '') continue;
+            if ($label === '') {
+                continue;
+            }
 
             $normalized[] = [
-                'label'  => $label,
-                'route'  => Arr::get($item, 'route'),
+                'label' => $label,
+                'route' => Arr::get($item, 'route'),
                 'params' => Arr::get($item, 'params', []),
-                'url'    => Arr::get($item, 'url'),
+                'url' => Arr::get($item, 'url'),
                 'active' => (bool) Arr::get($item, 'active', false),
-                'icon'   => Arr::get($item, 'icon'),
+                'icon' => Arr::get($item, 'icon'),
             ];
         }
 
         // If no explicit active, mark the last as active
-        if (!empty($normalized) && !collect($normalized)->contains(fn($i) => $i['active'] === true)) {
+        if (! empty($normalized) && ! collect($normalized)->contains(fn ($i) => $i['active'] === true)) {
             $normalized[count($normalized) - 1]['active'] = true;
         }
 
         $this->items = $normalized;
     }
 
-
     public function hrefFor(array $item): ?string
     {
-        if (!empty($item['url'])) {
+        if (! empty($item['url'])) {
             return $item['url'];
         }
 
-        if (!empty($item['route'])) {
+        if (! empty($item['route'])) {
             try {
                 return route($item['route'], $item['params'] ?? []);
             } catch (\Throwable $e) {

@@ -28,7 +28,7 @@ return new class extends Migration
             // Pricing
             $table->boolean('tax_included')->default(true);
             $table->decimal('tax_percentage', 5, 2)->nullable();
-            
+
             // Digital Products
             $table->string('download_url')->nullable();
             $table->string('license_key')->nullable();

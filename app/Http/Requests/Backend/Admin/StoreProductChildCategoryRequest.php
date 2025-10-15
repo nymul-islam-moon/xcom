@@ -2,13 +2,13 @@
 
 namespace App\Http\Requests\Backend\Admin;
 
-use Illuminate\Http\Exceptions\HttpResponseException;
+use App\Models\ProductSubCategory;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Support\Facades\Log;
-use App\Models\ProductSubCategory;
-use Illuminate\Validation\Rule;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class StoreProductChildCategoryRequest extends FormRequest
 {
@@ -26,18 +26,17 @@ class StoreProductChildCategoryRequest extends FormRequest
      */
     protected $stopOnFirstFailure = true;
 
-
     /**
      * Custom attribute names (for prettier errors).
      */
     public function attributes(): array
     {
         return [
-            'name'                      => 'child category name',
-            'description'               => 'description',
-            'slug'                      => 'slug',
-            'is_active'                 => 'status',
-            'product_sub_category_id'   => 'sub-category',
+            'name' => 'child category name',
+            'description' => 'description',
+            'slug' => 'slug',
+            'is_active' => 'status',
+            'product_sub_category_id' => 'sub-category',
         ];
     }
 
@@ -54,9 +53,9 @@ class StoreProductChildCategoryRequest extends FormRequest
         ]);
 
         $this->merge([
-            'name'          => $name,
-            'slug'          => $slug,
-            'is_active'     => $this->boolean('is_active'),
+            'name' => $name,
+            'slug' => $slug,
+            'is_active' => $this->boolean('is_active'),
         ]);
     }
 
@@ -74,7 +73,7 @@ class StoreProductChildCategoryRequest extends FormRequest
                 'max:255',
                 // unique within the same parent sub-category
                 Rule::unique('product_child_categories', 'name')
-                    ->where(fn($q) => $q->where('product_sub_category_id', $this->input('product_sub_category_id')))
+                    ->where(fn ($q) => $q->where('product_sub_category_id', $this->input('product_sub_category_id'))),
             ],
             'slug' => [
                 'required',
@@ -82,9 +81,9 @@ class StoreProductChildCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_child_categories', 'slug'),
             ],
-            'product_sub_category_id'   => ['required', 'integer', 'exists:product_sub_categories,id'],
-            'is_active'                 => ['required', 'boolean'],
-            'description'               => ['nullable', 'string'],
+            'product_sub_category_id' => ['required', 'integer', 'exists:product_sub_categories,id'],
+            'is_active' => ['required', 'boolean'],
+            'description' => ['nullable', 'string'],
         ];
     }
 
@@ -94,15 +93,15 @@ class StoreProductChildCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'                     => 'Please enter a :attribute.',
-            'name.unique'                       => 'The :attribute ":input" is already in use.',
-            'name.max'                          => 'The :attribute may not be greater than :max characters.',
-            'product_sub_category_id.required'  => 'Please select a :attribute.',
-            'product_sub_category_id.exists'    => 'The selected :attribute is already exists.',
-            'slug.required'                     => 'The :attribute is required.',
-            'slug.unique'                       => 'The generated :attribute conflicts with an existing one. Please change the name.',
-            'is_active.required'                => 'Please select a :attribute.',
-            'is_active.boolean'                 => 'The selected :attribute is invalid.',
+            'name.required' => 'Please enter a :attribute.',
+            'name.unique' => 'The :attribute ":input" is already in use.',
+            'name.max' => 'The :attribute may not be greater than :max characters.',
+            'product_sub_category_id.required' => 'Please select a :attribute.',
+            'product_sub_category_id.exists' => 'The selected :attribute is already exists.',
+            'slug.required' => 'The :attribute is required.',
+            'slug.unique' => 'The generated :attribute conflicts with an existing one. Please change the name.',
+            'is_active.required' => 'Please select a :attribute.',
+            'is_active.boolean' => 'The selected :attribute is invalid.',
         ];
     }
 
@@ -114,7 +113,7 @@ class StoreProductChildCategoryRequest extends FormRequest
         // Log all errors
         Log::error('Product Category Store validation failed', [
             'errors' => $validator->errors()->toArray(),
-            'input'  => $this->all(),
+            'input' => $this->all(),
         ]);
 
         throw new HttpResponseException(

@@ -9,7 +9,6 @@ use App\Models\ProductAttribute;
 use App\Models\ProductAttributeValue;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Str;
 
 class ProductAttributeValueController extends Controller
 {
@@ -26,7 +25,7 @@ class ProductAttributeValueController extends Controller
      */
     public function create(ProductAttribute $attribute)
     {
-        
+
         return view('backend.admin.products.attributes.values.create', compact('attribute'));
     }
 
@@ -40,7 +39,7 @@ class ProductAttributeValueController extends Controller
         try {
             // validated data guaranteed to contain 'value' per your validation rules
             $data = $request->validated();
-          
+
             $attributeValue = ProductAttributeValue::create($data);
 
             DB::commit();
@@ -50,8 +49,9 @@ class ProductAttributeValueController extends Controller
                 ->with('success', 'Attribute value created successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Attribute Value creation failed: ' . $e->getMessage(), ['exception' => $e]);
-            return back()->withErrors(['error' => 'Failed to create attribute value: ' . $e->getMessage()]);
+            Log::error('Attribute Value creation failed: '.$e->getMessage(), ['exception' => $e]);
+
+            return back()->withErrors(['error' => 'Failed to create attribute value: '.$e->getMessage()]);
         }
     }
 
@@ -74,7 +74,6 @@ class ProductAttributeValueController extends Controller
     /**
      * Update the specified resource in storage.
      */
-
     public function update(UpdateProductAttributeValueRequest $request, ProductAttributeValue $attributeValue)
     {
         DB::beginTransaction();
@@ -92,13 +91,11 @@ class ProductAttributeValueController extends Controller
                 ->with('success', 'Attribute value updated successfully');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Attribute Value Update Failed: ' . $e->getMessage(), ['exception' => $e]);
+            Log::error('Attribute Value Update Failed: '.$e->getMessage(), ['exception' => $e]);
 
-            return back()->withErrors(['error' => 'Failed to update attribute value: ' . $e->getMessage()]);
+            return back()->withErrors(['error' => 'Failed to update attribute value: '.$e->getMessage()]);
         }
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -112,10 +109,10 @@ class ProductAttributeValueController extends Controller
             DB::commit();
 
             return redirect()->route('admin.products.attributes.show', $attributeValue->attribute->slug)
-                    ->with('error', 'Attribute Value deleted successfully.');
+                ->with('error', 'Attribute Value deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Attribute Value Deleting Failed: ' . $e->getMessage());
+            Log::error('Attribute Value Deleting Failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->with('error', 'Something went wrong while deleting the attribute value.');

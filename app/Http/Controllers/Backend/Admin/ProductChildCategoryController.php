@@ -8,8 +8,8 @@ use App\Http\Requests\Backend\Admin\StoreProductChildCategoryRequest;
 use App\Http\Requests\Backend\Admin\UpdateProductChildCategoryRequest;
 use App\Models\ProductChildCategory;
 use App\Models\ProductSubCategory;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductChildCategoryController extends Controller
@@ -21,7 +21,6 @@ class ProductChildCategoryController extends Controller
     {
         return $dataTable->render('backend.admin.products.childcategories.index');
     }
-
 
     /**
      * Show the form for creating a new resource.
@@ -51,7 +50,7 @@ class ProductChildCategoryController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             \Log::error(
-                'Child category create failed: ' . $e->getMessage(),
+                'Child category create failed: '.$e->getMessage(),
                 ['trace' => $e->getTraceAsString()]
             );
 
@@ -60,7 +59,6 @@ class ProductChildCategoryController extends Controller
                 ->with('error', 'Failed to create child category.');
         }
     }
-
 
     /**
      * Display the specified resource.
@@ -113,8 +111,8 @@ class ProductChildCategoryController extends Controller
                 $i = 2;
                 while (
                     ProductChildCategory::where('slug', $slug)
-                    ->where('id', '!=', $child_category->id)
-                    ->exists()
+                        ->where('id', '!=', $child_category->id)
+                        ->exists()
                 ) {
                     $slug = "{$base}-{$i}";
                     $i++;
@@ -137,7 +135,7 @@ class ProductChildCategoryController extends Controller
         } catch (\Throwable $e) {
             DB::rollBack();
             \Log::error(
-                'Child category update failed: ' . $e->getMessage(),
+                'Child category update failed: '.$e->getMessage(),
                 ['trace' => $e->getTraceAsString()]
             );
 
@@ -146,7 +144,6 @@ class ProductChildCategoryController extends Controller
                 ->with('error', 'Failed to update child category.');
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -166,7 +163,7 @@ class ProductChildCategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Child category deletion failed: ' . $e->getMessage());
+            \Log::error('Child category deletion failed: '.$e->getMessage());
 
             return redirect()
                 ->route('admin.products.child-categories.index')
@@ -174,7 +171,7 @@ class ProductChildCategoryController extends Controller
         }
     }
 
-     /**
+    /**
      * Get categories for select input.
      */
     public function selectChildCategories(Request $request)
@@ -185,7 +182,7 @@ class ProductChildCategoryController extends Controller
             ->where('status', 1)
             ->when(
                 $q !== '',
-                fn($query) => $query->where('name', 'like', "%{$q}%")
+                fn ($query) => $query->where('name', 'like', "%{$q}%")
             )
             ->orderBy('name')
             ->get();

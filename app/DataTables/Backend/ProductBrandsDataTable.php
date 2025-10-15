@@ -3,14 +3,11 @@
 namespace App\DataTables\Backend;
 
 use App\Models\Brand;
-use App\Models\ProductBrand;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ProductBrandsDataTable extends DataTable
@@ -18,7 +15,7 @@ class ProductBrandsDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -32,21 +29,21 @@ class ProductBrandsDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.brands.edit', $row->slug),
+                        'url' => route('admin.products.brands.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.brands.show', $row->slug),
+                        'url' => route('admin.products.brands.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.brands.destroy', $row->slug),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.products.brands.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -65,7 +62,7 @@ class ProductBrandsDataTable extends DataTable
             })
             ->editColumn('image', function (Brand $row) {
                 if ($row->image) {
-                    return '<img src="' . asset('storage/' . $row->image) . '" alt="' . $row->name . '" class="img-thumbnail" style="width: 50px; height: 50px;">';
+                    return '<img src="'.asset('storage/'.$row->image).'" alt="'.$row->name.'" class="img-thumbnail" style="width: 50px; height: 50px;">';
                 } else {
                     return '<span class="text-muted">No Image</span>';
                 }
@@ -102,13 +99,13 @@ class ProductBrandsDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
@@ -148,6 +145,6 @@ class ProductBrandsDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ProductBrands_' . date('YmdHis');
+        return 'ProductBrands_'.date('YmdHis');
     }
 }

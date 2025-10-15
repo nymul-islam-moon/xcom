@@ -2,8 +2,8 @@
 
 namespace App\Traits;
 
-use Illuminate\Support\Str;
 use App\Models\Slug;
+use Illuminate\Support\Str;
 
 trait HasSlug
 {
@@ -15,7 +15,7 @@ trait HasSlug
 
             $slug = $model->generateUniqueSlug($slug);
 
-            $model->{$model->getSlugRelationName()}()->create(array('slug' => $slug));
+            $model->{$model->getSlugRelationName()}()->create(['slug' => $slug]);
         });
 
         static::updated(function ($model) {
@@ -25,7 +25,7 @@ trait HasSlug
                 $slug = Str::slug($model->{$source} ?? $model->getKey());
                 $slug = $model->generateUniqueSlug($slug, $model);
 
-                $model->{$model->getSlugRelationName()}()->updateOrCreate(array(), array('slug' => $slug));
+                $model->{$model->getSlugRelationName()}()->updateOrCreate([], ['slug' => $slug]);
             }
         });
 
@@ -58,19 +58,19 @@ trait HasSlug
         if ($excludeModel) {
             $query->where(function ($q) use ($excludeModel) {
                 $q->where('sluggable_type', '!=', get_class($excludeModel))
-                  ->orWhere('sluggable_id', '!=', $excludeModel->getKey());
+                    ->orWhere('sluggable_id', '!=', $excludeModel->getKey());
             });
         }
 
         while ($query->exists()) {
             $count++;
-            $slug = $base . '-' . $count;
+            $slug = $base.'-'.$count;
             $query = Slug::where('slug', $slug);
 
             if ($excludeModel) {
                 $query->where(function ($q) use ($excludeModel) {
                     $q->where('sluggable_type', '!=', get_class($excludeModel))
-                      ->orWhere('sluggable_id', '!=', $excludeModel->getKey());
+                        ->orWhere('sluggable_id', '!=', $excludeModel->getKey());
                 });
             }
         }

@@ -2,11 +2,11 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Carbon\Carbon;
 
 class Shop extends Authenticatable
 {
@@ -171,8 +171,7 @@ class Shop extends Authenticatable
             );
         });
 
-        if ( ! $isSubscribed )
-        {
+        if (! $isSubscribed) {
             return 'Your subscription has expired. Please renew or subscribe to keep using your account.';
         }
 

@@ -32,7 +32,7 @@ class AdminWelcomeMail extends Mailable
                 'admin.verification.verify',
                 now()->addMinutes(config('auth.verification.expire', 60)),
                 [
-                    'id'   => $this->admin->getKey(),
+                    'id' => $this->admin->getKey(),
                     'hash' => sha1($this->admin->email),
                 ]
             );
@@ -41,12 +41,15 @@ class AdminWelcomeMail extends Mailable
         return new Content(
             markdown: 'mail.admin.welcome',
             with: [
-                'admin'           => $this->admin,
-                'loginUrl'        => $loginUrl,
+                'admin' => $this->admin,
+                'loginUrl' => $loginUrl,
                 'verificationUrl' => $verificationUrl,
             ]
         );
     }
 
-    public function attachments(): array { return []; }
+    public function attachments(): array
+    {
+        return [];
+    }
 }

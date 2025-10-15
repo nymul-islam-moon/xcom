@@ -17,14 +17,14 @@ class ProductChildCategorySeeder extends Seeder
                 'slug' => Str::slug('Android Phones'),
                 'is_active' => true,
                 'description' => 'Smartphones running the Android operating system.',
-                'product_sub_category_id' => 1 // Mobile Phones
+                'product_sub_category_id' => 1, // Mobile Phones
             ],
             [
                 'name' => 'iPhones',
                 'slug' => Str::slug('iPhones'),
                 'is_active' => true,
                 'description' => 'Apple iPhones and accessories.',
-                'product_sub_category_id' => 1 // Mobile Phones
+                'product_sub_category_id' => 1, // Mobile Phones
             ],
 
             // Laptops & Computers child categories
@@ -33,14 +33,14 @@ class ProductChildCategorySeeder extends Seeder
                 'slug' => Str::slug('Gaming Laptops'),
                 'is_active' => true,
                 'description' => 'High-performance laptops designed for gaming.',
-                'product_sub_category_id' => 2 // Laptops & Computers
+                'product_sub_category_id' => 2, // Laptops & Computers
             ],
             [
                 'name' => 'Desktops',
                 'slug' => Str::slug('Desktops'),
                 'is_active' => true,
                 'description' => 'All types of desktop computers and builds.',
-                'product_sub_category_id' => 2 // Laptops & Computers
+                'product_sub_category_id' => 2, // Laptops & Computers
             ],
 
             // Men's Clothing child categories
@@ -49,14 +49,14 @@ class ProductChildCategorySeeder extends Seeder
                 'slug' => Str::slug('Shirts'),
                 'is_active' => true,
                 'description' => 'Formal and casual shirts for men.',
-                'product_sub_category_id' => 3 // Men's Clothing
+                'product_sub_category_id' => 3, // Men's Clothing
             ],
             [
                 'name' => 'Trousers',
                 'slug' => Str::slug('Trousers'),
                 'is_active' => true,
                 'description' => 'Jeans, chinos, and formal trousers.',
-                'product_sub_category_id' => 3 // Men's Clothing
+                'product_sub_category_id' => 3, // Men's Clothing
             ],
 
             // Skin Care child categories
@@ -65,14 +65,14 @@ class ProductChildCategorySeeder extends Seeder
                 'slug' => Str::slug('Face Creams'),
                 'is_active' => true,
                 'description' => 'Moisturizers, anti-aging, and face care creams.',
-                'product_sub_category_id' => 7 // Skin Care
+                'product_sub_category_id' => 7, // Skin Care
             ],
             [
                 'name' => 'Face Wash',
                 'slug' => Str::slug('Face Wash'),
                 'is_active' => true,
                 'description' => 'Facial cleansers and washes.',
-                'product_sub_category_id' => 7 // Skin Care
+                'product_sub_category_id' => 7, // Skin Care
             ],
 
             // Outdoor Gear child categories
@@ -81,14 +81,14 @@ class ProductChildCategorySeeder extends Seeder
                 'slug' => Str::slug('Camping Tents'),
                 'is_active' => true,
                 'description' => 'Tents and sleeping bags for outdoor adventures.',
-                'product_sub_category_id' => 9 // Outdoor Gear
+                'product_sub_category_id' => 9, // Outdoor Gear
             ],
             [
                 'name' => 'Hiking Shoes',
                 'slug' => Str::slug('Hiking Shoes'),
                 'is_active' => true,
                 'description' => 'Shoes designed for trekking and outdoor trails.',
-                'product_sub_category_id' => 9 // Outdoor Gear
+                'product_sub_category_id' => 9, // Outdoor Gear
             ],
         ];
 

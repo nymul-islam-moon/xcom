@@ -8,11 +8,13 @@ use Illuminate\View\Component;
 
 class DataTableButtons extends Component
 {
-     public $id;
+    public $id;
+
     public $actions;
 
     /**
      * Create a new component instance.
+     *
      * @param  string|int  $id
      * @param  array  $actions
      */

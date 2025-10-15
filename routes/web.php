@@ -4,13 +4,11 @@ use App\Http\Controllers\Frontend\HomeController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
-
 Route::get('/', [HomeController::class, 'index'])->name('home');
 
 Route::get('/test/login', function () {
     return view('frontend.auth.login');
 });
-
 
 Route::get('/welcome', function () {
     return view('welcome');
@@ -26,5 +24,4 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 });
 
-
-include __DIR__ . '/../routes/auth.php';
+include __DIR__.'/../routes/auth.php';

@@ -3,10 +3,9 @@
 namespace App\Models;
 
 use App\Traits\HasSlug;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class ProductCategory extends Model
 {
@@ -30,7 +29,7 @@ class ProductCategory extends Model
             $query->where('slug', $value);
         })->first();
 
-        if (!$category) {
+        if (! $category) {
             throw (new ModelNotFoundException)->setModel(static::class, $value);
         }
 

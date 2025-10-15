@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Frontend;
 use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\ProductCategory;
-use Illuminate\Http\Request;
 
 class HomeController extends Controller
 {
@@ -13,6 +12,7 @@ class HomeController extends Controller
     {
         $productCategories = ProductCategory::limit(15)->orderBy('name', 'asc')->get();
         $brands = Brand::all();
+
         return view('frontend.index', compact('productCategories', 'brands'));
     }
 }

@@ -8,8 +8,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ProductChildCategoriesDataTable extends DataTable
@@ -17,11 +15,12 @@ class ProductChildCategoriesDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
         $dt = (new EloquentDataTable($query));
+
         return $dt
             ->addIndexColumn()
             ->addColumn('action', function (ProductChildCategory $row) {
@@ -30,21 +29,21 @@ class ProductChildCategoriesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.child-categories.edit', $row->slug),
+                        'url' => route('admin.products.child-categories.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.child-categories.show', $row->slug),
+                        'url' => route('admin.products.child-categories.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.child-categories.destroy', $row->slug),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.products.child-categories.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -95,13 +94,13 @@ class ProductChildCategoriesDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
@@ -113,7 +112,7 @@ class ProductChildCategoriesDataTable extends DataTable
     public function getColumns(): array
     {
         return [
-             Column::computed('DT_RowIndex')
+            Column::computed('DT_RowIndex')
                 ->title('#')
                 ->orderable(false)
                 ->searchable(false)
@@ -140,6 +139,6 @@ class ProductChildCategoriesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ProductChildCategories_' . date('YmdHis');
+        return 'ProductChildCategories_'.date('YmdHis');
     }
 }

@@ -2,15 +2,12 @@
 
 namespace App\Http\Controllers\Backend\Admin;
 
-use App\Http\Requests\Admin\Auth\UpdateAdminRequest;
-use App\Http\Requests\Admin\Auth\StoreAdminRequest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Admin\Auth\StoreAdminRequest;
+use App\Http\Requests\Admin\Auth\UpdateAdminRequest;
 use App\Jobs\AdminMailVerification;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\SendAdminWelcomeMail;
 use App\Models\Admin;
-use Illuminate\Auth\Events\Registered;
+use Illuminate\Support\Facades\DB;
 
 class AdminController extends Controller
 {
@@ -22,6 +19,7 @@ class AdminController extends Controller
         $admins = Admin::query()
             ->where('id', '!=', auth('admin')->id())
             ->paginate(5);  // Fetch all admins
+
         return view('backend.admin.users.index', compact('admins'));
     }
 
@@ -44,7 +42,7 @@ class AdminController extends Controller
 
             // Normalize optional fields
             $data['phone'] = $data['phone'] ?? null;
-            $data['email_verified_at'] = !empty($data['email_verified_at']) ? $data['email_verified_at'] : null;
+            $data['email_verified_at'] = ! empty($data['email_verified_at']) ? $data['email_verified_at'] : null;
 
             // Ensure status becomes 0/1 (default active if omitted)
             $data['status'] = isset($data['status']) && $data['status'] == 1 ? 'active' : 'inactive';
@@ -52,7 +50,7 @@ class AdminController extends Controller
             // Password will be hashed automatically by the Admin model cast
             $admin = Admin::create($data);
             DB::commit();
-            
+
             // $admin->sendEmailVerificationNotification();
             // AdminMailVerification::dispatch($admin)->afterCommit();
 
@@ -61,7 +59,8 @@ class AdminController extends Controller
                 ->with('success', 'Admin created successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Admin create failed: ' . $e->getMessage());
+            \Log::error('Admin create failed: '.$e->getMessage());
+
             return back()
                 ->withInput()
                 ->with('error', 'Something went wrong while creating the admin.');
@@ -142,15 +141,13 @@ class AdminController extends Controller
                 ->with('success', 'Admin updated successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Admin update failed: ' . $e->getMessage());
+            \Log::error('Admin update failed: '.$e->getMessage());
 
             return back()
                 ->withInput()
                 ->with('error', 'Something went wrong while updating the admin.');
         }
     }
-
-
 
     /**
      * Remove the specified resource from storage.
@@ -164,7 +161,8 @@ class AdminController extends Controller
                 ->route('admin.users.index')
                 ->with('success', 'Admin deleted successfully.');
         } catch (\Exception $e) {
-            \Log::error('Admin delete failed: ' . $e->getMessage());
+            \Log::error('Admin delete failed: '.$e->getMessage());
+
             return redirect()
                 ->route('admin.users.index')
                 ->with('error', 'Something went wrong while deleting the admin.');

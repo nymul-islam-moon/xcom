@@ -17,7 +17,7 @@ return new class extends Migration
 
             $table->timestamp('suspended_at');
             $table->timestamp('resumed_at')->nullable();
-            
+
             $table->timestamps();
         });
     }

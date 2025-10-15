@@ -7,13 +7,11 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Admin\StoreProductSubCategoryRequest;
 use App\Http\Requests\Backend\Admin\UpdateProductSubCategoryRequest;
 use App\Models\ProductSubCategory;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
+use Illuminate\Support\Facades\DB;
 
 class ProductSubCategoryController extends Controller
 {
-
     public function __construct() {}
 
     /**
@@ -42,7 +40,7 @@ class ProductSubCategoryController extends Controller
 
         try {
             $data = $request->validated();
-           
+
             ProductSubCategory::create($data);
 
             DB::commit();
@@ -52,7 +50,7 @@ class ProductSubCategoryController extends Controller
                 ->with('success', 'Subcategory created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            \Log::error('Subcategory creation failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            \Log::error('Subcategory creation failed: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
             return back()
                 ->withInput()
@@ -95,7 +93,7 @@ class ProductSubCategoryController extends Controller
                 ->with('success', 'Subcategory updated successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            Log::error('Subcategory update failed: ' . $e->getMessage(), ['trace' => $e->getTraceAsString()]);
+            Log::error('Subcategory update failed: '.$e->getMessage(), ['trace' => $e->getTraceAsString()]);
 
             return back()
                 ->withInput()
@@ -122,7 +120,7 @@ class ProductSubCategoryController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Subcategory deletion failed: ' . $e->getMessage());
+            \Log::error('Subcategory deletion failed: '.$e->getMessage());
 
             return redirect()
                 ->back()
@@ -139,7 +137,7 @@ class ProductSubCategoryController extends Controller
 
         $subCategories = ProductSubCategory::select('id', 'name')
             ->where('status', 1)
-            ->when($q !== '', fn($query) => $query->whrere('name', 'like', "%{$q}%"))
+            ->when($q !== '', fn ($query) => $query->whrere('name', 'like', "%{$q}%"))
             ->orWhere('slug', 'like', "%{$q}%")
             ->orderBy('name')
             ->get();

@@ -16,9 +16,10 @@ use Illuminate\Support\Str;
 
 class ProcessShopsChunk implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, Batchable;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 3;
+
     public $backoff = [5, 20, 60];
 
     // how many rows we flush to DB per INSERT/UPSERT
@@ -35,8 +36,9 @@ class ProcessShopsChunk implements ShouldQueue
     public function handle(): void
     {
         $disk = 'local';
-        if (!Storage::disk($disk)->exists($this->chunkPath)) {
+        if (! Storage::disk($disk)->exists($this->chunkPath)) {
             Log::warning("Chunk missing: {$this->chunkPath}");
+
             return;
         }
 
@@ -51,15 +53,19 @@ class ProcessShopsChunk implements ShouldQueue
             throw new \RuntimeException("Failed opening chunk stream: {$this->chunkPath}");
         }
 
-        while (!feof($stream)) {
+        while (! feof($stream)) {
             $line = fgets($stream);
-            if ($line === false) break;
+            if ($line === false) {
+                break;
+            }
             $row = json_decode($line, true);
-            if (!is_array($row)) continue;
+            if (! is_array($row)) {
+                continue;
+            }
 
             $email = $this->val($row, 'email');
-            $name  = $this->val($row, 'name');
-            if (!$email || !filter_var($email, FILTER_VALIDATE_EMAIL) || !$name) {
+            $name = $this->val($row, 'name');
+            if (! $email || ! filter_var($email, FILTER_VALIDATE_EMAIL) || ! $name) {
                 continue;
             }
 
@@ -67,28 +73,28 @@ class ProcessShopsChunk implements ShouldQueue
             $emailVerified = $this->parseDateNullable($this->val($row, 'email_verified_at'), $this->dateFormat);
 
             $prepared[] = [
-                'name'                  => $name,
-                'email'                 => strtolower($email),
-                'phone'                 => $this->val($row, 'phone', 15),
-                'shop_keeper_name'      => $this->val($row, 'shop_keeper_name'),
-                'shop_keeper_phone'     => $this->val($row, 'shop_keeper_phone'),
-                'shop_keeper_nid'       => $this->val($row, 'shop_keeper_nid'),
-                'shop_keeper_photo'     => $this->val($row, 'shop_keeper_photo'),
-                'shop_keeper_email'     => $this->val($row, 'shop_keeper_email'),
-                'shop_keeper_tin'       => $this->val($row, 'shop_keeper_tin'),
-                'dbid'                  => $this->val($row, 'dbid'),
-                'bank_name'             => $this->val($row, 'bank_name'),
-                'bank_account_number'   => $this->val($row, 'bank_account_number'),
-                'bank_branch'           => $this->val($row, 'bank_branch'),
-                'shop_logo'             => $this->val($row, 'shop_logo'),
-                'website_url'           => $this->val($row, 'website_url'),
-                'description'           => $this->val($row, 'description'),
-                'business_address'      => $this->val($row, 'business_address'),
-                'email_verified_at'     => $emailVerified,
-                'password'              => Hash::make($passwordPlain),
-                'remember_token'        => Str::random(10),
-                'created_at'            => $now,
-                'updated_at'            => $now,
+                'name' => $name,
+                'email' => strtolower($email),
+                'phone' => $this->val($row, 'phone', 15),
+                'shop_keeper_name' => $this->val($row, 'shop_keeper_name'),
+                'shop_keeper_phone' => $this->val($row, 'shop_keeper_phone'),
+                'shop_keeper_nid' => $this->val($row, 'shop_keeper_nid'),
+                'shop_keeper_photo' => $this->val($row, 'shop_keeper_photo'),
+                'shop_keeper_email' => $this->val($row, 'shop_keeper_email'),
+                'shop_keeper_tin' => $this->val($row, 'shop_keeper_tin'),
+                'dbid' => $this->val($row, 'dbid'),
+                'bank_name' => $this->val($row, 'bank_name'),
+                'bank_account_number' => $this->val($row, 'bank_account_number'),
+                'bank_branch' => $this->val($row, 'bank_branch'),
+                'shop_logo' => $this->val($row, 'shop_logo'),
+                'website_url' => $this->val($row, 'website_url'),
+                'description' => $this->val($row, 'description'),
+                'business_address' => $this->val($row, 'business_address'),
+                'email_verified_at' => $emailVerified,
+                'password' => Hash::make($passwordPlain),
+                'remember_token' => Str::random(10),
+                'created_at' => $now,
+                'updated_at' => $now,
             ];
 
             if (count($prepared) >= $this->flushSize) {
@@ -99,7 +105,7 @@ class ProcessShopsChunk implements ShouldQueue
         }
         fclose($stream);
 
-        if (!empty($prepared)) {
+        if (! empty($prepared)) {
             $this->flush($prepared);
             $processed += count($prepared);
         }
@@ -144,14 +150,19 @@ class ProcessShopsChunk implements ShouldQueue
 
     private function val(array $row, string $key, ?int $maxLen = null): ?string
     {
-        $v = isset($row[$key]) ? trim((string)$row[$key]) : null;
-        if ($maxLen && $v !== null) return mb_substr($v, 0, $maxLen);
+        $v = isset($row[$key]) ? trim((string) $row[$key]) : null;
+        if ($maxLen && $v !== null) {
+            return mb_substr($v, 0, $maxLen);
+        }
+
         return $v === '' ? null : $v;
     }
 
     private function parseDateNullable(?string $value, ?string $format): ?string
     {
-        if (!$value) return null;
+        if (! $value) {
+            return null;
+        }
         try {
             return $format
                 ? Carbon::createFromFormat($format, $value)->toDateTimeString()

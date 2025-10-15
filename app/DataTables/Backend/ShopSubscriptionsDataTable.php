@@ -3,22 +3,20 @@
 namespace App\DataTables\Backend;
 
 use App\Models\ShopPayment;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Builder as QueryBuilder;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
-use Carbon\Carbon;
 
 class ShopSubscriptionsDataTable extends DataTable
 {
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -28,13 +26,13 @@ class ShopSubscriptionsDataTable extends DataTable
             ->addIndexColumn()
             ->addColumn('action', function (ShopPayment $row) {
                 $actions = [
-                   [
+                    [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.shop-subscription.destroy', $row->id),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.shop-subscription.destroy', $row->id),
                         'confirm' => 'Are you sure you want to delete this category?',
-                    ]
+                    ],
 
                     // ['type' => 'divider'],
                     // [
@@ -45,6 +43,7 @@ class ShopSubscriptionsDataTable extends DataTable
                     // ],
 
                 ];
+
                 return view('components.backend.data-table-buttons', [
                     'id' => $row->slug,
                     'actions' => $actions,
@@ -127,13 +126,13 @@ class ShopSubscriptionsDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
@@ -168,6 +167,6 @@ class ShopSubscriptionsDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ShopSubscriptions_' . date('YmdHis');
+        return 'ShopSubscriptions_'.date('YmdHis');
     }
 }

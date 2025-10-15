@@ -16,12 +16,12 @@ class UpdateAdminRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'                  => 'name',
-            'email'                 => 'email address',
-            'phone'                 => 'phone number',
-            'status'                => 'status',
-            'email_verified_at'     => 'email verified at',
-            'password'              => 'password',
+            'name' => 'name',
+            'email' => 'email address',
+            'phone' => 'phone number',
+            'status' => 'status',
+            'email_verified_at' => 'email verified at',
+            'password' => 'password',
             'password_confirmation' => 'password confirmation',
         ];
     }
@@ -33,7 +33,7 @@ class UpdateAdminRequest extends FormRequest
         $admin = $this->route('user'); // instance of App\Models\Admin
 
         return [
-            'name'  => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
 
             'email' => [
                 'required',
@@ -56,8 +56,7 @@ class UpdateAdminRequest extends FormRequest
             ],
 
             // You’re posting 0/1 from Blade; controller maps to 'active'/'inactive'
-            'status' => ['sometimes', 'string', Rule::in(['active','inactive','suspended','pending'])],
-
+            'status' => ['sometimes', 'string', Rule::in(['active', 'inactive', 'suspended', 'pending'])],
 
             'email_verified_at' => ['sometimes', 'nullable', 'date'],
 
@@ -69,10 +68,10 @@ class UpdateAdminRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.unique'          => 'This email address is already registered.',
-            'phone.unique'          => 'This phone number is already in use.',
-            'password.confirmed'    => 'The password confirmation does not match.',
-            'phone.regex'           => 'The phone number may contain digits, spaces, parentheses, plus or hyphen.',
+            'email.unique' => 'This email address is already registered.',
+            'phone.unique' => 'This phone number is already in use.',
+            'password.confirmed' => 'The password confirmation does not match.',
+            'phone.regex' => 'The phone number may contain digits, spaces, parentheses, plus or hyphen.',
         ];
     }
 }

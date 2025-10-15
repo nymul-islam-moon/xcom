@@ -14,9 +14,10 @@ use SplFileObject;
 
 class ScanShopsCsvAndQueueChunks implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, Batchable;
+    use Batchable, Dispatchable, InteractsWithQueue, Queueable;
 
     public $tries = 3;
+
     public $backoff = [5, 20, 60];
 
     public function __construct(
@@ -28,14 +29,15 @@ class ScanShopsCsvAndQueueChunks implements ShouldQueue
 
     public function handle(): void
     {
-        $disk       = 'local';
-        $chunkSize  = (int)($this->options['chunk_size']   ?? 5000);
-        $hasHeader  = (bool)($this->options['header_row']  ?? true);
-        $insertMode = (string)($this->options['insert_mode'] ?? 'insert');
+        $disk = 'local';
+        $chunkSize = (int) ($this->options['chunk_size'] ?? 5000);
+        $hasHeader = (bool) ($this->options['header_row'] ?? true);
+        $insertMode = (string) ($this->options['insert_mode'] ?? 'insert');
         $dateFormat = $this->options['date_format'] ?? null;
 
-        if (!Storage::disk($disk)->exists($this->path)) {
+        if (! Storage::disk($disk)->exists($this->path)) {
             Log::warning("Import CSV missing: {$this->path}");
+
             return;
         }
 
@@ -49,39 +51,50 @@ class ScanShopsCsvAndQueueChunks implements ShouldQueue
         $batch = Bus::batch([])->name('shops-import: '.$this->path)
             ->allowFailures()->onQueue('shops-low')->dispatch();
 
-        $chunkIdx   = 0;
-        $currCount  = 0;
-        $writer     = null;
-        $chunkPath  = null;
+        $chunkIdx = 0;
+        $currCount = 0;
+        $writer = null;
+        $chunkPath = null;
 
-        $openChunk = function() use (&$writer, &$chunkPath, $disk, $chunkIdx) {
-            $base   = pathinfo($this->path, PATHINFO_FILENAME);
-            $uuid   = bin2hex(random_bytes(8));
-            $dir    = 'shops/imports/chunks';
+        $openChunk = function () use (&$writer, &$chunkPath, $disk, $chunkIdx) {
+            $base = pathinfo($this->path, PATHINFO_FILENAME);
+            $uuid = bin2hex(random_bytes(8));
+            $dir = 'shops/imports/chunks';
             $chunkPath = "{$dir}/{$base}__{$uuid}__{$chunkIdx}.ndjson";
             Storage::disk($disk)->makeDirectory($dir);
             $writer = Storage::disk($disk)->writeStream($chunkPath);
-            if ($writer === false) throw new \RuntimeException("Failed opening writer for {$chunkPath}");
+            if ($writer === false) {
+                throw new \RuntimeException("Failed opening writer for {$chunkPath}");
+            }
         };
 
-        $closeChunk = function() use (&$writer) {
-            if (is_resource($writer)) fclose($writer);
+        $closeChunk = function () use (&$writer) {
+            if (is_resource($writer)) {
+                fclose($writer);
+            }
         };
 
         foreach ($csv as $row) {
-            if ($row === [null] || $row === false) continue;
+            if ($row === [null] || $row === false) {
+                continue;
+            }
 
             if ($hasHeader && $header === null) {
                 $header = $this->normalizeHeader($row);
+
                 continue;
             }
 
             $record = $this->mapRowToAssociative($header, $row);
-            if ($record === null) continue;
+            if ($record === null) {
+                continue;
+            }
 
-            if (!is_resource($writer)) $openChunk();
+            if (! is_resource($writer)) {
+                $openChunk();
+            }
 
-            fwrite($writer, json_encode($record, JSON_UNESCAPED_UNICODE) . "\n");
+            fwrite($writer, json_encode($record, JSON_UNESCAPED_UNICODE)."\n");
 
             $currCount++;
             $rowCount++;
@@ -114,9 +127,10 @@ class ScanShopsCsvAndQueueChunks implements ShouldQueue
     private function normalizeHeader(array $row): array
     {
         return array_map(function ($h) {
-            $h = trim((string)$h);
+            $h = trim((string) $h);
             $h = preg_replace('/^\xEF\xBB\xBF/', '', $h); // strip BOM
             $h = str_replace([' ', '-'], '_', strtolower($h));
+
             return $h;
         }, $row);
     }
@@ -125,8 +139,10 @@ class ScanShopsCsvAndQueueChunks implements ShouldQueue
     {
         if ($header) {
             $row = array_pad($row, count($header), null);
+
             return array_combine($header, $row);
         }
+
         return $row ?: null;
     }
 }

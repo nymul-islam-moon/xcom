@@ -8,7 +8,6 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
 
-
 Route::get('/select-status', [SelectController::class, 'ActiveInactiveSelect'])->name('api.select-status');
 Route::get('/select-brands', [SelectController::class, 'brandSelect'])->name('api.select-brands');
 Route::get('/select-categories', [SelectController::class, 'categorySelect'])->name('api.select-categories');

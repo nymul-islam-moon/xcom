@@ -2,10 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProductAttribute;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
-use App\Models\ProductAttribute;
 
 class ProductAttributeValueSeeder extends Seeder
 {
@@ -16,7 +16,7 @@ class ProductAttributeValueSeeder extends Seeder
     {
         // Get the attributes from DB (must be seeded first)
         $attributes = ProductAttribute::whereIn('name', [
-            'Color', 'Size', 'Material', 'Weight', 'Capacity'
+            'Color', 'Size', 'Material', 'Weight', 'Capacity',
         ])->get()->keyBy('name');
 
         // Define attribute values
@@ -33,7 +33,7 @@ class ProductAttributeValueSeeder extends Seeder
         foreach ($values as $attributeName => $attributeValues) {
             $attribute = $attributes[$attributeName] ?? null;
 
-            if (!$attribute) {
+            if (! $attribute) {
                 continue; // Skip if not found
             }
 

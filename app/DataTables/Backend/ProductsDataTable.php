@@ -80,14 +80,14 @@ class ProductsDataTable extends DataTable
             })
 
             ->addColumn('shop', function (Product $row) {
-                return '<span class="badge bg-success w-100 mb-1">'. $row->shop->name ?? 'N/A' .'</span>';
+                return '<span class="badge bg-success w-100 mb-1">'.$row->shop->name ?? 'N/A'.'</span>';
             })
 
             ->addColumn('brand', function (Product $row) {
-                return '<span class="badge bg-success w-100 mb-1">'. $row->brand->name ?? 'N/A' .'</span>';
+                return '<span class="badge bg-success w-100 mb-1">'.$row->brand->name ?? 'N/A'.'</span>';
             })
             ->editColumn('product_type', function (Product $row) {
-                return '<span class="badge bg-primary w-100 mb-1">'. $row->product_type .'</span>';
+                return '<span class="badge bg-primary w-100 mb-1">'.$row->product_type.'</span>';
             })
             ->editColumn('created_at', function (Product $row) {
                 return $row->created_at ? $row->created_at->format('d M Y H:i') : '';

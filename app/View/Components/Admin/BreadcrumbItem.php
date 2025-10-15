@@ -8,9 +8,10 @@ use Illuminate\View\Component;
 
 class BreadcrumbItem extends Component
 {
-
     public ?string $href;
+
     public bool $active;
+
     public ?string $icon;
 
     /**

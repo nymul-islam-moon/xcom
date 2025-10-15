@@ -15,6 +15,7 @@ class SendAdminWelcomeMail implements ShouldQueue
 
     // retry/backoff settings (tweak as needed)
     public int $tries = 3;
+
     public $backoff = [10, 60, 300]; // seconds
 
     /**
@@ -25,13 +26,15 @@ class SendAdminWelcomeMail implements ShouldQueue
     /**
      * Execute the job.
      */
-     public function handle(): void
+    public function handle(): void
     {
         $admin = Admin::find($this->adminId);
-        if (!$admin) return;
+        if (! $admin) {
+            return;
+        }
 
         // Already in a queued job → use send(), not queue()
-         \Mail::to($admin->email)->send(new \App\Mail\AdminWelcomeMail($admin));
+        \Mail::to($admin->email)->send(new \App\Mail\AdminWelcomeMail($admin));
 
     }
 }

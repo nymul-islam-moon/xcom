@@ -5,8 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Relations\MorphOne;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class Account extends Model
 {
@@ -40,10 +38,10 @@ class Account extends Model
      * The attributes that should be cast to native types.
      */
     protected $casts = [
-        'amount'        => 'decimal:2',
-        'happened_at'   => 'datetime',
+        'amount' => 'decimal:2',
+        'happened_at' => 'datetime',
         'reconciled_at' => 'datetime',
-        'meta'          => 'array',
+        'meta' => 'array',
     ];
 
     /**
@@ -107,6 +105,6 @@ class Account extends Model
      */
     public function getFormattedAmountAttribute(): string
     {
-        return $this->currency . ' ' . number_format($this->amount, 2);
+        return $this->currency.' '.number_format($this->amount, 2);
     }
 }

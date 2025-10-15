@@ -17,7 +17,7 @@ class Brand extends Model
         'slug',
         'image',
         'is_active',
-        'description'
+        'description',
     ];
 
     protected $casts = [
@@ -38,12 +38,12 @@ class Brand extends Model
         }
 
         // escape wildcards to avoid weird matches
-        $like = '%' . str_replace(['%', '_'], ['\%','\_'], $term) . '%';
+        $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $term).'%';
 
         return $query->where(function ($w) use ($like) {
             $w->where('name', 'like', $like)
-              ->orWhere('slug', 'like', $like)
-              ->orWhere('description', 'like', $like);
+                ->orWhere('slug', 'like', $like)
+                ->orWhere('description', 'like', $like);
         });
     }
 }

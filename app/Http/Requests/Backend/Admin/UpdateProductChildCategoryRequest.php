@@ -5,7 +5,6 @@ namespace App\Http\Requests\Backend\Admin;
 use App\Models\ProductSubCategory;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 
 class UpdateProductChildCategoryRequest extends FormRequest
@@ -29,11 +28,11 @@ class UpdateProductChildCategoryRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'                      => 'category name',
-            'description'               => 'description',
-            'product_sub_category_id'   => 'sub-category',
-            'slug'                      => 'slug',
-            'is_active'                 => 'status',
+            'name' => 'category name',
+            'description' => 'description',
+            'product_sub_category_id' => 'sub-category',
+            'slug' => 'slug',
+            'is_active' => 'status',
         ];
     }
 
@@ -55,8 +54,8 @@ class UpdateProductChildCategoryRequest extends FormRequest
         ]);
 
         $this->merge([
-            'name'      => $name,
-            'slug'      => $slug,
+            'name' => $name,
+            'slug' => $slug,
             'is_active' => $this->boolean('is_active'),
         ]);
     }
@@ -77,7 +76,7 @@ class UpdateProductChildCategoryRequest extends FormRequest
                 'max:255',
                 // unique within the same parent sub-category, but ignore current record
                 Rule::unique('product_child_categories', 'name')
-                    ->where(fn($q) => $q->where('product_sub_category_id', $this->input('product_sub_category_id')))
+                    ->where(fn ($q) => $q->where('product_sub_category_id', $this->input('product_sub_category_id')))
                     ->ignore($childCategoryId),
             ],
             'slug' => [
@@ -86,12 +85,11 @@ class UpdateProductChildCategoryRequest extends FormRequest
                 'max:255',
                 Rule::unique('product_child_categories', 'slug')->ignore($childCategoryId),
             ],
-            'product_sub_category_id'   => ['required', 'integer', 'exists:product_sub_categories,id'],
-            'is_active'                 => ['required', 'boolean'],
-            'description'               => ['nullable', 'string'],
+            'product_sub_category_id' => ['required', 'integer', 'exists:product_sub_categories,id'],
+            'is_active' => ['required', 'boolean'],
+            'description' => ['nullable', 'string'],
         ];
     }
-
 
     /**
      * Custom error messages.
@@ -99,21 +97,21 @@ class UpdateProductChildCategoryRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'name.required'                     => 'Please enter a :attribute.',
-            'name.unique'                       => 'The :attribute ":input" is already in use within the selected sub-category.',
-            'name.max'                          => 'The :attribute may not be greater than :max characters.',
+            'name.required' => 'Please enter a :attribute.',
+            'name.unique' => 'The :attribute ":input" is already in use within the selected sub-category.',
+            'name.max' => 'The :attribute may not be greater than :max characters.',
 
-            'slug.required'                     => 'Please enter a :attribute.',
-            'slug.unique'                       => 'The :attribute ":input" is already in use.',
-            'slug.max'                          => 'The :attribute may not be greater than :max characters.',
+            'slug.required' => 'Please enter a :attribute.',
+            'slug.unique' => 'The :attribute ":input" is already in use.',
+            'slug.max' => 'The :attribute may not be greater than :max characters.',
 
-            'product_sub_category_id.required'  => 'Please select a :attribute.',
-            'product_sub_category_id.exists'    => 'The selected :attribute does not exist.',
+            'product_sub_category_id.required' => 'Please select a :attribute.',
+            'product_sub_category_id.exists' => 'The selected :attribute does not exist.',
 
-            'is_active.required'                => 'Please select a :attribute.',
-            'is_active.boolean'                 => 'The :attribute must be true or false.',
+            'is_active.required' => 'Please select a :attribute.',
+            'is_active.boolean' => 'The :attribute must be true or false.',
 
-            'description.string'                => 'The :attribute must be a valid string.',
+            'description.string' => 'The :attribute must be a valid string.',
         ];
     }
 }

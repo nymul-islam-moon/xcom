@@ -23,7 +23,7 @@ class ProductVariant extends Model
         'depth',
         'low_stock_threshold',
         'restock_date',
-        'is_default'
+        'is_default',
     ];
 
     // ----------------------

@@ -28,10 +28,9 @@ class ShopPayment extends Model
 
     protected $casts = [
         'payment_date' => 'date',
-        'start_date'   => 'date',
-        'end_date'     => 'date',
+        'start_date' => 'date',
+        'end_date' => 'date',
     ];
-
 
     /**
      * Relationship: ShopPayment belongs to a Shop

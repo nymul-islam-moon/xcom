@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Storage;
 
 class MediaService
 {
-
     /**
      * Ensure a directory exists on a disk and has sane permissions.
      */
@@ -39,7 +38,7 @@ class MediaService
         ?string $visibility = null
     ): string {
         if (! $file->isValid()) {
-            throw new \RuntimeException('Invalid upload: ' . $file->getErrorMessage());
+            throw new \RuntimeException('Invalid upload: '.$file->getErrorMessage());
         }
 
         $this->ensureDirectory($directory, $disk);

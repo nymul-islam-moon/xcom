@@ -12,13 +12,12 @@ class ProductChildCategory extends Model
 
     protected $table = 'product_child_categories';
 
-
     protected $fillable = [
         'name',
         'slug',
         'is_active',
         'description',
-        'product_sub_category_id'
+        'product_sub_category_id',
     ];
 
     protected $casts = [
@@ -39,7 +38,7 @@ class ProductChildCategory extends Model
         }
 
         // escape wildcards to avoid weird matches
-        $like = '%' . str_replace(['%', '_'], ['\%', '\_'], $term) . '%';
+        $like = '%'.str_replace(['%', '_'], ['\%', '\_'], $term).'%';
 
         return $query->where(function ($w) use ($like) {
             $w->where('name', 'like', $like)

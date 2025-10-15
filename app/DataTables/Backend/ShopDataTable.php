@@ -8,8 +8,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ShopDataTable extends DataTable
@@ -17,7 +15,7 @@ class ShopDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -31,28 +29,28 @@ class ShopDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Subscription',
                         'icon' => 'bi bi-cash-stack',
-                        'url'  => route('admin.shop-subscription.index', $row->slug),
+                        'url' => route('admin.shop-subscription.index', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.shops.edit', $row->slug),
+                        'url' => route('admin.shops.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.shops.show', $row->slug),
+                        'url' => route('admin.shops.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.shops.destroy', $row->slug),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.shops.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -71,7 +69,7 @@ class ShopDataTable extends DataTable
             })
             ->editColumn('shop_logo', function (Shop $row) {
                 if ($row->shop_logo) {
-                    return '<img src="' . asset('storage/' . $row->shop_logo) . '" alt="' . $row->shop_logo . '" class="img-thumbnail" style="width: 50px; height: 50px;">';
+                    return '<img src="'.asset('storage/'.$row->shop_logo).'" alt="'.$row->shop_logo.'" class="img-thumbnail" style="width: 50px; height: 50px;">';
                 } else {
                     return '<span class="text-muted">No Image</span>';
                 }
@@ -80,13 +78,13 @@ class ShopDataTable extends DataTable
                 $class = $row->is_active ? 'bg-success' : 'bg-danger';
                 $label = $row->is_active ? 'Active' : 'Inactive';
 
-                return '<span class="badge ' . $class . '">' . $label . '</span>';
+                return '<span class="badge '.$class.'">'.$label.'</span>';
             })
             ->editColumn('is_suspended', function (Shop $row) {
                 $class = $row->is_suspended ? 'bg-danger' : 'bg-success';
                 $label = $row->is_suspended ? 'Suspended' : 'Not Suspended';
 
-                return '<span class="badge ' . $class . '">' . $label . '</span>';
+                return '<span class="badge '.$class.'">'.$label.'</span>';
             })
             ->editColumn('subscription_start', function (Shop $row) {
                 return $row->subscriptionDate('start_date');
@@ -140,7 +138,6 @@ class ShopDataTable extends DataTable
             ->select('shops.*');
     }
 
-
     /**
      * Optional method if you want to use the html builder.
      */
@@ -159,13 +156,13 @@ class ShopDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
@@ -203,6 +200,6 @@ class ShopDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'Shop_' . date('YmdHis');
+        return 'Shop_'.date('YmdHis');
     }
 }

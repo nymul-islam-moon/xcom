@@ -8,7 +8,6 @@ use App\Http\Requests\Backend\Admin\StoreShopPaymentRequest;
 use App\Models\Account;
 use App\Models\Shop;
 use App\Models\ShopPayment;
-use App\Models\ShopSuspension;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -77,13 +76,12 @@ class ShopSubscriptionController extends Controller
         }
     }
 
-
     public function destroy(ShopPayment $shopPayment)
     {
         DB::beginTransaction();
 
         try {
-         
+
             $account = Account::where('owner_id', $shopPayment->shop->id)
                 ->where('owner_type', 'App\Models\Shop')
                 ->where('reference_type', 'App\Models\ShopPayment')
@@ -101,7 +99,7 @@ class ShopSubscriptionController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            Log::error('Shop Payment deletion failed: ' . $e->getMessage());
+            Log::error('Shop Payment deletion failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->with('error', 'Something went wrong while deleting the shop payment.');

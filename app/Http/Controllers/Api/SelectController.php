@@ -6,9 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Models\Brand;
 use App\Models\ProductCategory;
 use App\Models\ProductSubCategory;
-use Illuminate\Support\Facades\Log;
-use Exception;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class SelectController extends Controller
 {
@@ -38,7 +37,7 @@ class SelectController extends Controller
         $q = Brand::where('is_active', 1);
 
         if ($request->filled('q')) {
-            $q->where('name', 'like', '%' . $request->q, '%');
+            $q->where('name', 'like', '%'.$request->q, '%');
         }
 
         $brands = $q->select('id', 'name')->orderBy('name')->get();
@@ -52,11 +51,12 @@ class SelectController extends Controller
         $q = ProductCategory::where('is_active', 1);
 
         if ($request->filled('q')) {
-            $q->where('name', 'like', '%' . $request->q . '%');
+            $q->where('name', 'like', '%'.$request->q.'%');
         }
 
         // Otherwise return simple array [{id,name}, ...]
         $cats = $q->select('id', 'name')->orderBy('name')->get();
+
         return response()->json($cats);
     }
 
@@ -75,7 +75,7 @@ class SelectController extends Controller
 
             // Apply search if present
             if ($request->filled('q')) {
-                $q->where('name', 'like', '%' . $request->q . '%');
+                $q->where('name', 'like', '%'.$request->q.'%');
             }
 
             // Always return simple array [{id, name}, ...]
@@ -83,14 +83,14 @@ class SelectController extends Controller
 
             return response()->json($subs);
         } catch (\Throwable $e) {
-            Log::error('Failed to fetch subcategories for category id ' . $categoryId, [
+            Log::error('Failed to fetch subcategories for category id '.$categoryId, [
                 'exception' => $e,
                 'category_id' => $categoryId,
                 'request_q' => $request->q ?? null,
             ]);
 
             return response()->json([
-                'message' => 'Something went wrong while fetching subcategories.'
+                'message' => 'Something went wrong while fetching subcategories.',
             ], 500);
         }
     }
@@ -110,23 +110,22 @@ class SelectController extends Controller
 
             // Apply search if present
             if ($request->filled('q')) {
-                $q->where('name', 'like', '%' . $request->q . '%');
+                $q->where('name', 'like', '%'.$request->q.'%');
             }
 
             // Always return simple array [{id, name}, ...]
             $subs = $q->select('id', 'name')->orderBy('name')->get();
 
             return response()->json($subs);
-        } catch (\Throwable $e)
-        {
-            Log::error('Failed to fetch child-categories for category id ' . $subCategoryId, [
+        } catch (\Throwable $e) {
+            Log::error('Failed to fetch child-categories for category id '.$subCategoryId, [
                 'exception' => $e,
                 'category_id' => $subCategoryId,
                 'request_q' => $request->q ?? null,
             ]);
 
             return response()->json([
-                'message' => 'Something went wrong while fetching child-categories.'
+                'message' => 'Something went wrong while fetching child-categories.',
             ], 500);
         }
     }

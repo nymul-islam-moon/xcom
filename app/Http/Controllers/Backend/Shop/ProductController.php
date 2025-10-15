@@ -8,9 +8,8 @@ use App\Http\Requests\Backend\Admin\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Models\ProductAttribute;
-use App\Models\ProductImage;
-use Illuminate\Http\Request;
 use App\Models\ProductAttributeValue;
+use App\Models\ProductImage;
 use App\Services\MediaService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
@@ -48,7 +47,6 @@ class ProductController extends Controller
             // Create product
             // $product = Product::create($formData);
 
-
             // ================
             // 1. Physical Product
             // ================
@@ -63,11 +61,10 @@ class ProductController extends Controller
                 $formData['is_default'] = true;
                 $product->variants()->create($formData);
             }
-            
+
             // ==================
             // 2. Digital Product
             // ==================
-            
 
             // // Product main image
             // if ($request->hasFile('main_image')) {
@@ -89,8 +86,6 @@ class ProductController extends Controller
             //         ]);
             //     }
             // }
-
-           
 
             // // Variable product variants
             // if ($formData['variant_type'] === 'variable' && !empty($formData['combinations'])) {
@@ -150,15 +145,13 @@ class ProductController extends Controller
                 ->with('success', 'Product created successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error creating product: ' . $e->getMessage());
+            Log::error('Error creating product: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
                 ->withErrors(['error' => 'There was an error creating the product. Please try again.']);
         }
     }
-
-
 
     /**
      * Display the specified resource.
@@ -224,7 +217,7 @@ class ProductController extends Controller
                 ->with('success', 'Product deleted successfully.');
         } catch (\Exception $e) {
             DB::rollBack();
-            Log::error('Error deleting product: ' . $e->getMessage());
+            Log::error('Error deleting product: '.$e->getMessage());
 
             return redirect()->back()
                 ->withErrors(['error' => 'There was an error deleting the product. Please try again.']);

@@ -27,7 +27,7 @@ return new class extends Migration
             $table->string('sub_type')->nullable(); // optional more specific tag, e.g., 'subscription', 'product_sale'
 
             // Ledger semantics
-            $table->enum('direction', ['credit','debit'])->default('credit'); // credit = money in, debit = money out
+            $table->enum('direction', ['credit', 'debit'])->default('credit'); // credit = money in, debit = money out
             $table->decimal('amount', 16, 2)->default(0);
             $table->string('currency', 3)->default('USD');
 
@@ -37,7 +37,7 @@ return new class extends Migration
             $table->string('payment_method')->nullable(); // e.g., 'card','bank_transfer','cash_on_delivery'
 
             // Status & timestamps
-            $table->enum('status', ['pending','completed','failed','refunded','cancelled'])->default('pending');
+            $table->enum('status', ['pending', 'completed', 'failed', 'refunded', 'cancelled'])->default('pending');
             $table->timestamp('happened_at')->nullable();   // when the movement occurred
             $table->timestamp('reconciled_at')->nullable(); // when reconciled by accounting
 

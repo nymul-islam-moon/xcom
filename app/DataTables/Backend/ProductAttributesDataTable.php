@@ -8,8 +8,6 @@ use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Html\Builder as HtmlBuilder;
 use Yajra\DataTables\Html\Button;
 use Yajra\DataTables\Html\Column;
-use Yajra\DataTables\Html\Editor\Editor;
-use Yajra\DataTables\Html\Editor\Fields;
 use Yajra\DataTables\Services\DataTable;
 
 class ProductAttributesDataTable extends DataTable
@@ -17,7 +15,7 @@ class ProductAttributesDataTable extends DataTable
     /**
      * Build the DataTable class.
      *
-     * @param QueryBuilder $query Results from query() method.
+     * @param  QueryBuilder  $query  Results from query() method.
      */
     public function dataTable(QueryBuilder $query): EloquentDataTable
     {
@@ -31,21 +29,21 @@ class ProductAttributesDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url'  => route('admin.products.attributes.edit', $row->slug),
+                        'url' => route('admin.products.attributes.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url'  => route('admin.products.attributes.show', $row->slug),
+                        'url' => route('admin.products.attributes.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
-                        'icon'  => 'bi-trash',
-                        'url'   => route('admin.products.attributes.destroy', $row->slug),
+                        'icon' => 'bi-trash',
+                        'url' => route('admin.products.attributes.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -94,13 +92,13 @@ class ProductAttributesDataTable extends DataTable
                 Button::make('pdf'),
             ])
             ->parameters([
-                'responsive'  => true,
-                'autoWidth'   => false,
-                'processing'  => true,
-                'serverSide'  => true,
+                'responsive' => true,
+                'autoWidth' => false,
+                'processing' => true,
+                'serverSide' => true,
                 // lengthMenu: first array = values, second = labels
-                'lengthMenu'  => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
-                'pageLength'  => 10, // default initial page size
+                'lengthMenu' => [[10, 25, 50, 100, -1], [10, 25, 50, 100, 'All']],
+                'pageLength' => 10, // default initial page size
                 // Optional: set language or other options here
                 // 'language' => ['lengthMenu' => "Display _MENU_ records per page"],
             ]);
@@ -138,6 +136,6 @@ class ProductAttributesDataTable extends DataTable
      */
     protected function filename(): string
     {
-        return 'ProductAttributes_' . date('YmdHis');
+        return 'ProductAttributes_'.date('YmdHis');
     }
 }

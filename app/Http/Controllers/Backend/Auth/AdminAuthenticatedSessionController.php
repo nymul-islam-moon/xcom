@@ -4,9 +4,9 @@ namespace App\Http\Controllers\Backend\Auth;
 
 use App\Http\Controllers\Controller;
 use App\Models\Admin;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Auth\Events\Verified;
 
 class AdminAuthenticatedSessionController extends Controller
 {
@@ -18,7 +18,7 @@ class AdminAuthenticatedSessionController extends Controller
     public function store(Request $request)
     {
         $credentials = $request->validate([
-            'email' => ['required','email'],
+            'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
@@ -56,7 +56,7 @@ class AdminAuthenticatedSessionController extends Controller
         }
 
         // 2) email hash check (same as Laravel’s default)
-        if (! hash_equals((string)$hash, sha1($admin->email))) {
+        if (! hash_equals((string) $hash, sha1($admin->email))) {
             abort(403, 'Invalid verification hash.');
         }
 

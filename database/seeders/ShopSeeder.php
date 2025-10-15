@@ -2,13 +2,13 @@
 
 namespace Database\Seeders;
 
+use App\Models\Account;
+use App\Models\Shop;
+use App\Models\ShopPayment;
+use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
-use Carbon\Carbon;
-use App\Models\Shop;
-use App\Models\ShopPayment;
-use App\Models\Account;
 
 class ShopSeeder extends Seeder
 {
@@ -113,9 +113,9 @@ class ShopSeeder extends Seeder
                 'reconciled_at' => now(),
 
                 'meta' => json_encode([
-                    'note' => 'Seeded subscription payment'
+                    'note' => 'Seeded subscription payment',
                 ]),
-                'reference_code' => 'SUB-' . strtoupper(Str::random(6)),
+                'reference_code' => 'SUB-'.strtoupper(Str::random(6)),
                 'uuid' => Str::uuid(),
 
                 'created_at' => now(),

@@ -8,8 +8,6 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreProductAttributeRequest;
 use App\Http\Requests\UpdateProductAttributeRequest;
 use App\Models\ProductAttribute;
-use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 
 class ProductAttributeController extends Controller
@@ -21,6 +19,7 @@ class ProductAttributeController extends Controller
     {
         return $dataTable->render('backend.admin.products.attributes.index');
     }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -49,7 +48,7 @@ class ProductAttributeController extends Controller
             DB::rollBack();
 
             // Optional: log the actual error
-            \Log::error('Attribute creation failed: ' . $e->getMessage());
+            \Log::error('Attribute creation failed: '.$e->getMessage());
 
             return redirect()->back()
                 ->withInput()
@@ -65,8 +64,6 @@ class ProductAttributeController extends Controller
         return $dataTable->with('attribute_id', $attribute->id)
             ->render('backend.admin.products.attributes.show', compact('attribute'));
     }
-
-
 
     /**
      * Show the form for editing the specified resource.
@@ -95,14 +92,13 @@ class ProductAttributeController extends Controller
                 ->with('success', 'Attribute updated successfully.');
         } catch (\Throwable $e) {
             DB::rollBack();
-            \Log::error('Attribute update failed: ' . $e->getMessage());
+            \Log::error('Attribute update failed: '.$e->getMessage());
 
             return back()
                 ->withInput()
                 ->with('error', 'Something went wrong while updating the attribute.');
         }
     }
-
 
     /**
      * Remove the specified resource from storage.
@@ -120,7 +116,7 @@ class ProductAttributeController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
 
-            \Log::error('Attribute deleting failed: ' . $e->getMessage());
+            \Log::error('Attribute deleting failed: '.$e->getMessage());
 
             return redirect()->back()->with('error', 'Something went wrong while deleting attribute');
         }

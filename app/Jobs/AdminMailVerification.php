@@ -26,6 +26,6 @@ class AdminMailVerification implements ShouldQueue
     public function handle(): void
     {
         // Send the email verification notification
-        \Log::info('Dispatching email verification to admin: ' . $this->admin->email);
+        \Log::info('Dispatching email verification to admin: '.$this->admin->email);
     }
 }

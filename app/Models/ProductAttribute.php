@@ -15,7 +15,7 @@ class ProductAttribute extends Model
     protected $fillable = [
         'name',
         'slug',
-        'description'
+        'description',
     ];
 
     public function getRouteKeyName()

@@ -6,7 +6,6 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Password;
 
-
 class StoreAdminRequest extends FormRequest
 {
     /**
@@ -23,12 +22,12 @@ class StoreAdminRequest extends FormRequest
     public function attributes(): array
     {
         return [
-            'name'                  => 'name',
-            'email'                 => 'email address',
-            'phone'                 => 'phone number',
-            'status'                => 'status',
-            'email_verified_at'     => 'email verified at',
-            'password'              => 'password',
+            'name' => 'name',
+            'email' => 'email address',
+            'phone' => 'phone number',
+            'status' => 'status',
+            'email_verified_at' => 'email verified at',
+            'password' => 'password',
             'password_confirmation' => 'password confirmation',
         ];
     }
@@ -41,7 +40,7 @@ class StoreAdminRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name'  => ['required', 'string', 'max:255'],
+            'name' => ['required', 'string', 'max:255'],
             'email' => [
                 'required',
                 'string',
@@ -71,10 +70,10 @@ class StoreAdminRequest extends FormRequest
     public function messages(): array
     {
         return [
-            'email.unique'  => 'This email address is already registered.',
-            'phone.unique'  => 'This phone number is already in use.',
+            'email.unique' => 'This email address is already registered.',
+            'phone.unique' => 'This phone number is already in use.',
             'password.confirmed' => 'The password confirmation does not match.',
-            'phone.regex'   => 'The phone number may contain digits, spaces, parentheses, plus or hyphen.',
+            'phone.regex' => 'The phone number may contain digits, spaces, parentheses, plus or hyphen.',
         ];
     }
 }

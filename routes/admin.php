@@ -1,17 +1,17 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\Backend\DashboardController;
 use App\Http\Controllers\Backend\Admin\AdminController;
-use App\Http\Controllers\Backend\Admin\ProductBrandController;
-use App\Http\Controllers\Backend\Admin\ProductCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductAttributeController;
 use App\Http\Controllers\Backend\Admin\ProductAttributeValueController;
-use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
+use App\Http\Controllers\Backend\Admin\ProductBrandController;
+use App\Http\Controllers\Backend\Admin\ProductCategoryController;
 use App\Http\Controllers\Backend\Admin\ProductChildCategoryController;
+use App\Http\Controllers\Backend\Admin\ProductSubCategoryController;
 use App\Http\Controllers\Backend\Admin\ShopController;
 use App\Http\Controllers\Backend\Admin\ShopSubscriptionController;
 use App\Http\Controllers\Backend\Auth\AdminAuthenticatedSessionController;
+use App\Http\Controllers\Backend\DashboardController;
+use Illuminate\Support\Facades\Route;
 
 // Guest (admin) routes
 Route::middleware('guest:admin')->group(function () {
@@ -22,7 +22,7 @@ Route::middleware('guest:admin')->group(function () {
 // Authenticated (admin) routes
 Route::middleware('auth:admin')->group(function () {
 
-    Route::get('/phpinfo', fn() => phpinfo());
+    Route::get('/phpinfo', fn () => phpinfo());
 
     // auth route
     Route::post('logout', [AdminAuthenticatedSessionController::class, 'destroy'])->name('logout');
@@ -55,16 +55,13 @@ Route::middleware('auth:admin')->group(function () {
         Route::delete('attribute-values/{attributeValue}', [ProductAttributeValueController::class, 'destroy'])->name('attribute-values.destroy');
     });
 
-
     Route::resource('shops', ShopController::class);
     Route::get('shop-subscriptions/{shop}', [ShopSubscriptionController::class, 'index'])->name('shop-subscription.index');
     Route::get('shop-subscriptions/{shop}/create', [ShopSubscriptionController::class, 'create'])->name('shop-subscription.create');
     Route::post('shop-subscriptions/{shop}/store', [ShopSubscriptionController::class, 'store'])->name('shop-subscription.store');
     Route::delete('shop-subscriptions/{shopPayment}/destroy', [ShopSubscriptionController::class, 'destroy'])->name('shop-subscription.destroy');
 
-
     Route::resource('users', AdminController::class);
-
 
     // Bulk Upload
     Route::prefix('bulk-upload')->as('bulkUpload.')->group(function () {
