@@ -213,14 +213,14 @@
                  <li class="nav-header">PRODUCTS</li>
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('admin.products.categories.index') }}" class="nav-link">
                              <p>Categories</p>
                          </a>
                      </li>
                  @endauth
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('admin.products.sub-categories.index') }}" class="nav-link">
                              <p>Sub-Categories</p>
                          </a>
                      </li>
@@ -228,7 +228,7 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('admin.products.child-categories.index') }}" class="nav-link">
                              <p>{{ ucfirst('child-categories') }}</p>
                          </a>
                      </li>
@@ -236,7 +236,7 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('admin.products.brands.index') }}" class="nav-link">
                              <p>{{ ucfirst('brands') }}</p>
                          </a>
                      </li>
@@ -244,75 +244,32 @@
 
                  @auth('admin')
                      <li class="nav-item">
-                         <a href="" class="nav-link">
+                         <a href="{{ route('admin.products.attributes.index') }}" class="nav-link">
                              <p>{{ ucfirst('attributes') }}</p>
                          </a>
                      </li>
                  @endauth
-                 <li class="nav-header">EXAMPLES</li>
-                 <li class="nav-item">
-                     <a href="#" class="nav-link">
-                         <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                         <p>
-                             Auth
-                             <i class="nav-arrow bi bi-chevron-right"></i>
-                         </p>
-                     </a>
-                     <ul class="nav nav-treeview">
-                         <li class="nav-item">
-                             <a href="#" class="nav-link">
-                                 <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                                 <p>
-                                     Version 1
-                                     <i class="nav-arrow bi bi-chevron-right"></i>
-                                 </p>
-                             </a>
-                             <ul class="nav nav-treeview">
-                                 <li class="nav-item">
-                                     <a href="./examples/login.html" class="nav-link">
-                                         <i class="nav-icon bi bi-circle"></i>
-                                         <p>Login</p>
-                                     </a>
-                                 </li>
-                                 <li class="nav-item">
-                                     <a href="./examples/register.html" class="nav-link">
-                                         <i class="nav-icon bi bi-circle"></i>
-                                         <p>Register</p>
-                                     </a>
-                                 </li>
-                             </ul>
-                         </li>
-                         <li class="nav-item">
-                             <a href="#" class="nav-link">
-                                 <i class="nav-icon bi bi-box-arrow-in-right"></i>
-                                 <p>
-                                     Version 2
-                                     <i class="nav-arrow bi bi-chevron-right"></i>
-                                 </p>
-                             </a>
-                             <ul class="nav nav-treeview">
-                                 <li class="nav-item">
-                                     <a href="./examples/login-v2.html" class="nav-link">
-                                         <i class="nav-icon bi bi-circle"></i>
-                                         <p>Login</p>
-                                     </a>
-                                 </li>
-                                 <li class="nav-item">
-                                     <a href="./examples/register-v2.html" class="nav-link">
-                                         <i class="nav-icon bi bi-circle"></i>
-                                         <p>Register</p>
-                                     </a>
-                                 </li>
-                             </ul>
-                         </li>
-                         <li class="nav-item">
-                             <a href="./examples/lockscreen.html" class="nav-link">
-                                 <i class="nav-icon bi bi-circle"></i>
-                                 <p>Lockscreen</p>
-                             </a>
-                         </li>
-                     </ul>
-                 </li>
+                 <li class="nav-header">User Management</li>
+                 @auth('admin')
+                     <li class="nav-item">
+                         <a href="{{ route('admin.users.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-user"></i>
+                             <p>{{ ucfirst('admins') }}</p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="{{ route('admin.shops.index') }}" class="nav-link">
+                            <i class="nav-icon bi bi-ui-checks-grid"></i>
+                             <p>{{ ucfirst('shops') }}</p>
+                         </a>
+                     </li>
+                     <li class="nav-item">
+                         <a href="" class="nav-link">
+                            <i class="nav-icon bi bi-ui-checks-grid"></i>
+                             <p>{{ ucfirst('customers') }}</p>
+                         </a>
+                     </li>
+                 @endauth
 
                  <li class="nav-header">DOCUMENTATIONS</li>
                  <li class="nav-item">
