@@ -7,8 +7,10 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Backend\Admin\StoreShopRequest;
 use App\Http\Requests\UpdateShopRequest;
 use App\Jobs\ScanShopsCsvAndQueueChunks;
+use App\Jobs\SendShopVerificationEmail;
 use App\Models\Shop;
 use App\Services\MediaService;
+use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
@@ -44,7 +46,6 @@ class ShopController extends Controller
             $formData = $request->validated();
 
             $formData['password'] = Hash::make(trim($formData['password']));
-            // dd($formData);
 
             // Handle shop logo upload using MediaService
             if ($path = $mediaService->storeFromRequest($request, 'shop_logo', 'shops/logos')) {
@@ -57,7 +58,11 @@ class ShopController extends Controller
             }
 
             // Create the shop
-            Shop::create($formData);
+            $shop = Shop::create($formData);
+
+            if ($shop->email_verified_at === null) {
+                SendShopVerificationEmail::dispatch($shop->id);
+            }
 
             DB::commit();
 
@@ -195,5 +200,46 @@ class ShopController extends Controller
                 'bulkUpload'
             );
         }
+    }
+
+
+    public function send(Request $request, Shop $shop)
+    {
+        if ($shop->hasVerifiedEmail()) {
+            return redirect()->back()->with('info', 'Shop email already verified.');
+        }
+
+        $shop->sendEmailVerificationNotification();
+
+        return redirect()->back()->with('success', 'Verification email resent.');
+    }
+
+    public function verify(Request $request)
+    {
+        $request->validate([
+            'id' => 'required|integer',
+            'hash' => 'required|string',
+        ]);
+
+        $shop = Shop::findOrFail($request->id);
+
+        // Prevent tampering: check that the hash matches the shop's email
+        if (! hash_equals((string) $request->hash, sha1($shop->getEmailForVerification()))) {
+            abort(403, 'Invalid verification link.');
+        }
+
+        if ($shop->hasVerifiedEmail()) {
+            // Optional: redirect to a page telling "already verified"
+            return redirect()->route('shop.login')->with('status', 'Email already verified.');
+        }
+
+        $shop->markEmailAsVerified();
+
+        event(new Verified($shop));
+
+        // Optionally, log the shop in immediately:
+        // auth()->guard('shop')->login($shop);
+
+        return redirect()->route('shop.login')->with('success', 'Email verified successfully.');
     }
 }

@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use Carbon\Carbon;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Database\Eloquent\Model;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class Shop extends Authenticatable
+class Shop extends Authenticatable implements MustVerifyEmail
 {
     /** @use HasFactory<\Database\Factories\ShopFactory> */
     use HasFactory, Notifiable;
@@ -193,5 +193,10 @@ class Shop extends Authenticatable
                 ->orWhere('email', 'like', $like)
                 ->orWhere('phone', 'like', $like);
         });
+    }
+
+     public function sendEmailVerificationNotification()
+    {
+        $this->notify(new \App\Notifications\VerifyShopEmail($this));
     }
 }

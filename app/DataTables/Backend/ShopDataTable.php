@@ -92,6 +92,19 @@ class ShopDataTable extends DataTable
             ->editColumn('subscription_ends', function (Shop $row) {
                 return $row->subscriptionDate('end_date');
             })
+            ->editColumn('email_verified_at', function (Shop $row) {
+                if ($row->email_verified_at) {
+                    return '<span class="badge bg-success">Verified</span><br><small>'.$row->email_verified_at->format('d M Y H:i').'</small>';
+                } else {
+                    // Button to resend verification
+                    $button = '<form method="POST" action="'.route('admin.shops.send-verification', $row->slug).'" style="display:inline-block;">';
+                    $button .= csrf_field();
+                    $button .= '<button type="submit" class="btn btn-sm btn-warning">Resend Verification</button>';
+                    $button .= '</form>';
+
+                    return '<span class="badge bg-danger">Not Verified</span> '.$button;
+                }
+            })
             ->addColumn('shopkeeper', function (Shop $row) {
                 return "<strong>{$row->shop_keeper_name}</strong><br><small>{$row->shop_keeper_phone}</small>";
             })
@@ -125,7 +138,7 @@ class ShopDataTable extends DataTable
                 });
             })
 
-            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo', 'is_active', 'is_suspended', 'subscription_start', 'subscription_ends']);
+            ->rawColumns(['action', 'shopkeeper', 'bank', 'shop_logo', 'is_active', 'is_suspended', 'subscription_start', 'subscription_ends', 'email_verified_at']);
     }
 
     /**
@@ -183,6 +196,7 @@ class ShopDataTable extends DataTable
             Column::make('name'),
             Column::make('email'),
             Column::make('phone'),
+            Column::make('email_verified_at'),
             Column::make('is_active'),
             Column::make('is_suspended'),
             Column::make('subscription_start'),
