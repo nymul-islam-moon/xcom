@@ -86,19 +86,11 @@ class ShopDataTable extends DataTable
 
                 return '<span class="badge '.$class.'">'.$label.'</span>';
             })
-            ->editColumn('subscription_start', function (Shop $row) {
+            ->addColumn('subscription_start', function (Shop $row) {
                 return $row->subscription_start
                     ? '<span class="badge bg-info">'.\Carbon\Carbon::parse($row->subscription_start)->format('d M Y').'</span>'
                     : '<span class="text-muted">-</span>';
             })
-            ->editColumn('subscription_ends', function (Shop $row) {
-                return $row->subscription_end
-                    ? '<span class="badge bg-info">'.\Carbon\Carbon::parse($row->subscription_end)->format('d M Y').'</span>'
-                    : '<span class="text-muted">-</span>';
-            })
-            ->orderColumn('subscription_start', 'subscription_start $1')
-            ->orderColumn('subscription_ends', 'subscription_end $1')
-
             ->editColumn('email_verified_at', function (Shop $row) {
                 if ($row->email_verified_at) {
                     return '<span class="badge bg-success">Verified</span><br><small>'.$row->email_verified_at->format('d M Y H:i').'</small>';
@@ -111,11 +103,14 @@ class ShopDataTable extends DataTable
                     return '<span class="badge bg-danger">Not Verified</span> '.$button;
                 }
             })
-            ->orderColumn('email_verified_at', 'email_verified_at $1')
+            ->addColumn('subscription_ends', function (Shop $row) {
+                return $row->subscription_end
+                    ? '<span class="badge bg-info">'.\Carbon\Carbon::parse($row->subscription_end)->format('d M Y').'</span>'
+                    : '<span class="text-muted">-</span>';
+            })
             ->addColumn('shopkeeper', function (Shop $row) {
                 return "<strong>{$row->shop_keeper_name}</strong><br><small>{$row->shop_keeper_phone}</small>";
             })
-            ->orderColumn('shopkeeper', 'shop_keeper_name $1')
             ->addColumn('bank', function (Shop $row) {
                 $bankName = $row->bank_name ?? 'N/A';
                 $accountNumber = $row->bank_account_number ?? 'N/A';
@@ -125,13 +120,18 @@ class ShopDataTable extends DataTable
                         <small>Acc #: {$accountNumber}</small><br>
                         <small>Branch: {$branch}</small>";
             })
+            ->orderColumn('subscription_start', 'subscription_start $1')
+            ->orderColumn('subscription_ends', 'subscription_end $1')
+            ->orderColumn('email_verified_at', 'email_verified_at $1')
+            ->orderColumn('shopkeeper', 'shop_keeper_name $1')
             ->orderColumn('bank', 'bank_name $1')
             ->filterColumn('subscription_start', function ($query, $keyword) {
-                $query->where(function ($query) use ($keyword) {
-                    $query->where('bank_name', 'like', "%{$keyword}%")
-                        ->orWhere('bank_account_number', 'like', "%{$keyword}%")
-                        ->orWhere('bank_branch', 'like', "%{$keyword}%");
-                });
+                $query->whereRaw('DATE(sp.start_date) LIKE ?', ["%{$keyword}%"]);
+            })
+            ->filterColumn('subscription_ends', function ($query, $keyword) {
+                $query->whereRaw(
+                    'DATE(sp.end_date) LIKE ?', ["%{$keyword}%"]
+                );
             })
             ->filterColumn('bank', function ($query, $keyword) {
                 $query->where(function ($query) use ($keyword) {
@@ -206,8 +206,9 @@ class ShopDataTable extends DataTable
                 ->exportable(false)
                 ->printable(false)
                 ->width(60)
-                ->addClass('text-center'),
-            Column::make('shop_logo'),
+                ->addClass('text-center')
+                ->searchable(false),
+            Column::make('shop_logo')->searchable(false),
             Column::make('name'),
             Column::make('email'),
             Column::make('phone'),
