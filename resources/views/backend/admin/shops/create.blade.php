@@ -282,6 +282,21 @@
                                             @enderror
                                         </div>
                                     </div>
+
+                                    <div class="col-md-6">
+                                        <label for="auto_password" class="form-label">Auto Generate Password</label>
+                                        <div class="input-group">
+                                            <input type="text" id="auto_password" name="auto_password"
+                                                class="form-control" placeholder="Click generate" readonly>
+                                            <button type="button" class="btn btn-outline-secondary"
+                                                id="generatePassword">
+                                                Generate
+                                            </button>
+                                        </div>
+                                        <div class="form-text">Click "Generate" to create a strong password automatically.
+                                        </div>
+                                    </div>
+
                                 </div>
                             </div>
 
@@ -338,6 +353,25 @@
                 if (clearBtn && verified) {
                     clearBtn.addEventListener('click', () => verified.value = '');
                 }
+
+                // Place inside $(document).ready(function() { ... });
+                $('#generatePassword').on('click', function() {
+                    function generatePassword(length = 12) {
+                        var chars =
+                            "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-={}[]<>?";
+                        var password = '';
+                        for (var i = 0; i < length; i++) {
+                            password += chars.charAt(Math.floor(Math.random() * chars.length));
+                        }
+                        return password;
+                    }
+
+                    var newPassword = generatePassword(12);
+                    $('#auto_password').val(newPassword);
+                    $('#password').val(newPassword);
+                    $('#password_confirmation').val(newPassword);
+                });
+
             })();
         </script>
     @endpush

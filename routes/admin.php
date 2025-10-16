@@ -56,8 +56,8 @@ Route::middleware('auth:admin')->group(function () {
     });
 
     Route::resource('shops', ShopController::class);
-    Route::post('shops/{shop}/send-verification', [ShopController::class, 'send'])
-        ->name('shops.send-verification');
+    Route::post('shops/{shop}/send-verification', [ShopController::class, 'send'])->name('shops.send-verification');
+
     Route::get('shop-subscriptions/{shop}', [ShopSubscriptionController::class, 'index'])->name('shop-subscription.index');
     Route::get('shop-subscriptions/{shop}/create', [ShopSubscriptionController::class, 'create'])->name('shop-subscription.create');
     Route::post('shop-subscriptions/{shop}/store', [ShopSubscriptionController::class, 'store'])->name('shop-subscription.store');

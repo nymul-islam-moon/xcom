@@ -210,7 +210,14 @@
                          </li>
                      </ul>
                  </li>
-                 <li class="nav-header">PRODUCTS</li>
+                 <li class="nav-header">Inventory</li>
+                 @auth('shop')
+                     <li class="nav-item">
+                         <a href="{{ route('shop.products.index') }}" class="nav-link">
+                             <p>{{ ucfirst('products') }}</p>
+                         </a>
+                     </li>
+                 @endauth
                  @auth('admin')
                      <li class="nav-item">
                          <a href="{{ route('admin.products.categories.index') }}" class="nav-link">
@@ -253,19 +260,21 @@
                  @auth('admin')
                      <li class="nav-item">
                          <a href="{{ route('admin.users.index') }}" class="nav-link">
-                            <i class="nav-icon bi bi-user"></i>
+                             <i class="nav-icon bi bi-user"></i>
                              <p>{{ ucfirst('admins') }}</p>
                          </a>
                      </li>
                      <li class="nav-item">
                          <a href="{{ route('admin.shops.index') }}" class="nav-link">
-                            <i class="nav-icon bi bi-ui-checks-grid"></i>
+                             <i class="nav-icon bi bi-ui-checks-grid"></i>
                              <p>{{ ucfirst('shops') }}</p>
                          </a>
                      </li>
+                 @endauth
+                 @auth('shop')
                      <li class="nav-item">
                          <a href="" class="nav-link">
-                            <i class="nav-icon bi bi-ui-checks-grid"></i>
+                             <i class="nav-icon bi bi-ui-checks-grid"></i>
                              <p>{{ ucfirst('customers') }}</p>
                          </a>
                      </li>

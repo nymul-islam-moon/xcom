@@ -87,16 +87,22 @@ class ShopDataTable extends DataTable
                 return '<span class="badge '.$class.'">'.$label.'</span>';
             })
             ->editColumn('subscription_start', function (Shop $row) {
-                return $row->subscriptionDate('start_date');
+                return $row->subscription_start
+                    ? '<span class="badge bg-info">'.\Carbon\Carbon::parse($row->subscription_start)->format('d M Y').'</span>'
+                    : '<span class="text-muted">-</span>';
             })
             ->editColumn('subscription_ends', function (Shop $row) {
-                return $row->subscriptionDate('end_date');
+                return $row->subscription_end
+                    ? '<span class="badge bg-info">'.\Carbon\Carbon::parse($row->subscription_end)->format('d M Y').'</span>'
+                    : '<span class="text-muted">-</span>';
             })
+            ->orderColumn('subscription_start', 'subscription_start $1')
+            ->orderColumn('subscription_ends', 'subscription_end $1')
+
             ->editColumn('email_verified_at', function (Shop $row) {
                 if ($row->email_verified_at) {
                     return '<span class="badge bg-success">Verified</span><br><small>'.$row->email_verified_at->format('d M Y H:i').'</small>';
                 } else {
-                    // Button to resend verification
                     $button = '<form method="POST" action="'.route('admin.shops.send-verification', $row->slug).'" style="display:inline-block;">';
                     $button .= csrf_field();
                     $button .= '<button type="submit" class="btn btn-sm btn-warning">Resend Verification</button>';
@@ -105,18 +111,21 @@ class ShopDataTable extends DataTable
                     return '<span class="badge bg-danger">Not Verified</span> '.$button;
                 }
             })
+            ->orderColumn('email_verified_at', 'email_verified_at $1')
             ->addColumn('shopkeeper', function (Shop $row) {
                 return "<strong>{$row->shop_keeper_name}</strong><br><small>{$row->shop_keeper_phone}</small>";
             })
+            ->orderColumn('shopkeeper', 'shop_keeper_name $1')
             ->addColumn('bank', function (Shop $row) {
                 $bankName = $row->bank_name ?? 'N/A';
                 $accountNumber = $row->bank_account_number ?? 'N/A';
                 $branch = $row->bank_branch ?? 'N/A';
 
                 return "<strong>{$bankName}</strong><br>
-                    <small>Acc #: {$accountNumber}</small><br>
-                    <small>Branch: {$branch}</small>";
+                        <small>Acc #: {$accountNumber}</small><br>
+                        <small>Branch: {$branch}</small>";
             })
+            ->orderColumn('bank', 'bank_name $1')
             ->filterColumn('subscription_start', function ($query, $keyword) {
                 $query->where(function ($query) use ($keyword) {
                     $query->where('bank_name', 'like', "%{$keyword}%")
@@ -147,8 +156,14 @@ class ShopDataTable extends DataTable
     public function query(Shop $model): QueryBuilder
     {
         return $model->newQuery()
-            ->with(['payments', 'accounts']) // eager load payments
-            ->select('shops.*');
+            ->with(['payments', 'accounts'])
+            ->leftJoin('shop_payments as sp', 'sp.shop_id', '=', 'shops.id')
+            ->select(
+                'shops.*',
+                \DB::raw('MAX(sp.start_date) as subscription_start'),
+                \DB::raw('MAX(sp.end_date) as subscription_end')
+            )
+            ->groupBy('shops.id');
     }
 
     /**
