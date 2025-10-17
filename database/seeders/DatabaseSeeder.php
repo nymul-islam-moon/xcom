@@ -21,14 +21,13 @@ class DatabaseSeeder extends Seeder
         // ]);
         $this->call([
             AdminSeeder::class,
-            // ShopSeeder::class,
-            // ProductCategorySeeder::class,
-            // ProductSubCategorySeeder::class,
-            // ProductChildCategorySeeder::class,
-            // ProductAttributeSeeder::class,
-            // ProductAttributeValueSeeder::class,
-            // BrandSeeder::class,
-            // ShopSeeder::class,
+            ShopSeeder::class,
+            ProductCategorySeeder::class,
+            ProductSubCategorySeeder::class,
+            ProductChildCategorySeeder::class,
+            ProductAttributeSeeder::class,
+            ProductAttributeValueSeeder::class,
+            BrandSeeder::class,
         ]);
     }
 }

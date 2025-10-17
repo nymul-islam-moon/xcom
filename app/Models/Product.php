@@ -41,8 +41,12 @@ class Product extends Model
         'download_url',
         'license_key',
         'subscription_interval',
-        'main_image',
     ];
+
+    public function getRouteKeyName()
+    {
+        return 'slug';
+    }
 
     // ----------------------
     // Relationships
@@ -58,6 +62,11 @@ class Product extends Model
     public function images()
     {
         return $this->hasMany(ProductImage::class);
+    }
+
+    public function mainImage()
+    {
+        return $this->hasOne(ProductImage::class)->where('is_default', 1);
     }
 
     // Optional: category/subcategory/child_category relations

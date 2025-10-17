@@ -29,21 +29,21 @@ class ProductsDataTable extends DataTable
                         'type' => 'link',
                         'label' => 'Edit',
                         'icon' => 'bi-pencil-square',
-                        'url' => route('admin.shops.edit', $row->slug),
+                        'url' => route('shop.products.edit', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'link',
                         'label' => 'Show',
                         'icon' => 'bi-eye',
-                        'url' => route('admin.shops.show', $row->slug),
+                        'url' => route('shop.products.show', $row->slug),
                     ],
                     ['type' => 'divider'],
                     [
                         'type' => 'delete',
                         'label' => 'Delete',
                         'icon' => 'bi-trash',
-                        'url' => route('admin.shops.destroy', $row->slug),
+                        'url' => route('shop.products.destroy', $row->slug),
                         'confirm' => 'Are you sure you want to delete this category?',
                     ],
                 ];
@@ -84,17 +84,20 @@ class ProductsDataTable extends DataTable
             })
 
             ->addColumn('brand', function (Product $row) {
-                return '<span class="badge bg-success w-100 mb-1">'.$row->brand->name ?? 'N/A'.'</span>';
+                $brand = $row?->brand?->name ?? 'N/A';
+
+                return '<span class="badge bg-success w-100 mb-1">'.$brand.'</span>';
             })
-            ->editColumn('product_type', function (Product $row) {
-                return '<span class="badge bg-primary w-100 mb-1">'.$row->product_type.'</span>';
-            })
-            ->editColumn('created_at', function (Product $row) {
-                return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
-            })
-            ->editColumn('updated_at', function (Product $row) {
-                return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
-            })
+
+            // ->editColumn('product_type', function (Product $row) {
+            //     return '<span class="badge bg-primary w-100 mb-1">'.$row->product_type.'</span>';
+            // })
+            // ->editColumn('created_at', function (Product $row) {
+            //     return $row->created_at ? $row->created_at->format('d M Y H:i') : '';
+            // })
+            // ->editColumn('updated_at', function (Product $row) {
+            //     return $row->updated_at ? $row->updated_at->format('d M Y H:i') : '';
+            // })
 
             ->rawColumns(['action', 'parent_categories', 'shop', 'brand', 'product_type']);
     }
@@ -153,10 +156,10 @@ class ProductsDataTable extends DataTable
             Column::make('parent_categories'),
             Column::make('shop'),
             Column::make('brand'),
-            Column::make('sku'),
-            Column::make('slug'),
-            Column::make('created_at'),
-            Column::make('updated_at'),
+            // Column::make('sku'),
+            // Column::make('slug'),
+            // Column::make('created_at'),
+            // Column::make('updated_at'),
         ];
     }
 

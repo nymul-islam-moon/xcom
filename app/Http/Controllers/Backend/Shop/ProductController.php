@@ -66,26 +66,26 @@ class ProductController extends Controller
             // 2. Digital Product
             // ==================
 
-            // // Product main image
-            // if ($request->hasFile('main_image')) {
-            //     $path = $mediaService->storeFile($request->file('main_image'), 'products/main', 'public');
-            //     ProductImage::create([
-            //         'product_id' => $product->id,
-            //         'image_path' => $path,
-            //         'is_main' => true,
-            //     ]);
-            // }
+            // Product main image
+            if ($request->hasFile('main_image')) {
+                $path = $mediaService->storeFile($request->file('main_image'), 'products/main', 'public');
+                ProductImage::create([
+                    'product_id' => $product->id,
+                    'image_path' => $path,
+                    'is_default' => true,
+                ]);
+            }
 
-            // // Product gallery images
-            // if ($request->hasFile('gallery_images')) {
-            //     foreach ($request->file('gallery_images') as $file) {
-            //         $path = $mediaService->storeFile($file, 'products/gallery', 'public');
-            //         ProductImage::create([
-            //             'product_id' => $product->id,
-            //             'image_path' => $path,
-            //         ]);
-            //     }
-            // }
+            // Product gallery images
+            if ($request->hasFile('gallery_images')) {
+                foreach ($request->file('gallery_images') as $file) {
+                    $path = $mediaService->storeFile($file, 'products/gallery', 'public');
+                    ProductImage::create([
+                        'product_id' => $product->id,
+                        'image_path' => $path,
+                    ]);
+                }
+            }
 
             // // Variable product variants
             // if ($formData['variant_type'] === 'variable' && !empty($formData['combinations'])) {
@@ -158,7 +158,10 @@ class ProductController extends Controller
      */
     public function show(Product $product)
     {
-        //
+        // dd($product->variants);
+        return view('backend.shop.products.show', [
+            'product' => $product->load(['variants.attributes.value', 'images']),
+        ]);
     }
 
     /**
@@ -166,7 +169,10 @@ class ProductController extends Controller
      */
     public function edit(Product $product)
     {
-        //
+        return view('backend.shop.products.edit', [
+            'product' => $product->load(['variants.attributes.value', 'images']),
+            'attributes' => ProductAttribute::with('values')->get(),
+        ]);
     }
 
     /**
